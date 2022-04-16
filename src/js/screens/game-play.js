@@ -43,39 +43,37 @@ class GamePlay {
   }
 
   update(elapsedTime) {
-    playerModel.update(elapsedTime);
+    this.playerModel.update(elapsedTime);
     // model.update(elapsedTime);
   }
 
   render() {
     console.log("i am rendering");
-    playerModel.render();
+    this.playerModel.render();
     //draw things
     // graphics.clear();
     // renderGame(model, graphics); // draw background, obstacles, scene and player here
   }
 
-  gameLoop(time) {
-    processInput(time - lastTimeStamp);
-    update(time - lastTimeStamp);
-    lastTimeStamp = time;
-    render();
-
-    if (!cancelNextRequest) {
-      requestAnimationFrame(gameLoop);
-    }
-  }
-
   run() {
-    //create player
-    model = GameModel();
-    myKeyboard.registerCommand("ArrowUp", model.turnUp);
-    myKeyboard.registerCommand("ArrowDown", model.turnDown);
-    myKeyboard.registerCommand("ArrowLeft", model.turnLeft);
-    myKeyboard.registerCommand("ArrowRight", model.turnRight);
+    let self = this;
+    this.myKeyboard.register("ArrowUp", self.playerModel.turnUp);
+    this.myKeyboard.register("ArrowDown", self.playerModel.turnDown);
+    this.myKeyboard.register("ArrowLeft", self.playerModel.turnLeft);
+    this.myKeyboard.register("ArrowRight", self.playerModel.turnRight);
 
     lastTimeStamp = performance.now();
-    cancelNextRequest = false;
+    this.cancelNextRequest = false;
+
+    function gameLoop(time) {
+      processInput(time - lastTimeStamp);
+      update(time - lastTimeStamp);
+      lastTimeStamp = time;
+      render();
+      if (!cancelNextRequest) {
+        requestAnimationFrame(gameLoop);
+      }
+    }
     requestAnimationFrame(gameLoop);
   }
 }

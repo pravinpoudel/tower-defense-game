@@ -1,4 +1,5 @@
 let manager = new Manager();
+GameState.menu = manager;
 let screens = {
   help: new Help(manager),
   highscores: new HighScoreMenu(manager),

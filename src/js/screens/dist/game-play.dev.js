@@ -65,49 +65,38 @@ function () {
   }, {
     key: "update",
     value: function update(elapsedTime) {
-      playerModel.update(elapsedTime); // model.update(elapsedTime);
+      this.playerModel.update(elapsedTime); // model.update(elapsedTime);
     }
   }, {
     key: "render",
     value: function render() {
       console.log("i am rendering");
-      playerModel.render(); //draw things
+      this.playerModel.render(); //draw things
       // graphics.clear();
       // renderGame(model, graphics); // draw background, obstacles, scene and player here
     }
   }, {
-    key: "gameLoop",
-    value: function (_gameLoop) {
-      function gameLoop(_x) {
-        return _gameLoop.apply(this, arguments);
-      }
-
-      gameLoop.toString = function () {
-        return _gameLoop.toString();
-      };
-
-      return gameLoop;
-    }(function (time) {
-      processInput(time - lastTimeStamp);
-      update(time - lastTimeStamp);
-      lastTimeStamp = time;
-      render();
-
-      if (!cancelNextRequest) {
-        requestAnimationFrame(gameLoop);
-      }
-    })
-  }, {
     key: "run",
     value: function run() {
-      //create player
-      model = GameModel();
-      myKeyboard.registerCommand("ArrowUp", model.turnUp);
-      myKeyboard.registerCommand("ArrowDown", model.turnDown);
-      myKeyboard.registerCommand("ArrowLeft", model.turnLeft);
-      myKeyboard.registerCommand("ArrowRight", model.turnRight);
+      var self = this;
+      this.myKeyboard.register("ArrowUp", self.playerModel.turnUp);
+      this.myKeyboard.register("ArrowDown", self.playerModel.turnDown);
+      this.myKeyboard.register("ArrowLeft", self.playerModel.turnLeft);
+      this.myKeyboard.register("ArrowRight", self.playerModel.turnRight);
       lastTimeStamp = performance.now();
-      cancelNextRequest = false;
+      this.cancelNextRequest = false;
+
+      function gameLoop(time) {
+        processInput(time - lastTimeStamp);
+        update(time - lastTimeStamp);
+        lastTimeStamp = time;
+        render();
+
+        if (!cancelNextRequest) {
+          requestAnimationFrame(gameLoop);
+        }
+      }
+
       requestAnimationFrame(gameLoop);
     }
   }]);

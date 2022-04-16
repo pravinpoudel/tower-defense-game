@@ -12,8 +12,7 @@ class Manager {
     for (screen = 0; screen < active.length; screen++) {
       active[screen].classList.remove("active");
     }
-    console.log(GameState.screens[id]);
-    // GameState.screens[id].run();
+    GameState.screens[id].run();
     document.getElementById(id).classList.add("active");
   }
 

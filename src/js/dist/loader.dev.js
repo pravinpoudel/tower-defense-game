@@ -93,8 +93,6 @@ loader = function () {
   }
 
   function loadAssets(assets, onSuccess, onError, onComplete) {
-    //
-    // When we run out of things to load, that is when we call onComplete.
     if (assets.length > 0) {
       var entry = assets[0];
       loadAsset(entry.source, function (asset) {
@@ -162,7 +160,6 @@ loader = function () {
 
   function mainComplete() {
     console.log("It is all loaded up");
-    var game1 = new Game();
     GameState.menu.initialize();
   }
 

@@ -1,6 +1,7 @@
 "use strict";
 
 var manager = new Manager();
+GameState.menu = manager;
 var screens = {
   help: new Help(manager),
   highscores: new HighScoreMenu(manager),
