@@ -1,7 +1,6 @@
 class GamePlay {
   constructor(manager, input) {
     this.myKeyboard = input;
-    this.cancelNextRequest = false;
     this.lastTimeStamp;
     this.manager = manager;
     this.model = null;
@@ -13,7 +12,7 @@ class GamePlay {
   initialize() {
     let self = this;
     self.myKeyboard.register("Escape", function () {
-      cancelNextRequest = true;
+      GameState.cancelNextRequest = true;
       self.manager.showScreen("mainmenu");
     });
 
@@ -39,7 +38,7 @@ class GamePlay {
 
   processInput(elapsedTime) {
     console.log("input pressed");
-    self.myKeyboard.update(elapsedTime);
+    this.myKeyboard.update(elapsedTime);
   }
 
   update(elapsedTime) {
@@ -62,15 +61,15 @@ class GamePlay {
     this.myKeyboard.register("ArrowLeft", self.playerModel.turnLeft);
     this.myKeyboard.register("ArrowRight", self.playerModel.turnRight);
 
-    lastTimeStamp = performance.now();
-    this.cancelNextRequest = false;
+    let lastTimeStamp = performance.now();
+    GameState.cancelNextRequest = false;
 
     function gameLoop(time) {
-      processInput(time - lastTimeStamp);
-      update(time - lastTimeStamp);
+      self.processInput(time - lastTimeStamp);
+      self.update(time - lastTimeStamp);
       lastTimeStamp = time;
-      render();
-      if (!cancelNextRequest) {
+      self.render();
+      if (!GameState.cancelNextRequest) {
         requestAnimationFrame(gameLoop);
       }
     }

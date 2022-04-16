@@ -58,10 +58,6 @@ loader = function () {
     scripts: ["utility/initialize"],
     message: "game menu intialized",
     onComplete: null
-  }, {
-    scripts: ["game"],
-    message: "game class is loaded",
-    onComplete: null
   }];
   var assetOrder = [{
     key: "fire",
@@ -93,6 +89,8 @@ loader = function () {
   }
 
   function loadAssets(assets, onSuccess, onError, onComplete) {
+    //
+    // When we run out of things to load, that is when we call onComplete.
     if (assets.length > 0) {
       var entry = assets[0];
       loadAsset(entry.source, function (asset) {
@@ -159,7 +157,8 @@ loader = function () {
   }
 
   function mainComplete() {
-    console.log("It is all loaded up");
+    console.log("It is all loaded up"); // const game1 = new Game();
+
     GameState.menu.initialize();
   }
 

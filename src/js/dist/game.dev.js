@@ -9,10 +9,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Game =
 /*#__PURE__*/
 function () {
-  function Game() {
-    _classCallCheck(this, Game);
+  function Game() {// GameState.menu = new Manager();
 
-    GameState.menu = new Manager();
+    _classCallCheck(this, Game);
   }
 
   _createClass(Game, [{

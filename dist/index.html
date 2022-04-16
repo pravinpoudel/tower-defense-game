@@ -56,12 +56,13 @@
         <p id="loader"> </p>
     </div>
     
-    <canvas id = "game-screen"></canvas>
+    <!-- <canvas id = "game-screen"></canvas> -->
     <script>
         const GameState = {
             screens: {},
             input: null,
             menu: null,
+            cancelNextRequest: false
             };
     </script>
     <script data-main = "src/js/loader" src="require.js"></script>

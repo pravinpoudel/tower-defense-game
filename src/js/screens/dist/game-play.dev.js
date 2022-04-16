@@ -13,7 +13,6 @@ function () {
     _classCallCheck(this, GamePlay);
 
     this.myKeyboard = input;
-    this.cancelNextRequest = false;
     this.lastTimeStamp;
     this.manager = manager;
     this.model = null;
@@ -27,7 +26,7 @@ function () {
     value: function initialize() {
       var self = this;
       self.myKeyboard.register("Escape", function () {
-        cancelNextRequest = true;
+        GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
       });
       var player = new MovingObject({
@@ -60,7 +59,7 @@ function () {
     key: "processInput",
     value: function processInput(elapsedTime) {
       console.log("input pressed");
-      self.myKeyboard.update(elapsedTime);
+      this.myKeyboard.update(elapsedTime);
     }
   }, {
     key: "update",
@@ -83,16 +82,16 @@ function () {
       this.myKeyboard.register("ArrowDown", self.playerModel.turnDown);
       this.myKeyboard.register("ArrowLeft", self.playerModel.turnLeft);
       this.myKeyboard.register("ArrowRight", self.playerModel.turnRight);
-      lastTimeStamp = performance.now();
-      this.cancelNextRequest = false;
+      var lastTimeStamp = performance.now();
+      GameState.cancelNextRequest = false;
 
       function gameLoop(time) {
-        processInput(time - lastTimeStamp);
-        update(time - lastTimeStamp);
+        self.processInput(time - lastTimeStamp);
+        self.update(time - lastTimeStamp);
         lastTimeStamp = time;
-        render();
+        self.render();
 
-        if (!cancelNextRequest) {
+        if (!GameState.cancelNextRequest) {
           requestAnimationFrame(gameLoop);
         }
       }
