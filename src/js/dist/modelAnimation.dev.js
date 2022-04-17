@@ -6,13 +6,13 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var ModelAnimation =
+var gameModel =
 /*#__PURE__*/
 function () {
-  function ModelAnimation(specs, player) {
+  function gameModel(specs, player) {
     var _this = this;
 
-    _classCallCheck(this, ModelAnimation);
+    _classCallCheck(this, gameModel);
 
     this.specs = specs;
     this.player = player;
@@ -31,7 +31,7 @@ function () {
     this.image.src = this.specs.spriteSheet;
   }
 
-  _createClass(ModelAnimation, [{
+  _createClass(gameModel, [{
     key: "update",
     value: function update(elapsedTime) {
       this.animationTime += elapsedTime;
@@ -68,12 +68,12 @@ function () {
     key: "render",
     value: function render() {
       if (this.isReady) {
-        this.drawSubTexture(context, this.image, this.subImageIndex, this.subTextureWidth, this.player.specs.center, this.player.specs.rotation, this.player.specs.size);
+        this.drawSubTexture(this.image, this.subImageIndex, this.subTextureWidth, this.player.specs.center, this.player.specs.rotation, this.player.specs.size);
         this.secondTime = true;
       }
     }
   }]);
 
-  return ModelAnimation;
+  return gameModel;
 }();
 //# sourceMappingURL=modelAnimation.dev.js.map

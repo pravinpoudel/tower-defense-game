@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style/style.css"
+    <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
 
-    <body >
+    <body>
         <div id = "game">
             <div id = "mainmenu" class = "screen">
                 <ul class = "menu">
@@ -21,11 +21,15 @@
                 </ul>
             </div>
             <div id = "gameplay" class = "screen">
+                <div id="score_board">
+                    <p>Score: </p> <p id="currentScore"></p>
+                    <p>Lives Rem: </p> <p id="lives"></p>
+                </div>
                 <canvas id = "canvas-main" width = "1000" height = "1000"></canvas>
             </div>
             <div id = "highscores" class = "screen">
                 <h1>High Scores</h1>
-                <ol>
+                <ol id="high-scores-list">
                     <li>10000</li>
                     <li>9000</li>
                     <li>8000</li>
@@ -44,8 +48,8 @@
             </div>
             <div id = "about" class = "screen">
                 <h1>About</h1>
-                <p>Developed by</p>
-                <p>Dr. James Dean Mathias</p>
+                <p>Developer: Pravin Poudel</p>
+
                 <ul class = "menu">
                     <li><button id = "id-about-back">Back</button></li>
                 </ul>
@@ -62,7 +66,9 @@
             screens: {},
             input: null,
             menu: null,
-            cancelNextRequest: false
+            cancelNextRequest: false,
+            assets: {},
+            life: 0
             };
     </script>
     <script data-main = "src/js/loader" src="require.js"></script>

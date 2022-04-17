@@ -6,16 +6,16 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var GameObject =
+var MovingEvents =
 /*#__PURE__*/
 function () {
-  function GameObject(spec) {
-    _classCallCheck(this, GameObject);
+  function MovingEvents(spec) {
+    _classCallCheck(this, MovingEvents);
 
     this.spec = spec;
   }
 
-  _createClass(GameObject, [{
+  _createClass(MovingEvents, [{
     key: "moveForward",
     value: function moveForward(elapsedTime) {
       var vectorX = Math.cos(spec.rotation);
@@ -35,6 +35,6 @@ function () {
     }
   }]);
 
-  return GameObject;
+  return MovingEvents;
 }();
 //# sourceMappingURL=gameobject.dev.js.map

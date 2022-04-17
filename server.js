@@ -11,6 +11,7 @@ let mimeTypes = {
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".mp3": "audio/mpeg3",
+  ".wav": "audio/x-wav",
 };
 const port = 3000;
 
@@ -27,8 +28,10 @@ function handleRequest(request, response) {
           response.writeHead(500);
           response.end("Server Error!");
         } else {
+          console.log(path.extname(lookup));
           let headers = { "Content-type": mimeTypes[path.extname(lookup)] };
-          response.writeHead(200, headers);
+          //removed headers
+          response.writeHead(200);
           response.end(data);
         }
       });

@@ -1,4 +1,4 @@
-class GameObject {
+class MovingEvents {
   constructor(spec) {
     this.spec = spec;
   }

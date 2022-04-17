@@ -25,7 +25,6 @@ function () {
     key: "keyPress",
     value: function keyPress(e) {
       this.keys[e.key] = true;
-      console.log(this.keys);
     }
   }, {
     key: "keyRelease",

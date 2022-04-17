@@ -6,11 +6,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var MovingObject =
+var MovingEvents =
 /*#__PURE__*/
 function () {
-  function MovingObject(specs) {
-    _classCallCheck(this, MovingObject);
+  function MovingEvents(specs) {
+    _classCallCheck(this, MovingEvents);
 
     this.specs = specs;
     this.moveForward = this.moveForward.bind(this);
@@ -18,7 +18,7 @@ function () {
     this.rotateRight = this.rotateRight.bind(this);
   }
 
-  _createClass(MovingObject, [{
+  _createClass(MovingEvents, [{
     key: "moveForward",
     value: function moveForward(elapsedTime) {
       var vectorX = Math.cos(this.specs.rotation);
@@ -40,6 +40,6 @@ function () {
     }
   }]);
 
-  return MovingObject;
+  return MovingEvents;
 }();
 //# sourceMappingURL=player.dev.js.map

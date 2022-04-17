@@ -19,6 +19,8 @@ function () {
     this.initialize = this.initialize.bind(this);
     this.run = this.run.bind(this);
     this.playerModel = null;
+    this.sound = null;
+    this.particlesSmoke = null;
   }
 
   _createClass(GamePlay, [{
@@ -29,7 +31,32 @@ function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
       });
-      var player = new MovingObject({
+      this.particlesSmoke = new ParticleSystem({
+        center: {
+          x: 300,
+          y: 300
+        },
+        size: {
+          mean: 10,
+          stdev: 4
+        },
+        speed: {
+          mean: 50,
+          stdev: 25
+        },
+        lifetime: {
+          mean: 4,
+          stdev: 1
+        },
+        left: 100,
+        right: 100,
+        top: 100,
+        bottom: 100,
+        image: GameState.assets["fire"]
+      });
+      this.particlesSmoke.createEffect(); //all the event to handle movement
+
+      var playerEvent = new MovingEvents({
         size: {
           x: 50,
           y: 50
@@ -42,46 +69,78 @@ function () {
         rotation: 0,
         moveRate: 125 / 1000,
         // Pixels per second
-        rotateRate: Math.PI / 1000 // Radians per second
+        rotateRate: Math.PI / 1000,
+        // Radians per second
+        continousSpeed: 100
+      }); // all the specs of the player sprite
 
-      });
       var playerSpecs = {
-        spriteSheet: "assets/spritesheet-bird.png",
+        spriteSheet: dir + "assets/spritesheet-bird.png",
         spriteCount: 14,
         spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
-      };
-      self.playerModel = new ModelAnimation(playerSpecs, player);
-      self.myKeyboard.register("w", player.moveForward);
-      self.myKeyboard.register("a", player.rotateLeft);
-      self.myKeyboard.register("d", player.rotateRight);
+      }; //make a playerModel
+
+      self.playerModel = new gameModel(playerSpecs, playerEvent, true); //register that event to event handler
+
+      self.enemycontroller = new EnemyController();
+      self.myKeyboard.register("w", playerEvent.moveForward);
+      self.myKeyboard.register("a", playerEvent.rotateLeft);
+      self.myKeyboard.register("d", playerEvent.rotateRight);
+      self.myKeyboard.register("3", playerEvent.runRight);
+      self.myKeyboard.register("1", playerEvent.runLeft);
+      self.myKeyboard.register("5", playerEvent.runTop);
+      self.myKeyboard.register("2", playerEvent.runDown);
     }
   }, {
     key: "processInput",
     value: function processInput(elapsedTime) {
-      console.log("input pressed");
       this.myKeyboard.update(elapsedTime);
     }
   }, {
     key: "update",
     value: function update(elapsedTime) {
-      this.playerModel.update(elapsedTime); // model.update(elapsedTime);
+      if (GameState.life <= 0) {
+        GameState.cancelNextRequest = true;
+        this.particlesSmoke.update(elapsedTime);
+        return;
+      }
+
+      this.playerModel.update(elapsedTime);
+      this.enemycontroller.update(elapsedTime); // model.update(elapsedTime);
+    }
+  }, {
+    key: "renderScore",
+    value: function renderScore() {
+      document.getElementById("currentScore").innerHTML = score;
+      document.getElementById("lives").innerHTML = GameState.life;
     }
   }, {
     key: "render",
     value: function render() {
-      console.log("i am rendering");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      this.renderScore();
+
+      if (GameState.life <= 0) {
+        this.particlesSmoke.render();
+        return;
+      }
+
       this.playerModel.render(); //draw things
-      // graphics.clear();
       // renderGame(model, graphics); // draw background, obstacles, scene and player here
     }
   }, {
     key: "run",
     value: function run() {
       var self = this;
-      this.myKeyboard.register("ArrowUp", self.playerModel.turnUp);
-      this.myKeyboard.register("ArrowDown", self.playerModel.turnDown);
-      this.myKeyboard.register("ArrowLeft", self.playerModel.turnLeft);
-      this.myKeyboard.register("ArrowRight", self.playerModel.turnRight);
+      this.sound = new Sound();
+      this.sound.loadAudio();
+      this.sound.playSound("end");
+      console.log(this.sound);
+      this.myKeyboard.register("ArrowUp", self.playerModel.player.moveTop);
+      this.myKeyboard.register("ArrowDown", self.playerModel.player.moveDown);
+      this.myKeyboard.register("ArrowLeft", self.playerModel.player.moveLeft);
+      this.myKeyboard.register("ArrowRight", self.playerModel.player.moveRight);
+      console.log(self.playerModel.moveRight);
       var lastTimeStamp = performance.now();
       GameState.cancelNextRequest = false;
 
@@ -89,11 +148,9 @@ function () {
         self.processInput(time - lastTimeStamp);
         self.update(time - lastTimeStamp);
         lastTimeStamp = time;
-        self.render();
+        self.render(); // if (!GameState.cancelNextRequest) {
 
-        if (!GameState.cancelNextRequest) {
-          requestAnimationFrame(gameLoop);
-        }
+        requestAnimationFrame(gameLoop); // }
       }
 
       requestAnimationFrame(gameLoop);

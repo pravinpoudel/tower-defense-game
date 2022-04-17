@@ -11,7 +11,6 @@ class Keyboard {
 
   keyPress(e) {
     this.keys[e.key] = true;
-    console.log(this.keys);
   }
 
   keyRelease(e) {

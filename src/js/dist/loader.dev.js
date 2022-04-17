@@ -11,8 +11,12 @@ loader = function () {
     message: "Random number generator loaded",
     onComplete: null
   }, {
-    scripts: ["utility/index"],
-    message: "utility is loaded",
+    scripts: ["highscore"],
+    message: "highscore intialized",
+    onComplete: null
+  }, {
+    scripts: ["particleSystem"],
+    message: "particle system is intialized",
     onComplete: null
   }, {
     scripts: ["screens/about"],
@@ -43,11 +47,11 @@ loader = function () {
     message: "input is loaded",
     onComplete: null
   }, {
-    scripts: ["modelAnimation"],
+    scripts: ["gamemodel"],
     message: "modelAnimation is loaded",
     onComplete: null
   }, {
-    scripts: ["player"],
+    scripts: ["movingevents"],
     message: "moving object is loaded",
     onComplete: null
   }, {
@@ -55,25 +59,33 @@ loader = function () {
     message: "input is loaded",
     onComplete: null
   }, {
+    scripts: ["sound"],
+    message: "sound intialized",
+    onComplete: null
+  }, {
     scripts: ["utility/initialize"],
     message: "game menu intialized",
     onComplete: null
   }];
+  var href = window.location.href;
+  var dir = href.substring(0, href.lastIndexOf("/")) + "/";
   var assetOrder = [{
     key: "fire",
-    source: "/assets/fire.png"
+    source: dir + "assets/fire.png"
   }, {
     key: "smoke",
-    source: "/assets/smoke.png"
-  }];
+    source: dir + "assets/smoke.png"
+  } // {
+  //   key: "end audio",
+  //   source: dir + "assets/sounds/game_end.mp3",
+  // },
+  ];
 
   function loadScripts(scripts, onComplete) {
     if (scripts.length > 0) {
       var entry = scripts[0];
 
       require(entry.scripts, function () {
-        console.log(entry.message);
-
         if (entry.onComplete) {
           entry.onComplete();
         }
@@ -100,6 +112,7 @@ loader = function () {
         loaderWidth += progressSlice;
         loadAssets(assets, onSuccess, onError, onComplete);
       }, function (error) {
+        console.log(error.message);
         onError(error);
         assets.shift(); // Alternatively: assets.splice(0, 1);
 
@@ -157,7 +170,8 @@ loader = function () {
   }
 
   function mainComplete() {
-    console.log("It is all loaded up"); // const game1 = new Game();
+    canvas = document.getElementById("canvas-main");
+    context = canvas.getContext("2d"); // const game1 = new Game();
 
     GameState.menu.initialize();
   }

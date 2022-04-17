@@ -3,6 +3,7 @@ class HighScoreMenu {
     this.manager = manager;
     this.initialize = this.initialize.bind(this);
     this.run = this.run.bind(this);
+    this.displayScore = this.displayScore.bind(this);
   }
 
   initialize() {
@@ -14,5 +15,18 @@ class HighScoreMenu {
       });
   }
 
-  run() {}
+  displayScore() {
+    let highScoresHTML = document.getElementById("high-scores-list");
+    highScoresHTML.innerHTML = "";
+    if(scores.length>0){
+      scores.forEach(function (score) {
+        highScoresHTML.innerHTML += score + "<br/>";
+      });
+    }
+
+  }
+
+  run() {
+    this.displayScore();
+  }
 }

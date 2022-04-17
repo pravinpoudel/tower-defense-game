@@ -12,7 +12,8 @@ var mimeTypes = {
   ".css": "text/css",
   ".png": "image/png",
   ".jpg": "image/jpeg",
-  ".mp3": "audio/mpeg3"
+  ".mp3": "audio/mpeg3",
+  ".wav": "audio/x-wav"
 };
 var port = 3000;
 
@@ -29,10 +30,12 @@ function handleRequest(request, response) {
           response.writeHead(500);
           response.end("Server Error!");
         } else {
+          console.log(path.extname(lookup));
           var headers = {
             "Content-type": mimeTypes[path.extname(lookup)]
-          };
-          response.writeHead(200, headers);
+          }; //removed headers
+
+          response.writeHead(200);
           response.end(data);
         }
       });

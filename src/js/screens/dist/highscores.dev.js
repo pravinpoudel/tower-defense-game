@@ -15,6 +15,7 @@ function () {
     this.manager = manager;
     this.initialize = this.initialize.bind(this);
     this.run = this.run.bind(this);
+    this.displayScore = this.displayScore.bind(this);
   }
 
   _createClass(HighScoreMenu, [{
@@ -26,8 +27,22 @@ function () {
       });
     }
   }, {
+    key: "displayScore",
+    value: function displayScore() {
+      var highScoresHTML = document.getElementById("high-scores-list");
+      highScoresHTML.innerHTML = "";
+
+      if (scores.length > 0) {
+        scores.forEach(function (score) {
+          highScoresHTML.innerHTML += score + "<br/>";
+        });
+      }
+    }
+  }, {
     key: "run",
-    value: function run() {}
+    value: function run() {
+      this.displayScore();
+    }
   }]);
 
   return HighScoreMenu;
