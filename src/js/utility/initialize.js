@@ -8,8 +8,8 @@ var dir = href.substring(0, href.lastIndexOf("/")) + "/";
 if (!localStorage.getItem("upgrade")) {
   localStorage.setItem("upgrade", "u");
 }
-if (!localStorage.getItem("shell")) {
-  localStorage.setItem("shell", "s");
+if (!localStorage.getItem("sell")) {
+  localStorage.setItem("sell", "s");
 }
 if (!localStorage.getItem("start")) {
   localStorage.setItem("start", "g");

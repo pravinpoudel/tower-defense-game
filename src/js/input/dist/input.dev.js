@@ -32,6 +32,12 @@ function () {
       delete this.keys[e.key];
     }
   }, {
+    key: "cleanAll",
+    value: function cleanAll() {
+      this.keys = {};
+      this.handlers = {};
+    }
+  }, {
     key: "register",
     value: function register(key, handler) {
       this.handlers[key] = handler;

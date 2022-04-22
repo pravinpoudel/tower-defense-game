@@ -77,7 +77,8 @@ class GamePlay {
     let upgrade = localStorage["upgrade"];
     let sell = localStorage["sell"];
     let start = localStorage["start"];
-
+    self.myKeyboard.cleanAll();
+    
     self.myKeyboard.register(upgrade, self.playerEvent.moveForward);
     self.myKeyboard.register(sell, self.playerEvent.rotateLeft);
     self.myKeyboard.register(start, self.playerEvent.rotateRight);

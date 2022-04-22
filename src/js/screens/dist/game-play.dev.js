@@ -108,6 +108,7 @@ function () {
       var upgrade = localStorage["upgrade"];
       var sell = localStorage["sell"];
       var start = localStorage["start"];
+      self.myKeyboard.cleanAll();
       self.myKeyboard.register(upgrade, self.playerEvent.moveForward);
       self.myKeyboard.register(sell, self.playerEvent.rotateLeft);
       self.myKeyboard.register(start, self.playerEvent.rotateRight); // self.myKeyboard.register("3", playerEvent.runRight);

@@ -17,6 +17,11 @@ class Keyboard {
     delete this.keys[e.key];
   }
 
+  cleanAll() {
+    this.keys = {};
+    this.handlers = {};
+  }
+
   register(key, handler) {
     this.handlers[key] = handler;
   }
