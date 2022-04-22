@@ -1,6 +1,6 @@
 class Game {
   constructor() {
-    // GameState.menu = new Manager();
+    GameState.menu = new Manager();
   }
 
   update() {}

@@ -52,8 +52,20 @@ class GamePlay {
     //make a playerModel
     self.playerModel = new gameModel(playerSpecs, playerEvent, true);
     //register that event to event handler
-    self.enemycontroller = new EnemyController();
-   
+    self.enemycontroller = new EnemyController(self.playerModel);
+    // self.enemycontroller.createEnemy({
+    //   size: { x: 50, y: 50 }, // Size in pixels
+    //   center: { x: 50, y: 150 },
+    //   rotation: 0,
+    //   moveRate: 125 / 1000,
+    //   rotateRate: Math.PI / 1000,
+    //   continousSpeed: 100,
+    //   image: GameState.assets["bird"],
+    //   spriteSheet: dir + "assets/spritesheet-bird.png",
+    //   spriteCount: 14,
+    //   spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+    // });
+
     self.myKeyboard.register("w", playerEvent.moveForward);
     self.myKeyboard.register("a", playerEvent.rotateLeft);
     self.myKeyboard.register("d", playerEvent.rotateRight);
@@ -75,7 +87,7 @@ class GamePlay {
       return;
     }
     this.playerModel.update(elapsedTime);
-    this.enemycontroller.update(elapsedTime);
+    // this.enemycontroller.update(elapsedTime);
     // model.update(elapsedTime);
   }
 

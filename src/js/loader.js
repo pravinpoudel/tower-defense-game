@@ -59,6 +59,18 @@ loader = (function () {
     },
 
     {
+      scripts: ["enemy"],
+      message: "enemy is loaded",
+      onComplete: null,
+    },
+
+    {
+      scripts: ["enemyController"],
+      message: "enemyController is loaded",
+      onComplete: null,
+    },
+
+    {
       scripts: ["input/input"],
       message: "input is loaded",
       onComplete: null,
@@ -73,12 +85,6 @@ loader = (function () {
     {
       scripts: ["movingevents"],
       message: "moving object is loaded",
-      onComplete: null,
-    },
-
-    {
-      scripts: ["input/input"],
-      message: "input is loaded",
       onComplete: null,
     },
 
@@ -98,14 +104,14 @@ loader = (function () {
   var dir = href.substring(0, href.lastIndexOf("/")) + "/";
 
   let assetOrder = [
-    {
-      key: "fire",
-      source: dir + "assets/fire.png",
-    },
-    {
-      key: "smoke",
-      source: dir + "assets/smoke.png",
-    },
+    // {
+    //   key: "fire",
+    //   source: dir + "assets/fire.png",
+    // },
+    // {
+    //   key: "smoke",
+    //   source: dir + "assets/smoke.png",
+    // },
     // {
     //   key: "end audio",
     //   source: dir + "assets/sounds/game_end.mp3",
@@ -204,6 +210,7 @@ loader = (function () {
 
   function loaderInitiate() {
     let totalItems = assetOrder.length + scriptOrder.length;
+    console.log("hello");
     progressSlice = Math.floor(100 / totalItems);
     let loader = document.getElementById("loader");
     let timerId = setTimeout(loop, 1000);

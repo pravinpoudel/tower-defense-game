@@ -43,6 +43,14 @@ loader = function () {
     message: "menumanager is loaded",
     onComplete: null
   }, {
+    scripts: ["enemy"],
+    message: "enemy is loaded",
+    onComplete: null
+  }, {
+    scripts: ["enemyController"],
+    message: "enemyController is loaded",
+    onComplete: null
+  }, {
     scripts: ["input/input"],
     message: "input is loaded",
     onComplete: null
@@ -55,10 +63,6 @@ loader = function () {
     message: "moving object is loaded",
     onComplete: null
   }, {
-    scripts: ["input/input"],
-    message: "input is loaded",
-    onComplete: null
-  }, {
     scripts: ["sound"],
     message: "sound intialized",
     onComplete: null
@@ -69,16 +73,18 @@ loader = function () {
   }];
   var href = window.location.href;
   var dir = href.substring(0, href.lastIndexOf("/")) + "/";
-  var assetOrder = [{
-    key: "fire",
-    source: dir + "assets/fire.png"
-  }, {
-    key: "smoke",
-    source: dir + "assets/smoke.png"
-  } // {
-  //   key: "end audio",
-  //   source: dir + "assets/sounds/game_end.mp3",
-  // },
+  var assetOrder = [// {
+    //   key: "fire",
+    //   source: dir + "assets/fire.png",
+    // },
+    // {
+    //   key: "smoke",
+    //   source: dir + "assets/smoke.png",
+    // },
+    // {
+    //   key: "end audio",
+    //   source: dir + "assets/sounds/game_end.mp3",
+    // },
   ];
 
   function loadScripts(scripts, onComplete) {
@@ -178,6 +184,7 @@ loader = function () {
 
   function loaderInitiate() {
     var totalItems = assetOrder.length + scriptOrder.length;
+    console.log("hello");
     progressSlice = Math.floor(100 / totalItems);
     var loader = document.getElementById("loader");
     var timerId = setTimeout(loop, 1000);
