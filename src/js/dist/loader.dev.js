@@ -35,6 +35,10 @@ loader = function () {
     message: "highscore is loaded",
     onComplete: null
   }, {
+    scripts: ["screens/control"],
+    message: "control is loaded",
+    onComplete: null
+  }, {
     scripts: ["screens/mainmenu"],
     message: "mainmenu is loaded",
     onComplete: null

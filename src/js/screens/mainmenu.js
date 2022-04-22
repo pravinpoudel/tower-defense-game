@@ -19,10 +19,22 @@ class MainMenu {
       .addEventListener("click", function () {
         self.manager.showScreen("highscores");
       });
+    
+    document
+      .getElementById("id-control")
+      .addEventListener("click", function () {
+        self.manager.showScreen("control");
+      });
 
     document.getElementById("id-help").addEventListener("click", function () {
       self.manager.showScreen("help");
     });
+
+    // document
+    //   .getElementById("id-new-game")
+    //   .addEventListener("click", function () {
+    //     self.manager.showScreen("mainmenu");
+    //   });
 
     document.getElementById("id-about").addEventListener("click", function () {
       self.manager.showScreen("about");

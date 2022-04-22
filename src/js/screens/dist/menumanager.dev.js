@@ -19,12 +19,12 @@ function () {
   _createClass(Manager, [{
     key: "showScreen",
     value: function showScreen(id) {
-      console.log("showscreen");
       var screen = 0;
       var active = null;
       active = document.getElementsByClassName("active");
 
       for (screen = 0; screen < active.length; screen++) {
+        console.log(active[screen]);
         active[screen].classList.remove("active");
       }
 

@@ -21,6 +21,7 @@ function () {
     this.playerModel = null;
     this.sound = null;
     this.particlesSmoke = null;
+    this.registerKey = this.registerKey.bind(this);
   }
 
   _createClass(GamePlay, [{
@@ -56,7 +57,7 @@ function () {
       });
       this.particlesSmoke.createEffect(); //all the event to handle movement
 
-      var playerEvent = new MovingEvents({
+      this.playerEvent = new MovingEvents({
         size: {
           x: 50,
           y: 50
@@ -80,7 +81,7 @@ function () {
         spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
       }; //make a playerModel
 
-      self.playerModel = new gameModel(playerSpecs, playerEvent, true); //register that event to event handler
+      self.playerModel = new gameModel(playerSpecs, this.playerEvent, true); //register that event to event handler
 
       self.enemycontroller = new EnemyController(self.playerModel); // self.enemycontroller.createEnemy({
       //   size: { x: 50, y: 50 }, // Size in pixels
@@ -94,19 +95,25 @@ function () {
       //   spriteCount: 14,
       //   spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
       // });
-
-      self.myKeyboard.register("w", playerEvent.moveForward);
-      self.myKeyboard.register("a", playerEvent.rotateLeft);
-      self.myKeyboard.register("d", playerEvent.rotateRight);
-      self.myKeyboard.register("3", playerEvent.runRight);
-      self.myKeyboard.register("1", playerEvent.runLeft);
-      self.myKeyboard.register("5", playerEvent.runTop);
-      self.myKeyboard.register("2", playerEvent.runDown);
     }
   }, {
     key: "processInput",
     value: function processInput(elapsedTime) {
       this.myKeyboard.update(elapsedTime);
+    }
+  }, {
+    key: "registerKey",
+    value: function registerKey() {
+      var self = this;
+      var upgrade = localStorage["upgrade"];
+      var sell = localStorage["sell"];
+      var start = localStorage["start"];
+      self.myKeyboard.register(upgrade, self.playerEvent.moveForward);
+      self.myKeyboard.register(sell, self.playerEvent.rotateLeft);
+      self.myKeyboard.register(start, self.playerEvent.rotateRight); // self.myKeyboard.register("3", playerEvent.runRight);
+      // self.myKeyboard.register("1", playerEvent.runLeft);
+      // self.myKeyboard.register("5", playerEvent.runTop);
+      // self.myKeyboard.register("2", playerEvent.runDown);
     }
   }, {
     key: "update",
@@ -131,14 +138,7 @@ function () {
     value: function render() {
       context.clearRect(0, 0, canvas.width, canvas.height);
       this.renderScore();
-
-      if (GameState.life <= 0) {
-        this.particlesSmoke.render();
-        return;
-      }
-
-      this.playerModel.render(); //draw things
-      // renderGame(model, graphics); // draw background, obstacles, scene and player here
+      this.playerModel.render();
     }
   }, {
     key: "run",
@@ -147,12 +147,12 @@ function () {
       this.sound = new Sound();
       this.sound.loadAudio();
       this.sound.playSound("end");
-      console.log(this.sound);
+      this.registerKey();
       this.myKeyboard.register("ArrowUp", self.playerModel.player.moveTop);
       this.myKeyboard.register("ArrowDown", self.playerModel.player.moveDown);
       this.myKeyboard.register("ArrowLeft", self.playerModel.player.moveLeft);
-      this.myKeyboard.register("ArrowRight", self.playerModel.player.moveRight);
-      console.log(self.playerModel.moveRight);
+      this.myKeyboard.register("ArrowRight", self.playerModel.player.moveRight); // console.log(self.playerModel.moveRight);
+
       var lastTimeStamp = performance.now();
       GameState.cancelNextRequest = false;
 
@@ -160,9 +160,11 @@ function () {
         self.processInput(time - lastTimeStamp);
         self.update(time - lastTimeStamp);
         lastTimeStamp = time;
-        self.render(); // if (!GameState.cancelNextRequest) {
+        self.render();
 
-        requestAnimationFrame(gameLoop); // }
+        if (!GameState.cancelNextRequest) {
+          requestAnimationFrame(gameLoop);
+        }
       }
 
       requestAnimationFrame(gameLoop);

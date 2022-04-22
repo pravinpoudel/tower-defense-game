@@ -9,6 +9,7 @@ class GamePlay {
     this.playerModel = null;
     this.sound = null;
     this.particlesSmoke = null;
+    this.registerKey = this.registerKey.bind(this);
   }
 
   initialize() {
@@ -33,7 +34,7 @@ class GamePlay {
     this.particlesSmoke.createEffect();
 
     //all the event to handle movement
-    let playerEvent = new MovingEvents({
+    this.playerEvent = new MovingEvents({
       size: { x: 50, y: 50 }, // Size in pixels
       center: { x: 50, y: 150 },
       rotation: 0,
@@ -50,7 +51,7 @@ class GamePlay {
     };
 
     //make a playerModel
-    self.playerModel = new gameModel(playerSpecs, playerEvent, true);
+    self.playerModel = new gameModel(playerSpecs, this.playerEvent, true);
     //register that event to event handler
     self.enemycontroller = new EnemyController(self.playerModel);
     // self.enemycontroller.createEnemy({
@@ -65,19 +66,26 @@ class GamePlay {
     //   spriteCount: 14,
     //   spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
     // });
-
-    self.myKeyboard.register("w", playerEvent.moveForward);
-    self.myKeyboard.register("a", playerEvent.rotateLeft);
-    self.myKeyboard.register("d", playerEvent.rotateRight);
-
-    self.myKeyboard.register("3", playerEvent.runRight);
-    self.myKeyboard.register("1", playerEvent.runLeft);
-    self.myKeyboard.register("5", playerEvent.runTop);
-    self.myKeyboard.register("2", playerEvent.runDown);
   }
 
   processInput(elapsedTime) {
     this.myKeyboard.update(elapsedTime);
+  }
+
+  registerKey() {
+    let self = this;
+    let upgrade = localStorage["upgrade"];
+    let sell = localStorage["sell"];
+    let start = localStorage["start"];
+
+    self.myKeyboard.register(upgrade, self.playerEvent.moveForward);
+    self.myKeyboard.register(sell, self.playerEvent.rotateLeft);
+    self.myKeyboard.register(start, self.playerEvent.rotateRight);
+
+    // self.myKeyboard.register("3", playerEvent.runRight);
+    // self.myKeyboard.register("1", playerEvent.runLeft);
+    // self.myKeyboard.register("5", playerEvent.runTop);
+    // self.myKeyboard.register("2", playerEvent.runDown);
   }
 
   update(elapsedTime) {
@@ -99,14 +107,7 @@ class GamePlay {
   render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     this.renderScore();
-    if (GameState.life <= 0) {
-      this.particlesSmoke.render();
-      return;
-    }
     this.playerModel.render();
-    //draw things
-
-    // renderGame(model, graphics); // draw background, obstacles, scene and player here
   }
 
   run() {
@@ -114,13 +115,13 @@ class GamePlay {
     this.sound = new Sound();
     this.sound.loadAudio();
     this.sound.playSound("end");
-    console.log(this.sound);
+    this.registerKey();
 
     this.myKeyboard.register("ArrowUp", self.playerModel.player.moveTop);
     this.myKeyboard.register("ArrowDown", self.playerModel.player.moveDown);
     this.myKeyboard.register("ArrowLeft", self.playerModel.player.moveLeft);
     this.myKeyboard.register("ArrowRight", self.playerModel.player.moveRight);
-    console.log(self.playerModel.moveRight);
+    // console.log(self.playerModel.moveRight);
 
     let lastTimeStamp = performance.now();
     GameState.cancelNextRequest = false;
@@ -130,9 +131,9 @@ class GamePlay {
       self.update(time - lastTimeStamp);
       lastTimeStamp = time;
       self.render();
-      // if (!GameState.cancelNextRequest) {
-      requestAnimationFrame(gameLoop);
-      // }
+      if (!GameState.cancelNextRequest) {
+        requestAnimationFrame(gameLoop);
+      }
     }
     requestAnimationFrame(gameLoop);
   }

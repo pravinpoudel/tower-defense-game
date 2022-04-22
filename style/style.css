@@ -111,3 +111,7 @@ ul.menu li button:active {
     top: 20px;
     font-weight: 800;
 }
+
+.key_button button{
+    font-size: 20px;
+}

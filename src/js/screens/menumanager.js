@@ -5,11 +5,11 @@ class Manager {
   }
 
   showScreen(id) {
-    console.log("showscreen");
     let screen = 0;
     let active = null;
     active = document.getElementsByClassName("active");
     for (screen = 0; screen < active.length; screen++) {
+      console.log(active[screen]);
       active[screen].classList.remove("active");
     }
     GameState.screens[id].run();
