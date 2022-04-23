@@ -19,6 +19,10 @@ loader = function () {
     message: "particle system is intialized",
     onComplete: null
   }, {
+    scripts: ["utility/enemyCreator"],
+    message: "enemy creator system is intialized",
+    onComplete: null
+  }, {
     scripts: ["screens/about"],
     message: "about is loaded",
     onComplete: null

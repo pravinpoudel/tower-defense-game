@@ -9,15 +9,22 @@ class gameModel {
 
     this.image = new Image();
     this.isReady = false;
-
+    this.loadedImage = 0;
     this.secondTime = false;
 
-    this.image.onload = () => {
-      this.isReady = true;
-      this.subTextureWidth = this.image.width / this.specs.spriteCount;
-    };
+    this.images = [];
+    this.index = 0;
+    specs.spriteSheet.forEach((src) => {
+      let image = new Image();
+      image.src = src;
+      image.onload = () => {
+        this.loadedImage++;
+        if (this.loadedImage == this.specs.spriteCount) this.isReady = true;
+      };
+      this.images.push(image);
+    });
 
-    this.image.src = this.specs.spriteSheet;
+    // this.image.src = this.specs.spriteSheet;
     this.continousMotion = continousMotion;
     this.collided = false;
   }
@@ -34,46 +41,27 @@ class gameModel {
     }
   }
 
-  drawTexture(image, center, rotation, size) {
-    context.translate(center.x, center.y);
-    context.rotate(rotation);
-    context.translate(-center.x, -center.y);
-
-    context.drawImage(
-      image,
-      center.x - size.x / 2,
-      center.y - size.y / 2,
-      size.x,
-      size.y
-    );
-
-    context.restore();
-  }
-
   drawSubTexture(image, index, subTextureWidth, center, rotation, size) {
     context.save();
     context.translate(center.x, center.y);
     context.rotate(rotation);
     context.translate(-center.x, -center.y);
-
+    // context.drawImage(image, this.x, this.y, image.width, image.height);
     context.drawImage(
       image,
-      subTextureWidth * index,
-      0, // Which sub-texture to pick out
-      subTextureWidth,
-      image.height, // The size of the sub-texture
-      center.x - size.x / 2, // Where to draw the sub-texture
-      center.y - size.y / 2,
-      size.x,
-      size.y
+      center.x - image.width / 2, // Where to draw the sub-texture
+      center.y - image.height / 2,
+      image.width,
+      image.height
     );
     context.restore();
   }
 
   render() {
     if (this.isReady) {
+      let image = this.images[this.subImageIndex];
       this.drawSubTexture(
-        this.image,
+        image,
         this.subImageIndex,
         this.subTextureWidth,
         this.player.specs.center,

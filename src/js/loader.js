@@ -23,6 +23,12 @@ loader = (function () {
     },
 
     {
+      scripts: ["utility/enemyCreator"],
+      message: "enemy creator system is intialized",
+      onComplete: null,
+    },
+
+    {
       scripts: ["screens/about"],
       message: "about is loaded",
       onComplete: null,
@@ -63,7 +69,6 @@ loader = (function () {
       message: "menumanager is loaded",
       onComplete: null,
     },
-
     {
       scripts: ["tower"],
       message: "enemy is loaded",

@@ -23,41 +23,11 @@ function () {
     this.sound = null;
     this.particlesSmoke = null;
     this.tower = null;
+    this.creeps = [makeCreateCreep1(20, 300), makeCreateCreep2(100, 300), makeCreateCreep3(300, 300)];
     this.registerKey = this.registerKey.bind(this);
-    this.createEnemy = this.createEnemy.bind(this);
   }
 
   _createClass(GamePlay, [{
-    key: "createEnemy",
-    value: function createEnemy(x, y, url) {
-      //all the event to handle movement
-      var playerEvent = new MovingEvents({
-        size: {
-          x: 50,
-          y: 50
-        },
-        // Size in pixels
-        center: {
-          x: x,
-          y: y
-        },
-        rotation: 0,
-        moveRate: 125 / 1000,
-        // Pixels per second
-        rotateRate: Math.PI / 1000,
-        // Radians per second
-        continousSpeed: 50
-      });
-      var playerSpecs = {
-        spriteSheet: dir + url,
-        spriteCount: 14,
-        spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
-      }; //make a playerModel
-
-      var playerModel = new gameModel(playerSpecs, playerEvent, true);
-      return playerModel;
-    }
-  }, {
     key: "initialize",
     value: function initialize() {
       var self = this;
@@ -65,31 +35,9 @@ function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
       });
-      this.wallEvent = new MovingEvents({
-        size: {
-          x: 50,
-          y: 50
-        },
-        // Size in pixels
-        center: {
-          x: 250,
-          y: 250
-        },
-        rotation: 0,
-        moveRate: 125 / 1000,
-        // Pixels per second
-        rotateRate: Math.PI / 1000,
-        // Radians per second
-        continousSpeed: 1
-      });
-      var wallSpecs = {
-        spriteSheet: dir + "assets/spritesheet-bird.png",
-        spriteCount: 14,
-        spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
-      };
       this.tower = new Tower({
-        baseSprite: "assets/turret-base.gif",
-        weaponSprite: "assets/turret-1-1.png",
+        baseSprite: "assets/tile-1-center.gif",
+        weaponSprite: "assets/turret/turret-5-3.png",
         center: {
           x: 300,
           y: 400
@@ -100,22 +48,12 @@ function () {
         },
         rotateRate: 6 * 3.14159 / 1000 // radians per second
 
-      });
-      self.wallModel = new gameModel(wallSpecs, this.wallEvent, true);
-      this.playerModel = this.createEnemy(100, 100, "assets/spritesheet-bird.png"); //register that event to event handler
-
-      self.enemycontroller = new EnemyController(self.playerModel); // self.enemycontroller.createEnemy({
-      //   size: { x: 50, y: 50 }, // Size in pixels
-      //   center: { x: 50, y: 150 },
-      //   rotation: 0,
-      //   moveRate: 125 / 1000,
-      //   rotateRate: Math.PI / 1000,
-      //   continousSpeed: 100,
-      //   image: GameState.assets["bird"],
-      //   spriteSheet: dir + "assets/spritesheet-bird.png",
-      //   spriteCount: 14,
-      //   spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
-      // });
+      }); // this.playerModel = this.createEnemy(
+      //   100,
+      //   100,
+      //   "assets/spritesheet-bird.png"
+      // );
+      // self.enemycontroller = new EnemyController(self.playerModel);
     }
   }, {
     key: "processInput",
@@ -129,33 +67,29 @@ function () {
       var upgrade = localStorage["upgrade"];
       var sell = localStorage["sell"];
       var start = localStorage["start"];
-      self.myKeyboard.cleanAll(); // self.myKeyboard.register(upgrade, self.playerEvent.moveForward);
-      // self.myKeyboard.register(sell, self.playerEvent.rotateLeft);
-      // self.myKeyboard.register(start, self.playerEvent.rotateRight);
-      // self.myKeyboard.register("3", playerEvent.runRight);
-      // self.myKeyboard.register("1", playerEvent.runLeft);
-      // self.myKeyboard.register("5", playerEvent.runTop);
-      // self.myKeyboard.register("2", playerEvent.runDown);
+      self.myKeyboard.cleanAll();
     }
   }, {
     key: "update",
     value: function update(elapsedTime) {
+      var _this = this;
+
       if (GameState.life <= 0) {
         GameState.cancelNextRequest = true;
         this.particlesSmoke.update(elapsedTime);
         return;
       }
 
-      this.playerModel.update(elapsedTime);
-      this.wallModel.update(elapsedTime);
-      this.tower.update(elapsedTime);
+      this.creeps.forEach(function (creep) {
+        creep.update(elapsedTime);
 
-      if (isColliding(this.playerModel, this.tower, 500)) {
-        console.log(this.playerModel.player.specs.center.x);
-        this.tower.setTarget(this.playerModel.player.specs.center.x, this.playerModel.player.specs.center.y);
-      } // this.enemycontroller.update(elapsedTime);
+        if (isColliding(creep, _this.tower, 200)) {
+          _this.tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
+        }
+      }); // this.playerModel.update(elapsedTime);
+
+      this.tower.update(elapsedTime); // this.enemycontroller.update(elapsedTime);
       // model.update(elapsedTime);
-
     }
   }, {
     key: "renderScore",
@@ -167,9 +101,11 @@ function () {
     key: "render",
     value: function render() {
       context.clearRect(0, 0, canvas.width, canvas.height);
-      this.renderScore();
-      this.playerModel.render();
-      this.wallModel.render();
+      this.renderScore(); // this.playerModel.render();
+
+      this.creeps.forEach(function (creep) {
+        creep.render();
+      });
       this.tower.render();
     }
   }, {
@@ -178,11 +114,11 @@ function () {
       var self = this;
       this.sound = new Sound();
       this.sound.loadAudio();
-      this.registerKey();
-      this.myKeyboard.register("ArrowUp", self.playerModel.player.moveTop);
-      this.myKeyboard.register("ArrowDown", self.playerModel.player.moveDown);
-      this.myKeyboard.register("ArrowLeft", self.playerModel.player.moveLeft);
-      this.myKeyboard.register("ArrowRight", self.playerModel.player.moveRight); // console.log(self.playerModel.moveRight);
+      this.registerKey(); // this.myKeyboard.register("ArrowUp", self.playerModel.player.moveTop);
+      // this.myKeyboard.register("ArrowDown", self.playerModel.player.moveDown);
+      // this.myKeyboard.register("ArrowLeft", self.playerModel.player.moveLeft);
+      // this.myKeyboard.register("ArrowRight", self.playerModel.player.moveRight);
+      // console.log(self.playerModel.moveRight);
 
       var lastTimeStamp = performance.now();
       GameState.cancelNextRequest = false;
