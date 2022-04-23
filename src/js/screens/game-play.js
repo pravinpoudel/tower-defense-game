@@ -61,7 +61,7 @@ class GamePlay {
     this.tower = new Tower({
       baseSprite: "assets/turret-base.gif",
       weaponSprite: "assets/turret-1-1.png",
-      center: { x: 200, y: 400 },
+      center: { x: 300, y: 400 },
       target: { x: 300, y: 100 },
       rotateRate: (6 * 3.14159) / 1000, // radians per second
     });
@@ -119,7 +119,8 @@ class GamePlay {
     this.playerModel.update(elapsedTime);
     this.wallModel.update(elapsedTime);
     this.tower.update(elapsedTime);
-    if (isColliding(this.playerModel, this.tower, 200)) {
+    if (isColliding(this.playerModel, this.tower, 500)) {
+      console.log(this.playerModel.player.specs.center.x);
       this.tower.setTarget(
         this.playerModel.player.specs.center.x,
         this.playerModel.player.specs.center.y

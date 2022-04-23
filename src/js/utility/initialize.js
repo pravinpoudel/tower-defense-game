@@ -95,7 +95,6 @@ function isColliding(r1, r2, radius) {
   let r2Width = r2.baseSprite.image.width;
   let r2X = r2.specs.center.x - r2Width;
   let r2Y = r2.specs.center.y - r2Width;
-
   return !(
     r1X + r1Width <= r2X - radius ||
     r1X >= r2X + r2Width + radius ||

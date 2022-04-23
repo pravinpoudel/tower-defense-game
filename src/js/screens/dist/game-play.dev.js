@@ -91,7 +91,7 @@ function () {
         baseSprite: "assets/turret-base.gif",
         weaponSprite: "assets/turret-1-1.png",
         center: {
-          x: 200,
+          x: 300,
           y: 400
         },
         target: {
@@ -150,7 +150,8 @@ function () {
       this.wallModel.update(elapsedTime);
       this.tower.update(elapsedTime);
 
-      if (isColliding(this.playerModel, this.tower, 200)) {
+      if (isColliding(this.playerModel, this.tower, 500)) {
+        console.log(this.playerModel.player.specs.center.x);
         this.tower.setTarget(this.playerModel.player.specs.center.x, this.playerModel.player.specs.center.y);
       } // this.enemycontroller.update(elapsedTime);
       // model.update(elapsedTime);
