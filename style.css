@@ -10,7 +10,7 @@ html, body{
 }
 
 canvas{
-    background-color: red;
+    /* background-color: red; */
 }
 
 #loader_wrapper{

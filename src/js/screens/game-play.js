@@ -7,8 +7,9 @@ class GamePlay {
     this.initialize = this.initialize.bind(this);
     this.run = this.run.bind(this);
     this.playerModel = null;
+    self.wallModel = null;
     this.sound = null;
-    this.particlesSmoke = null;
+    this.tower = null;
     this.registerKey = this.registerKey.bind(this);
   }
 
@@ -19,30 +20,6 @@ class GamePlay {
       self.manager.showScreen("mainmenu");
     });
 
-    this.particlesSmoke = new ParticleSystem({
-      center: { x: 300, y: 300 },
-      size: { mean: 10, stdev: 4 },
-      speed: { mean: 50, stdev: 25 },
-      lifetime: { mean: 4, stdev: 1 },
-      left: 100,
-      right: 100,
-      top: 100,
-      bottom: 100,
-      image: GameState.assets["fire"],
-    });
-
-    this.particlesSmoke.createEffect();
-
-    //all the event to handle movement
-    this.playerEvent = new MovingEvents({
-      size: { x: 50, y: 50 }, // Size in pixels
-      center: { x: 50, y: 150 },
-      rotation: 0,
-      moveRate: 125 / 1000, // Pixels per second
-      rotateRate: Math.PI / 1000, // Radians per second
-      continousSpeed: 100,
-    });
-
     // all the specs of the player sprite
     let playerSpecs = {
       spriteSheet: dir + "assets/spritesheet-bird.png",
@@ -50,8 +27,33 @@ class GamePlay {
       spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
     };
 
+    this.wallEvent = new MovingEvents({
+      size: { x: 50, y: 50 }, // Size in pixels
+      center: { x: 250, y: 250 },
+      rotation: 0,
+      moveRate: 125 / 1000, // Pixels per second
+      rotateRate: Math.PI / 1000, // Radians per second
+      continousSpeed: 1,
+    });
+
+    let wallSpecs = {
+      spriteSheet: dir + "assets/spritesheet-bird.png",
+      spriteCount: 14,
+      spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+    };
+
+    this.tower = new Tower({
+      baseSprite: "assets/turret-base.gif",
+      weaponSprite: "assets/turret-1-1.png",
+      center: { x: 500, y: 500 },
+      target: { x: 300, y: 200 },
+      rotateRate: (6 * 3.14159) / 1000, // radians per second
+    });
+
     //make a playerModel
     self.playerModel = new gameModel(playerSpecs, this.playerEvent, true);
+    self.wallModel = new gameModel(wallSpecs, this.wallEvent, true);
+
     //register that event to event handler
     self.enemycontroller = new EnemyController(self.playerModel);
     // self.enemycontroller.createEnemy({
@@ -92,10 +94,14 @@ class GamePlay {
   update(elapsedTime) {
     if (GameState.life <= 0) {
       GameState.cancelNextRequest = true;
-      this.particlesSmoke.update(elapsedTime);
       return;
     }
     this.playerModel.update(elapsedTime);
+    this.wallModel.update(elapsedTime);
+    this.tower.update(elapsedTime)
+    if(isColliding(this.playerModel, this.wallModel, 100)){
+      this.sound.playSound("end");
+    }
     // this.enemycontroller.update(elapsedTime);
     // model.update(elapsedTime);
   }
@@ -109,13 +115,14 @@ class GamePlay {
     context.clearRect(0, 0, canvas.width, canvas.height);
     this.renderScore();
     this.playerModel.render();
+    this.wallModel.render();
+    this.tower.render();
   }
 
   run() {
     let self = this;
     this.sound = new Sound();
     this.sound.loadAudio();
-    this.sound.playSound("end");
     this.registerKey();
 
     this.myKeyboard.register("ArrowUp", self.playerModel.player.moveTop);

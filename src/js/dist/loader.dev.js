@@ -47,6 +47,14 @@ loader = function () {
     message: "menumanager is loaded",
     onComplete: null
   }, {
+    scripts: ["tower"],
+    message: "enemy is loaded",
+    onComplete: null
+  }, {
+    scripts: ["sprite"],
+    message: "enemy is loaded",
+    onComplete: null
+  }, {
     scripts: ["enemy"],
     message: "enemy is loaded",
     onComplete: null

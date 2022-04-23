@@ -14,7 +14,7 @@ class MovingEvents {
     this.runLeft = this.runLeft.bind(this);
     this.update = this.update.bind(this);
     this.yDirection = 0;
-    this.xDirection = 0;
+    this.xDirection = 1;
   }
 
   moveRight(elapsedTime) {
@@ -89,6 +89,7 @@ class MovingEvents {
       this.specs.center.y +=
         this.yDirection * this.specs.continousSpeed * elapsedTime * 0.001;
     }
+
     if (this.specs.center.x < this.specs.size.x / 2) {
       this.specs.center.x = this.specs.size.x / 2;
     }

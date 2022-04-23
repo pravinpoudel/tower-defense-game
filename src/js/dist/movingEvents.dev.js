@@ -26,7 +26,7 @@ function () {
     this.runLeft = this.runLeft.bind(this);
     this.update = this.update.bind(this);
     this.yDirection = 0;
-    this.xDirection = 0;
+    this.xDirection = 1;
   }
 
   _createClass(MovingEvents, [{

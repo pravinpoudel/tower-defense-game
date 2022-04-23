@@ -17,6 +17,7 @@ function () {
     this.loadSound = this.loadSound.bind(this);
     this.playSound = this.playSound.bind(this);
     this.pauseSound = this.pauseSound.bind(this);
+    this.stopAllSound = this.stopAllSound.bind(this);
     this.changeVolume = this.changeVolume.bind(this);
   }
 
@@ -47,6 +48,14 @@ function () {
       this.sounds["collision"] = this.loadSound(dir + "assets/sounds/collision.flac");
     }
   }, {
+    key: "stopAllSound",
+    value: function stopAllSound() {
+      for (var sound in this.sounds) {
+        this.sounds[sound].pause();
+        this.sounds[sound].currentTime = 0;
+      }
+    }
+  }, {
     key: "pauseSound",
     value: function pauseSound(whichSound) {
       this.sounds[whichSound].pause();
@@ -54,7 +63,6 @@ function () {
   }, {
     key: "playSound",
     value: function playSound(whichSound) {
-      console.log(this.sounds[whichSound]);
       this.sounds[whichSound].play();
     }
   }, {
