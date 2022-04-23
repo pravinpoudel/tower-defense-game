@@ -18,7 +18,7 @@ class Tower {
   }
 
   setTarget(x, y) {
-    this.spec.target = {
+    this.specs.target = {
       x: x,
       y: y,
     };

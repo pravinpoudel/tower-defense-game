@@ -75,10 +75,13 @@ GameState.screens = screens; // function resizeCanvas() {
 function isColliding(r1, r2, radius) {
   var r1X = r1.player.specs.center.x - Math.floor(r1.player.specs.size.x / 2);
   var r1Y = r1.player.specs.center.y - Math.floor(r1.player.specs.size.y / 2);
-  var r1Width = r1.player.specs.size.x;
-  var r2X = r2.player.specs.center.x - Math.floor(r2.player.specs.size.x / 2);
-  var r2Y = r2.player.specs.center.y - Math.floor(r2.player.specs.size.y / 2);
-  var r2Width = r2.player.specs.size.x;
+  var r1Width = r1.player.specs.size.x; // let r2X = r2.player.specs.center.x - Math.floor(r2.player.specs.size.x / 2);
+  // let r2Y = r2.player.specs.center.y - Math.floor(r2.player.specs.size.y / 2);
+  // let r2Width = r2.player.specs.size.x;
+
+  var r2Width = r2.baseSprite.image.width;
+  var r2X = r2.specs.center.x - r2Width;
+  var r2Y = r2.specs.center.y - r2Width;
   return !(r1X + r1Width <= r2X - radius || r1X >= r2X + r2Width + radius || r1Y + r1Width <= r2Y - radius || r1Y >= r2Width + r2Y + radius);
 }
 

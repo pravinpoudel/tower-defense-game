@@ -9,8 +9,31 @@ class GamePlay {
     this.playerModel = null;
     self.wallModel = null;
     this.sound = null;
+    this.particlesSmoke = null;
     this.tower = null;
     this.registerKey = this.registerKey.bind(this);
+    this.createEnemy = this.createEnemy.bind(this);
+  }
+
+  createEnemy(x, y, url) {
+    //all the event to handle movement
+    let playerEvent = new MovingEvents({
+      size: { x: 50, y: 50 }, // Size in pixels
+      center: { x: x, y: y },
+      rotation: 0,
+      moveRate: 125 / 1000, // Pixels per second
+      rotateRate: Math.PI / 1000, // Radians per second
+      continousSpeed: 50,
+    });
+
+    let playerSpecs = {
+      spriteSheet: dir + url,
+      spriteCount: 14,
+      spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+    };
+    //make a playerModel
+    let playerModel = new gameModel(playerSpecs, playerEvent, true);
+    return playerModel;
   }
 
   initialize() {
@@ -19,13 +42,6 @@ class GamePlay {
       GameState.cancelNextRequest = true;
       self.manager.showScreen("mainmenu");
     });
-
-    // all the specs of the player sprite
-    let playerSpecs = {
-      spriteSheet: dir + "assets/spritesheet-bird.png",
-      spriteCount: 14,
-      spriteTime: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
-    };
 
     this.wallEvent = new MovingEvents({
       size: { x: 50, y: 50 }, // Size in pixels
@@ -45,15 +61,18 @@ class GamePlay {
     this.tower = new Tower({
       baseSprite: "assets/turret-base.gif",
       weaponSprite: "assets/turret-1-1.png",
-      center: { x: 500, y: 500 },
-      target: { x: 300, y: 200 },
+      center: { x: 200, y: 400 },
+      target: { x: 300, y: 100 },
       rotateRate: (6 * 3.14159) / 1000, // radians per second
     });
 
-    //make a playerModel
-    self.playerModel = new gameModel(playerSpecs, this.playerEvent, true);
     self.wallModel = new gameModel(wallSpecs, this.wallEvent, true);
 
+    this.playerModel = this.createEnemy(
+      100,
+      100,
+      "assets/spritesheet-bird.png"
+    );
     //register that event to event handler
     self.enemycontroller = new EnemyController(self.playerModel);
     // self.enemycontroller.createEnemy({
@@ -80,10 +99,10 @@ class GamePlay {
     let sell = localStorage["sell"];
     let start = localStorage["start"];
     self.myKeyboard.cleanAll();
-    
-    self.myKeyboard.register(upgrade, self.playerEvent.moveForward);
-    self.myKeyboard.register(sell, self.playerEvent.rotateLeft);
-    self.myKeyboard.register(start, self.playerEvent.rotateRight);
+
+    // self.myKeyboard.register(upgrade, self.playerEvent.moveForward);
+    // self.myKeyboard.register(sell, self.playerEvent.rotateLeft);
+    // self.myKeyboard.register(start, self.playerEvent.rotateRight);
 
     // self.myKeyboard.register("3", playerEvent.runRight);
     // self.myKeyboard.register("1", playerEvent.runLeft);
@@ -94,13 +113,17 @@ class GamePlay {
   update(elapsedTime) {
     if (GameState.life <= 0) {
       GameState.cancelNextRequest = true;
+      this.particlesSmoke.update(elapsedTime);
       return;
     }
     this.playerModel.update(elapsedTime);
     this.wallModel.update(elapsedTime);
-    this.tower.update(elapsedTime)
-    if(isColliding(this.playerModel, this.wallModel, 100)){
-      this.sound.playSound("end");
+    this.tower.update(elapsedTime);
+    if (isColliding(this.playerModel, this.tower, 200)) {
+      this.tower.setTarget(
+        this.playerModel.player.specs.center.x,
+        this.playerModel.player.specs.center.y
+      );
     }
     // this.enemycontroller.update(elapsedTime);
     // model.update(elapsedTime);

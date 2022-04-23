@@ -32,7 +32,7 @@ function () {
   _createClass(Tower, [{
     key: "setTarget",
     value: function setTarget(x, y) {
-      this.spec.target = {
+      this.specs.target = {
         x: x,
         y: y
       };
