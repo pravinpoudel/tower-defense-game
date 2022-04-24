@@ -38,6 +38,7 @@ function () {
   _createClass(GamePlay, [{
     key: "downHandler",
     value: function downHandler(e, elapsedTime) {
+      console.log(mouse.x, mouse.y);
       mouse.isActive = true;
 
       if (firstTime) {
@@ -77,7 +78,7 @@ function () {
         if (mouse.isActive) {
           var canvasPosition = canvas.getBoundingClientRect();
           mouse.x = e.clientX - canvasPosition.left;
-          mouse.y = e.clientY;
+          mouse.y = e.clientY - canvasPosition.top;
           this.renderCircle = true;
         }
       });

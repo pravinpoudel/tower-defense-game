@@ -28,6 +28,7 @@ class GamePlay {
   }
 
    downHandler(e, elapsedTime) {
+     console.log(mouse.x, mouse.y);
     mouse.isActive = true;
     if(firstTime){
       console.log("firsttime");
@@ -78,7 +79,7 @@ class GamePlay {
     if (mouse.isActive) {
         const canvasPosition = canvas.getBoundingClientRect(); 
         mouse.x = e.clientX - canvasPosition.left ;
-        mouse.y = e.clientY;    
+        mouse.y = e.clientY - canvasPosition.top;    
         this.renderCircle = true; 
       }
   });
