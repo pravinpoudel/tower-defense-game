@@ -54,3 +54,21 @@ function createEnemy(x, y, spriteSheet, health) {
   let playerModel = new gameModel(playerSpecs, playerEvent, true);
   return playerModel;
 }
+
+
+class EnemyCreator {
+  constructor(enemyCount) {
+    this.animationTime = 0;
+    this.totalEnemy = enemyCount;
+  }
+  createEnemy(elapsedTime) {
+    this.animationTime += elapsedTime;
+    if (this.animationTime >= 500) {
+      if (this.totalEnemy-- > 0) {
+        this.animationTime -= 500;
+        let yPosition = generateRandom();
+        return makeCreateCreep2(0, yPosition * 50 + 225);
+      }
+    }
+  }
+}

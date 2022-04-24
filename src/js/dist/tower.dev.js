@@ -68,9 +68,7 @@ function () {
     key: "render",
     value: function render() {
       this.baseSprite.draw();
-      this.weaponSprite.draw(); // A little hack job to show something interesting.
-
-      this.weaponSprite.drawArc(0.4);
+      this.weaponSprite.draw();
     }
   }]);
 

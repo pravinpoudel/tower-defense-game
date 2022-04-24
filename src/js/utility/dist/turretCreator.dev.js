@@ -5,8 +5,8 @@ function createTower(url, x, y, delay, power) {
     baseSprite: "assets/tile-1-center.gif",
     weaponSprite: url,
     center: {
-      x: x,
-      y: y
+      x: x + 25,
+      y: y + 25
     },
     target: {
       x: 300,

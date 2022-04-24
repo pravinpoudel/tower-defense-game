@@ -13,10 +13,7 @@ class GamePlay {
     this.sound = null;
     this.particlesSmoke = null;
     this.creeps = [
-      makeCreateCreep1(520, 300),
-      makeCreateCreep2(700, 300),
-      makeCreateCreep3(800, 300),
-    ];
+      ];
     this.towers = [];
     this.registerKey = this.registerKey.bind(this);
     this.flyingScores = [];
@@ -25,6 +22,8 @@ class GamePlay {
     this.render = this.render.bind(this);
     this.firstTime = true;
     this.downHandler = this.downHandler.bind(this);
+    this.enemyCreator = new EnemyCreator(10);
+    this.canPlace = false;
   }
 
   createElement() {
@@ -41,11 +40,18 @@ class GamePlay {
       mouse.isActive = false;
       renderCircle = false;
       console.log(selectedTower);
-      this.towers.push(createTower(selectedTower, mouse.x, mouse.y, 1000, 1));
-      console.log(this.towers.length);
+      let decision= canCreated(this.towers)&& this.canPlace;
+      if(decision){
+      this.towers.push(createTower(selectedTower, Math.floor(mouse.x/cellWidth)*cellWidth, Math.floor((mouse.y-200)/cellWidth)*cellWidth +200, 1000, 1));
+      }
       const canvasPosition = canvas.getBoundingClientRect();
-      mouse.x = e.x;
-      mouse.y = e.y;
+      
+    }
+    else{
+      const canvasPosition = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - canvasPosition.left;
+      mouse.y = e.clientY - canvasPosition.top;
+      findSelectedTower(this.towers)
     }
   }
 
@@ -66,6 +72,20 @@ class GamePlay {
       self.manager.showScreen("mainmenu");
     });
 
+
+    for (let i = 0; i < rows; i++) {
+      let row = [];
+      for (let j = 0; j < cols; j++) {
+        row.push(
+          {
+            x: i,
+            y: j ,
+          },
+        );
+      }
+      cellSet.push(row);
+    }
+
     var towerElements = document.getElementsByClassName("tower");
     for (var i = 0; i < towerElements.length; i++) {
       towerElements[i].addEventListener("click", this.createElement, false);
@@ -78,18 +98,20 @@ class GamePlay {
 
     this.bulletController = new BulletController();
 
-    this.towers.push(
-      createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
-    );
-    this.towers.push(
-      createTower("assets/turret/turret-3-3.png", 600, 500, 2000, 2)
-    );
+    // this.towers.push(
+    //   createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
+    // );
+    // this.towers.push(
+    //   createTower("assets/turret/turret-3-3.png", 600, 500, 2000, 2)
+    // );
 
     this.myMouse.register("mousedown", this.downHandler);
 
     // this.myMouse.register('mouseup', function(e, elapsedTime) {
     //   mouse.isActive = false;
     // });
+
+
 
     this.myMouse.register("mousemove", function (e, elapsedTime) {
       if (mouse.isActive) {
@@ -120,7 +142,7 @@ class GamePlay {
   update(elapsedTime) {
     if (GameState.life <= 0) {
       GameState.cancelNextRequest = true;
-      this.particlesSmoke.update(elapsedTime);
+      // this.particlesSmoke.update(elapsedTime);
       return;
     }
     let creepsLength = this.creeps.length;
@@ -157,7 +179,7 @@ class GamePlay {
         let towersLength = this.towers.length;
         for (let i = 0; i < towersLength; i++) {
           let tower = this.towers[i];
-          if (isColliding(creep, tower, 200)) {
+          if (isColliding(creep, tower, 100)) {
             tower.setTarget(
               creep.player.specs.center.x,
               creep.player.specs.center.y
@@ -179,6 +201,7 @@ class GamePlay {
               );
             }
           }
+
           tower.update(elapsedTime);
         }
       }
@@ -194,6 +217,10 @@ class GamePlay {
         scorelength--;
       }
     }
+    let newEnemy = this.enemyCreator.createEnemy(elapsedTime);
+    if (newEnemy) {
+      this.creeps.push(newEnemy);
+    }
   }
 
   renderScore() {
@@ -203,15 +230,50 @@ class GamePlay {
     let wave = wavesDeno + "/" + wavesNeno;
     document.getElementById("wave").innerHTML = wave;
   }
-
   render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "green";
+    context.fillRect(0, 0+200, 600, 800);
+    context.clearRect(50, 250, 500, 500);
+    context.clearRect(0, 400, 50, 200);
+    context.clearRect(550, 400, 50, 200);
+
+    if (mouse.isActive) {
+      let placementFlag = false;
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          let x1 = cellSet[i][j].x;
+          let y1 = cellSet[i][j].y;
+          if (
+            Math.floor((mouse.x -leftOffset) / cellWidth) == x1 &&
+            Math.floor((mouse.y - topOffset) / cellWidth) == y1
+          ) {
+            this.canPlace = true;
+            placementFlag = true;
+            context.beginPath();
+            context.rect(
+              x1 * cellWidth + leftOffset,
+              y1 * cellWidth + topOffset,
+              cellWidth,
+              cellWidth
+            );
+            context.stroke();
+          }
+        }
+      }
+      if(!placementFlag){
+        this.canPlace = false;
+      }
+    }
+
+    // ctx.strokeRect(50, 50, 50, 50);
+
     context.beginPath();
     context.moveTo(0, 200);
     context.lineTo(canvas.width, 200);
     context.stroke();
     if (renderCircle) {
-      drawTower(50);
+      drawTower(100);
     }
     this.renderScore();
     this.creeps.forEach((creep) => {

@@ -10,6 +10,12 @@ firstTime = true;
 selectedTower = null;
 mouseCapture = false;
 
+const cellWidth = 50;
+const rows = 10;
+const cols = 10;
+let topOffset = 250;
+let leftOffset = 50;
+
 const mouse = {
   x: undefined,
   y: undefined,
@@ -18,6 +24,7 @@ const mouse = {
   isActive: false,
 };
 
+const cellSet = [];
 const canvasPosition = canvas.getBoundingClientRect();
 
 // canvas.addEventListener("mousedown", function (e) {
@@ -139,6 +146,13 @@ function drawTower(radius) {
   context.stroke();
 }
 
+function generateRandom(min = 4, max = 7) {
+  let difference = max - min;
+  let random = Math.random();
+  random = Math.floor(random * difference) + min;
+  return random;
+}
+
 function crossProduct2d(v1, v2) {
   return v1.x * v2.y - v1.y * v2.x;
 }
@@ -183,5 +197,34 @@ function computeAngle(rotation, ptCenter, ptTarget) {
     angle: angle,
     crossProduct: cp,
   };
+}
+let mouseOverTower = null;
+
+function canCreated(towers) {
+  let towersLength = towers.length;
+  for (let i = 0; i < towersLength; i++) {
+    if (
+      isColliding2(
+        mouse.x,
+        mouse.y,
+        mouse.width,
+        towers[i].specs.center.x - 25,
+        towers[i].specs.center.y - 25,
+        50
+      )
+    ) {
+      mouseOverTower = towers[i];
+      return false;
+    }
+  }
+  return true;
+}
+
+function findSelectedTower(towers) {
+  if (!mouse.isActive) {
+    if (!canCreated(towers)) {
+      console.log(mouseOverTower);
+    }
+  }
 }
 

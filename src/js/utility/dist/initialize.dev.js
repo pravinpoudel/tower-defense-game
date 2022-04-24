@@ -10,6 +10,11 @@ renderCircle = false;
 firstTime = true;
 selectedTower = null;
 mouseCapture = false;
+var cellWidth = 50;
+var rows = 10;
+var cols = 10;
+var topOffset = 250;
+var leftOffset = 50;
 var mouse = {
   x: undefined,
   y: undefined,
@@ -17,6 +22,7 @@ var mouse = {
   height: 0.1,
   isActive: false
 };
+var cellSet = [];
 var canvasPosition = canvas.getBoundingClientRect(); // canvas.addEventListener("mousedown", function (e) {
 //   mouse.isActive = true;
 // });
@@ -107,6 +113,15 @@ function drawTower(radius) {
   context.stroke();
 }
 
+function generateRandom() {
+  var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 4;
+  var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 7;
+  var difference = max - min;
+  var random = Math.random();
+  random = Math.floor(random * difference) + min;
+  return random;
+}
+
 function crossProduct2d(v1, v2) {
   return v1.x * v2.y - v1.y * v2.x;
 }
@@ -145,5 +160,28 @@ function computeAngle(rotation, ptCenter, ptTarget) {
     angle: angle,
     crossProduct: cp
   };
+}
+
+var mouseOverTower = null;
+
+function canCreated(towers) {
+  var towersLength = towers.length;
+
+  for (var i = 0; i < towersLength; i++) {
+    if (isColliding2(mouse.x, mouse.y, mouse.width, towers[i].specs.center.x - 25, towers[i].specs.center.y - 25, 50)) {
+      mouseOverTower = towers[i];
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function findSelectedTower(towers) {
+  if (!mouse.isActive) {
+    if (!canCreated(towers)) {
+      console.log(mouseOverTower);
+    }
+  }
 }
 //# sourceMappingURL=initialize.dev.js.map

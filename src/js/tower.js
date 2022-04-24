@@ -50,13 +50,9 @@ class Tower {
     else{
       this.canShoot = false;
     }
-
   }
-
   render() {
     this.baseSprite.draw();
     this.weaponSprite.draw();
-    // A little hack job to show something interesting.
-    this.weaponSprite.drawArc(0.4);
   }
 }

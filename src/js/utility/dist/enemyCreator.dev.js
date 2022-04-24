@@ -1,5 +1,11 @@
 "use strict";
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 function makeCreateCreep1(x, y) {
   var spriteSheet = ["assets/creeps1/1.png", "assets/creeps1/2.png", "assets/creeps1/3.png", "assets/creeps1/4.png", "assets/creeps1/5.png", "assets/creeps1/6.png"];
   return this.createEnemy(x, y, spriteSheet, 4);
@@ -47,4 +53,32 @@ function createEnemy(x, y, spriteSheet, health) {
   var playerModel = new gameModel(playerSpecs, playerEvent, true);
   return playerModel;
 }
+
+var EnemyCreator =
+/*#__PURE__*/
+function () {
+  function EnemyCreator(enemyCount) {
+    _classCallCheck(this, EnemyCreator);
+
+    this.animationTime = 0;
+    this.totalEnemy = enemyCount;
+  }
+
+  _createClass(EnemyCreator, [{
+    key: "createEnemy",
+    value: function createEnemy(elapsedTime) {
+      this.animationTime += elapsedTime;
+
+      if (this.animationTime >= 500) {
+        if (this.totalEnemy-- > 0) {
+          this.animationTime -= 500;
+          var yPosition = generateRandom();
+          return makeCreateCreep2(0, yPosition * 50 + 225);
+        }
+      }
+    }
+  }]);
+
+  return EnemyCreator;
+}();
 //# sourceMappingURL=enemyCreator.dev.js.map

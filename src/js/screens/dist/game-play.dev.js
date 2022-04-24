@@ -24,7 +24,7 @@ function () {
     this.renderCircle = false;
     this.sound = null;
     this.particlesSmoke = null;
-    this.creeps = [makeCreateCreep1(520, 300), makeCreateCreep2(700, 300), makeCreateCreep3(800, 300)];
+    this.creeps = [];
     this.towers = [];
     this.registerKey = this.registerKey.bind(this);
     this.flyingScores = [];
@@ -33,6 +33,8 @@ function () {
     this.render = this.render.bind(this);
     this.firstTime = true;
     this.downHandler = this.downHandler.bind(this);
+    this.enemyCreator = new EnemyCreator(10);
+    this.canPlace = false;
   }
 
   _createClass(GamePlay, [{
@@ -52,11 +54,19 @@ function () {
         mouse.isActive = false;
         renderCircle = false;
         console.log(selectedTower);
-        this.towers.push(createTower(selectedTower, mouse.x, mouse.y, 1000, 1));
-        console.log(this.towers.length);
+        var decision = canCreated(this.towers) && this.canPlace;
+
+        if (decision) {
+          this.towers.push(createTower(selectedTower, Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 1000, 1));
+        }
+
         var canvasPosition = canvas.getBoundingClientRect();
-        mouse.x = e.x;
-        mouse.y = e.y;
+      } else {
+        var _canvasPosition = canvas.getBoundingClientRect();
+
+        mouse.x = e.clientX - _canvasPosition.left;
+        mouse.y = e.clientY - _canvasPosition.top;
+        findSelectedTower(this.towers);
       }
     }
   }, {
@@ -80,6 +90,20 @@ function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
       });
+
+      for (var _i = 0; _i < rows; _i++) {
+        var row = [];
+
+        for (var j = 0; j < cols; j++) {
+          row.push({
+            x: _i,
+            y: j
+          });
+        }
+
+        cellSet.push(row);
+      }
+
       var towerElements = document.getElementsByClassName("tower");
 
       for (var i = 0; i < towerElements.length; i++) {
@@ -92,9 +116,13 @@ function () {
         towerElements2[i].addEventListener("click", this.muteVolume, false);
       }
 
-      this.bulletController = new BulletController();
-      this.towers.push(createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1));
-      this.towers.push(createTower("assets/turret/turret-3-3.png", 600, 500, 2000, 2));
+      this.bulletController = new BulletController(); // this.towers.push(
+      //   createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
+      // );
+      // this.towers.push(
+      //   createTower("assets/turret/turret-3-3.png", 600, 500, 2000, 2)
+      // );
+
       this.myMouse.register("mousedown", this.downHandler); // this.myMouse.register('mouseup', function(e, elapsedTime) {
       //   mouse.isActive = false;
       // });
@@ -132,8 +160,8 @@ function () {
     key: "update",
     value: function update(elapsedTime) {
       if (GameState.life <= 0) {
-        GameState.cancelNextRequest = true;
-        this.particlesSmoke.update(elapsedTime);
+        GameState.cancelNextRequest = true; // this.particlesSmoke.update(elapsedTime);
+
         return;
       }
 
@@ -181,10 +209,10 @@ function () {
           creep.update(elapsedTime);
           var towersLength = this.towers.length;
 
-          for (var _i = 0; _i < towersLength; _i++) {
-            var tower = this.towers[_i];
+          for (var _i2 = 0; _i2 < towersLength; _i2++) {
+            var tower = this.towers[_i2];
 
-            if (isColliding(creep, tower, 200)) {
+            if (isColliding(creep, tower, 100)) {
               tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
 
               if (tower.canShoot) {
@@ -207,14 +235,20 @@ function () {
       this.bulletController.update(elapsedTime);
       var scorelength = this.flyingScores.length;
 
-      for (var _i2 = 0; _i2 < scorelength; _i2++) {
-        this.flyingScores[_i2].update(elapsedTime);
+      for (var _i3 = 0; _i3 < scorelength; _i3++) {
+        this.flyingScores[_i3].update(elapsedTime);
 
-        if (!this.flyingScores[_i2].isVisible) {
-          this.flyingScores.splice(_i2, 1);
-          _i2--;
+        if (!this.flyingScores[_i3].isVisible) {
+          this.flyingScores.splice(_i3, 1);
+          _i3--;
           scorelength--;
         }
+      }
+
+      var newEnemy = this.enemyCreator.createEnemy(elapsedTime);
+
+      if (newEnemy) {
+        this.creeps.push(newEnemy);
       }
     }
   }, {
@@ -230,13 +264,43 @@ function () {
     key: "render",
     value: function render() {
       context.clearRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = "green";
+      context.fillRect(0, 0 + 200, 600, 800);
+      context.clearRect(50, 250, 500, 500);
+      context.clearRect(0, 400, 50, 200);
+      context.clearRect(550, 400, 50, 200);
+
+      if (mouse.isActive) {
+        var placementFlag = false;
+
+        for (var i = 0; i < rows; i++) {
+          for (var j = 0; j < cols; j++) {
+            var x1 = cellSet[i][j].x;
+            var y1 = cellSet[i][j].y;
+
+            if (Math.floor((mouse.x - leftOffset) / cellWidth) == x1 && Math.floor((mouse.y - topOffset) / cellWidth) == y1) {
+              this.canPlace = true;
+              placementFlag = true;
+              context.beginPath();
+              context.rect(x1 * cellWidth + leftOffset, y1 * cellWidth + topOffset, cellWidth, cellWidth);
+              context.stroke();
+            }
+          }
+        }
+
+        if (!placementFlag) {
+          this.canPlace = false;
+        }
+      } // ctx.strokeRect(50, 50, 50, 50);
+
+
       context.beginPath();
       context.moveTo(0, 200);
       context.lineTo(canvas.width, 200);
       context.stroke();
 
       if (renderCircle) {
-        drawTower(50);
+        drawTower(100);
       }
 
       this.renderScore();
@@ -245,16 +309,16 @@ function () {
       });
       var towersLength = this.towers.length;
 
-      for (var i = 0; i < towersLength; i++) {
-        var tower = this.towers[i];
+      for (var _i4 = 0; _i4 < towersLength; _i4++) {
+        var tower = this.towers[_i4];
         tower.render();
       }
 
       this.bulletController.render();
       var scorelength = this.flyingScores.length;
 
-      for (var _i3 = 0; _i3 < scorelength; _i3++) {
-        this.flyingScores[_i3].render();
+      for (var _i5 = 0; _i5 < scorelength; _i5++) {
+        this.flyingScores[_i5].render();
       }
     }
   }, {

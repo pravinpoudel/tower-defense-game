@@ -21,7 +21,6 @@ class Mouse {
 
   update(elapsedTime) {
     var event, handler;
-    console.log(this.mouseDown.length);
     for (event = 0; event < this.mouseDown.length; event++) {
       for (handler = 0; handler < this.handlersDown.length; handler++) {
         this.handlersDown[handler](this.mouseDown[event], elapsedTime);
