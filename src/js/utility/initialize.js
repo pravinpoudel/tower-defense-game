@@ -5,9 +5,9 @@ let activeButton = null;
 var href = window.location.href;
 var dir = href.substring(0, href.lastIndexOf("/")) + "/";
 
-renderCircle = true;
+renderCircle = false;
 firstTime = true;
-
+selectedTower = null;
 mouseCapture = false;
 
 const mouse = {
@@ -124,7 +124,9 @@ function drawRectangle(spec) {
   context.strokeRect(spec.x, spec.y, spec.width, spec.height);
 }
 
-function drawTower(image, radius) {
+function drawTower(radius) {
+  let image = new Image();
+  image.src = selectedTower;
   context.drawImage(
     image,
     mouse.x - image.width / 2, // Where to draw the sub-texture

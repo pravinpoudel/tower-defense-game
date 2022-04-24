@@ -7,14 +7,14 @@ class Mouse {
     this.handlersUp = [];
     this.handlersMove = [];
 
-    canvas.addEventListener("mousedown", (e) => {
+    window.addEventListener("mousedown", (e) => {
       this.mouseDown.push(e);
     });
-    canvas.addEventListener("mouseup", (e) => {
+    window.addEventListener("mouseup", (e) => {
       this.mouseUp.push(e);
     });
 
-    canvas.addEventListener("mousemove", (e) => {
+    window.addEventListener("mousemove", (e) => {
       this.mouseMove.push(e);
     });
   }

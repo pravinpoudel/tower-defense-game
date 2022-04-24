@@ -13,9 +13,9 @@ class GamePlay {
     this.sound = null;
     this.particlesSmoke = null;
     this.creeps = [
-      makeCreateCreep1(20, 300),
-      makeCreateCreep2(100, 300),
-      makeCreateCreep3(300, 300),
+      makeCreateCreep1(520, 300),
+      makeCreateCreep2(700, 300),
+      makeCreateCreep3(800, 300),
     ];
     this.towers = [];
     this.registerKey = this.registerKey.bind(this);
@@ -27,30 +27,36 @@ class GamePlay {
     this.downHandler = this.downHandler.bind(this);
   }
 
-   downHandler(e, elapsedTime) {
-     console.log(mouse.x, mouse.y);
+  createElement() {
+    let myTower = this.getAttribute("data-myName");
+    selectedTower = "assets/turret/" + myTower;
+    console.log(selectedTower);
+    renderCircle = true;
     mouse.isActive = true;
-    if(firstTime){
-      console.log("firsttime");
-      firstTime = false;
-      renderCircle = true;
-      mouse.isActive = true;
-    }
-    else{
+  }
+
+  downHandler(e, elapsedTime) {
+    if (mouse.isActive) {
       firstTime = true;
       mouse.isActive = false;
       renderCircle = false;
-      this.towers.push(
-        createTower("assets/turret/turret-5-3.png", mouse.x, mouse.y, 1000, 1)
-      );
-      console.log(this.towers.length)
-  
+      console.log(selectedTower);
+      this.towers.push(createTower(selectedTower, mouse.x, mouse.y, 1000, 1));
+      console.log(this.towers.length);
+      const canvasPosition = canvas.getBoundingClientRect();
+      mouse.x = e.x;
+      mouse.y = e.y;
     }
-    const canvasPosition = canvas.getBoundingClientRect(); 
-    mouse.x = e.x ;
-    mouse.y = e.y ; 
+  }
 
-}
+  muteVolume(e) {
+    var towerElements = document.getElementsByClassName("volumeButton");
+    for (var i = 0; i < towerElements.length; i++) {
+      towerElements[i].style.display = "block";
+    }
+    let myId = this.getAttribute("data-myId");
+    document.getElementById(myId).style.display = "none";
+  }
 
   initialize() {
     let self = this;
@@ -59,6 +65,16 @@ class GamePlay {
       GameState.cancelNextRequest = true;
       self.manager.showScreen("mainmenu");
     });
+
+    var towerElements = document.getElementsByClassName("tower");
+    for (var i = 0; i < towerElements.length; i++) {
+      towerElements[i].addEventListener("click", this.createElement, false);
+    }
+
+    var towerElements2 = document.getElementsByClassName("volumeButton");
+    for (var i = 0; i < towerElements2.length; i++) {
+      towerElements2[i].addEventListener("click", this.muteVolume, false);
+    }
 
     this.bulletController = new BulletController();
 
@@ -69,27 +85,28 @@ class GamePlay {
       createTower("assets/turret/turret-3-3.png", 600, 500, 2000, 2)
     );
 
-    this.myMouse.register('mousedown', this.downHandler);
+    this.myMouse.register("mousedown", this.downHandler);
 
-  // this.myMouse.register('mouseup', function(e, elapsedTime) {
-  //   mouse.isActive = false;
-  // });
+    // this.myMouse.register('mouseup', function(e, elapsedTime) {
+    //   mouse.isActive = false;
+    // });
 
-  this.myMouse.register('mousemove', function(e, elapsedTime) { 
-    if (mouse.isActive) {
-        const canvasPosition = canvas.getBoundingClientRect(); 
-        mouse.x = e.clientX - canvasPosition.left ;
-        mouse.y = e.clientY - canvasPosition.top;    
-        this.renderCircle = true; 
+    this.myMouse.register("mousemove", function (e, elapsedTime) {
+      if (mouse.isActive) {
+        const canvasPosition = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - canvasPosition.left;
+        mouse.y = e.clientY - canvasPosition.top;
+        if (mouse.y < 200) {
+          mouse.y = 200;
+        }
+        this.renderCircle = true;
       }
-  });
-
+    });
   }
 
   processInput(elapsedTime) {
     this.myKeyboard.update(elapsedTime);
     this.myMouse.update(elapsedTime);
-
   }
 
   registerKey() {
@@ -110,9 +127,16 @@ class GamePlay {
     for (let i = 0; i < creepsLength; i++) {
       let creep = this.creeps[i];
       if (creep) {
+        if (creep.reachRight()) {
+          this.creeps.splice(i, 1);
+          GameState.life--;
+          console.log(GameState.life);
+          continue;
+        }
         if (creep.health == 0) {
           let x = creep.player.specs.center.x;
           let y = creep.player.specs.center.y;
+          score += creep.maxHealth;
           this.creeps.splice(i, 1);
           let textEvent = new MovingEvents({
             size: { x: 50, y: 50 }, // Size in pixels
@@ -124,7 +148,9 @@ class GamePlay {
             yDirection: -1,
             xDirection: 0,
           });
-          this.flyingScores.push(new FlyingScore("10", textEvent, true));
+          this.flyingScores.push(
+            new FlyingScore(creep.maxHealth, textEvent, true)
+          );
           continue;
         }
         creep.update(elapsedTime);
@@ -173,13 +199,19 @@ class GamePlay {
   renderScore() {
     document.getElementById("currentScore").innerHTML = score;
     document.getElementById("lives").innerHTML = GameState.life;
+    document.getElementById("money").innerHTML = money;
+    let wave = wavesDeno + "/" + wavesNeno;
+    document.getElementById("wave").innerHTML = wave;
   }
 
   render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    if(renderCircle){
-      drawTower(this.tower1, 200);
-
+    context.beginPath();
+    context.moveTo(0, 200);
+    context.lineTo(canvas.width, 200);
+    context.stroke();
+    if (renderCircle) {
+      drawTower(50);
     }
     this.renderScore();
     this.creeps.forEach((creep) => {
@@ -200,15 +232,9 @@ class GamePlay {
   run() {
     let self = this;
     this.sound = new Sound();
-
     this.sound.loadAudio();
+    // this.sound.playSound("end");
     this.registerKey();
-
-    // this.myKeyboard.register("ArrowUp", self.playerModel.player.moveTop);
-    // this.myKeyboard.register("ArrowDown", self.playerModel.player.moveDown);
-    // this.myKeyboard.register("ArrowLeft", self.playerModel.player.moveLeft);
-    // this.myKeyboard.register("ArrowRight", self.playerModel.player.moveRight);
-    // console.log(self.playerModel.moveRight);
 
     let lastTimeStamp = performance.now();
     GameState.cancelNextRequest = false;

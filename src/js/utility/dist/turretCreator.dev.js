@@ -3,7 +3,7 @@
 function createTower(url, x, y, delay, power) {
   var tower = new Tower({
     baseSprite: "assets/tile-1-center.gif",
-    weaponSprite: "assets/turret/turret-5-3.png",
+    weaponSprite: url,
     center: {
       x: x,
       y: y

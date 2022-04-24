@@ -82,6 +82,12 @@ class MovingEvents {
     this.specs.rotation += this.specs.rotateRate * elapsedTime;
   }
 
+  reachRight() {
+    if (this.specs.center.x > canvas.width - this.specs.size.x / 2) {
+      return true;
+    }
+  }
+
   update(elapsedTime) {
     if (this.specs.continousSpeed > 0) {
       this.specs.center.x +=
@@ -94,9 +100,9 @@ class MovingEvents {
       this.specs.center.x = this.specs.size.x / 2;
     }
 
-    if (this.specs.center.x > canvas.width - this.specs.size.x / 2) {
-      this.specs.center.x = canvas.width - this.specs.size.x / 2;
-    }
+    // if (this.specs.center.x > canvas.width - this.specs.size.x / 2) {
+    //   this.specs.center.x = canvas.width - this.specs.size.x / 2;
+    // }
 
     if (this.specs.center.y > canvas.height - this.specs.size.y / 2) {
       this.specs.center.y = canvas.height - this.specs.size.y / 2;

@@ -24,10 +24,20 @@
             </div>
             <div id = "gameplay" class = "screen">
                 <div id="score_board">
-                    <p>Score: </p> <p id="currentScore"></p>
-                    <p>Lives Rem: </p> <p id="lives"></p>
+                    <div>
+                    <p>Score: </p> <p id="currentScore"></p></div>
+                <div> <p>Lives Rem: </p> <p id="lives"></p></div>
+            <div><p>Money: </p> <p id="money"></p></div>
+        <div>  <p>Wave: </p> <p id="wave"></p></div>
                 </div>
-                <canvas id = "canvas-main" width = "1000" height = "1000"></canvas>
+                <div id="selection-menu">
+                    <div class="tower" id="tower1" data-myName="turret-1-1.png"></div>
+                    <div class="tower" id="tower2" data-myName="turret-6-1.png"></div>
+                    <div class="tower" id="tower3" data-myName="turret-4-1.png"></div>
+                    <div class="button volumeButton" id="muteButton" data-myId="muteButton">mute</div>
+                    <div class="button volumeButton" id="unmuteButton" data-myId="unmuteButton">unmute</div>
+                </div>
+                <canvas id = "canvas-main" width = "600" height = "800"></canvas>
             </div>
             <div id = "highscores" class = "screen">
                 <h1>High Scores</h1>
@@ -92,7 +102,7 @@
             menu: null,
             cancelNextRequest: false,
             assets: {},
-            life: 5
+            life: 10
             };
     </script>
     <script data-main = "/src/js/loader" src="require.js"></script>

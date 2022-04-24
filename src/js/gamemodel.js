@@ -45,6 +45,10 @@ class gameModel {
     }
   }
 
+  reachRight() {
+    return this.player.reachRight();
+  }
+
   drawBar(center, width, height, currentHealth, maxHealth) {
     let barHeight = 5;
     context.fillStyle = "red";

@@ -24,7 +24,7 @@ function () {
     this.renderCircle = false;
     this.sound = null;
     this.particlesSmoke = null;
-    this.creeps = [makeCreateCreep1(20, 300), makeCreateCreep2(100, 300), makeCreateCreep3(300, 300)];
+    this.creeps = [makeCreateCreep1(520, 300), makeCreateCreep2(700, 300), makeCreateCreep3(800, 300)];
     this.towers = [];
     this.registerKey = this.registerKey.bind(this);
     this.flyingScores = [];
@@ -36,27 +36,40 @@ function () {
   }
 
   _createClass(GamePlay, [{
+    key: "createElement",
+    value: function createElement() {
+      var myTower = this.getAttribute("data-myName");
+      selectedTower = "assets/turret/" + myTower;
+      console.log(selectedTower);
+      renderCircle = true;
+      mouse.isActive = true;
+    }
+  }, {
     key: "downHandler",
     value: function downHandler(e, elapsedTime) {
-      console.log(mouse.x, mouse.y);
-      mouse.isActive = true;
-
-      if (firstTime) {
-        console.log("firsttime");
-        firstTime = false;
-        renderCircle = true;
-        mouse.isActive = true;
-      } else {
+      if (mouse.isActive) {
         firstTime = true;
         mouse.isActive = false;
         renderCircle = false;
-        this.towers.push(createTower("assets/turret/turret-5-3.png", mouse.x, mouse.y, 1000, 1));
+        console.log(selectedTower);
+        this.towers.push(createTower(selectedTower, mouse.x, mouse.y, 1000, 1));
         console.log(this.towers.length);
+        var canvasPosition = canvas.getBoundingClientRect();
+        mouse.x = e.x;
+        mouse.y = e.y;
+      }
+    }
+  }, {
+    key: "muteVolume",
+    value: function muteVolume(e) {
+      var towerElements = document.getElementsByClassName("volumeButton");
+
+      for (var i = 0; i < towerElements.length; i++) {
+        towerElements[i].style.display = "block";
       }
 
-      var canvasPosition = canvas.getBoundingClientRect();
-      mouse.x = e.x;
-      mouse.y = e.y;
+      var myId = this.getAttribute("data-myId");
+      document.getElementById(myId).style.display = "none";
     }
   }, {
     key: "initialize",
@@ -67,18 +80,35 @@ function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
       });
+      var towerElements = document.getElementsByClassName("tower");
+
+      for (var i = 0; i < towerElements.length; i++) {
+        towerElements[i].addEventListener("click", this.createElement, false);
+      }
+
+      var towerElements2 = document.getElementsByClassName("volumeButton");
+
+      for (var i = 0; i < towerElements2.length; i++) {
+        towerElements2[i].addEventListener("click", this.muteVolume, false);
+      }
+
       this.bulletController = new BulletController();
       this.towers.push(createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1));
       this.towers.push(createTower("assets/turret/turret-3-3.png", 600, 500, 2000, 2));
-      this.myMouse.register('mousedown', this.downHandler); // this.myMouse.register('mouseup', function(e, elapsedTime) {
+      this.myMouse.register("mousedown", this.downHandler); // this.myMouse.register('mouseup', function(e, elapsedTime) {
       //   mouse.isActive = false;
       // });
 
-      this.myMouse.register('mousemove', function (e, elapsedTime) {
+      this.myMouse.register("mousemove", function (e, elapsedTime) {
         if (mouse.isActive) {
           var canvasPosition = canvas.getBoundingClientRect();
           mouse.x = e.clientX - canvasPosition.left;
           mouse.y = e.clientY - canvasPosition.top;
+
+          if (mouse.y < 200) {
+            mouse.y = 200;
+          }
+
           this.renderCircle = true;
         }
       });
@@ -113,9 +143,17 @@ function () {
         var creep = this.creeps[i];
 
         if (creep) {
+          if (creep.reachRight()) {
+            this.creeps.splice(i, 1);
+            GameState.life--;
+            console.log(GameState.life);
+            continue;
+          }
+
           if (creep.health == 0) {
             var x = creep.player.specs.center.x;
             var y = creep.player.specs.center.y;
+            score += creep.maxHealth;
             this.creeps.splice(i, 1);
             var textEvent = new MovingEvents({
               size: {
@@ -136,7 +174,7 @@ function () {
               yDirection: -1,
               xDirection: 0
             });
-            this.flyingScores.push(new FlyingScore("10", textEvent, true));
+            this.flyingScores.push(new FlyingScore(creep.maxHealth, textEvent, true));
             continue;
           }
 
@@ -184,14 +222,21 @@ function () {
     value: function renderScore() {
       document.getElementById("currentScore").innerHTML = score;
       document.getElementById("lives").innerHTML = GameState.life;
+      document.getElementById("money").innerHTML = money;
+      var wave = wavesDeno + "/" + wavesNeno;
+      document.getElementById("wave").innerHTML = wave;
     }
   }, {
     key: "render",
     value: function render() {
       context.clearRect(0, 0, canvas.width, canvas.height);
+      context.beginPath();
+      context.moveTo(0, 200);
+      context.lineTo(canvas.width, 200);
+      context.stroke();
 
       if (renderCircle) {
-        drawTower(this.tower1, 200);
+        drawTower(50);
       }
 
       this.renderScore();
@@ -217,13 +262,9 @@ function () {
     value: function run() {
       var self = this;
       this.sound = new Sound();
-      this.sound.loadAudio();
-      this.registerKey(); // this.myKeyboard.register("ArrowUp", self.playerModel.player.moveTop);
-      // this.myKeyboard.register("ArrowDown", self.playerModel.player.moveDown);
-      // this.myKeyboard.register("ArrowLeft", self.playerModel.player.moveLeft);
-      // this.myKeyboard.register("ArrowRight", self.playerModel.player.moveRight);
-      // console.log(self.playerModel.moveRight);
+      this.sound.loadAudio(); // this.sound.playSound("end");
 
+      this.registerKey();
       var lastTimeStamp = performance.now();
       GameState.cancelNextRequest = false;
 

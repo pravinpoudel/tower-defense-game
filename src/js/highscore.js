@@ -5,6 +5,10 @@ if (!previousScores) {
   scores = JSON.parse(previousScores);
 }
 
+var money = 0;
+var wavesDeno = 0;
+var wavesNeno = 100;
+
 function add(score) {
   scores.push(score);
   scores.sort(function (a, b) {

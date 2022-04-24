@@ -1,7 +1,7 @@
 function createTower(url, x, y, delay, power) {
   let tower = new Tower({
     baseSprite: "assets/tile-1-center.gif",
-    weaponSprite: "assets/turret/turret-5-3.png",
+    weaponSprite: url,
     center: { x: x, y: y },
     target: { x: 300, y: 100 },
     rotateRate: (6 * 3.14159) / 1000, // radians per second

@@ -61,6 +61,11 @@ function () {
       }
     }
   }, {
+    key: "reachRight",
+    value: function reachRight() {
+      return this.player.reachRight();
+    }
+  }, {
     key: "drawBar",
     value: function drawBar(center, width, height, currentHealth, maxHealth) {
       var barHeight = 5;

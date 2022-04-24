@@ -105,6 +105,13 @@ function () {
       this.specs.rotation += this.specs.rotateRate * elapsedTime;
     }
   }, {
+    key: "reachRight",
+    value: function reachRight() {
+      if (this.specs.center.x > canvas.width - this.specs.size.x / 2) {
+        return true;
+      }
+    }
+  }, {
     key: "update",
     value: function update(elapsedTime) {
       if (this.specs.continousSpeed > 0) {
@@ -114,11 +121,10 @@ function () {
 
       if (this.specs.center.x < this.specs.size.x / 2) {
         this.specs.center.x = this.specs.size.x / 2;
-      }
+      } // if (this.specs.center.x > canvas.width - this.specs.size.x / 2) {
+      //   this.specs.center.x = canvas.width - this.specs.size.x / 2;
+      // }
 
-      if (this.specs.center.x > canvas.width - this.specs.size.x / 2) {
-        this.specs.center.x = canvas.width - this.specs.size.x / 2;
-      }
 
       if (this.specs.center.y > canvas.height - this.specs.size.y / 2) {
         this.specs.center.y = canvas.height - this.specs.size.y / 2;
