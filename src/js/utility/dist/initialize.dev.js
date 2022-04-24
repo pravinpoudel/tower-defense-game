@@ -6,6 +6,9 @@ var manager = new Manager();
 var activeButton = null;
 var href = window.location.href;
 var dir = href.substring(0, href.lastIndexOf("/")) + "/";
+renderCircle = true;
+firstTime = true;
+mouseCapture = false;
 var mouse = {
   x: undefined,
   y: undefined,
@@ -20,19 +23,16 @@ var canvasPosition = canvas.getBoundingClientRect(); // canvas.addEventListener(
 //   mouse.x = e.x - canvasPosition.left;
 //   mouse.y = e.y - canvasPosition.top;
 // });
-
-canvas.addEventListener("click", handleClick);
-
-function handleClick(event) {
-  mouse.x = event.offsetX;
-  mouse.y = event.offsetY;
-  console.log(mouse.x, mouse.y);
-}
-
-canvas.addEventListener("mouseleave", function () {
-  mouse.x = undefined;
-  mouse.y = undefined;
-});
+// canvas.addEventListener("click", handleClick);
+// function handleClick(event) {
+//   mouse.x = event.offsetX;
+//   mouse.y = event.offsetY;
+//   console.log(mouse.x, mouse.y);
+// }
+// canvas.addEventListener("mouseleave", function () {
+//   mouse.x = undefined;
+//   mouse.y = undefined;
+// });
 
 if (!localStorage.getItem("upgrade")) {
   localStorage.setItem("upgrade", "u");
@@ -94,6 +94,14 @@ function drawRectangle(spec) {
   context.fillRect(spec.x, spec.y, spec.width, spec.height);
   context.strokeStyle = spec.stroke;
   context.strokeRect(spec.x, spec.y, spec.width, spec.height);
+}
+
+function drawTower(image, radius) {
+  context.drawImage(image, mouse.x - image.width / 2, // Where to draw the sub-texture
+  mouse.y - image.height / 2, image.width, image.height);
+  context.beginPath();
+  context.arc(mouse.x, mouse.y, radius, 0, 2 * Math.PI, false);
+  context.stroke();
 }
 
 function crossProduct2d(v1, v2) {

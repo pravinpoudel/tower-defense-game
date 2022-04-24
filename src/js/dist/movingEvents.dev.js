@@ -25,8 +25,8 @@ function () {
     this.runRight = this.runRight.bind(this);
     this.runLeft = this.runLeft.bind(this);
     this.update = this.update.bind(this);
-    this.yDirection = 0;
-    this.xDirection = 1;
+    this.yDirection = specs.yDirection;
+    this.xDirection = specs.xDirection;
   }
 
   _createClass(MovingEvents, [{

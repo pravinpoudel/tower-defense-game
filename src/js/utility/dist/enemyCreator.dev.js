@@ -2,12 +2,12 @@
 
 function makeCreateCreep1(x, y) {
   var spriteSheet = ["assets/creeps1/1.png", "assets/creeps1/2.png", "assets/creeps1/3.png", "assets/creeps1/4.png", "assets/creeps1/5.png", "assets/creeps1/6.png"];
-  return this.createEnemy(x, y, spriteSheet, 6);
+  return this.createEnemy(x, y, spriteSheet, 4);
 }
 
 function makeCreateCreep2(x, y) {
   var spriteSheet = ["assets/creeps2/1.png", "assets/creeps2/2.png", "assets/creeps2/3.png", "assets/creeps2/4.png"];
-  return this.createEnemy(x, y, spriteSheet, 6);
+  return this.createEnemy(x, y, spriteSheet, 2);
 }
 
 function makeCreateCreep3(x, y) {
@@ -32,7 +32,9 @@ function createEnemy(x, y, spriteSheet, health) {
     // Pixels per second
     rotateRate: Math.PI / 1000,
     // Radians per second
-    continousSpeed: 50
+    continousSpeed: 50,
+    yDirection: 0,
+    xDirection: 1
   });
   var timeArray = new Array(spriteSheet.length).fill(25);
   var playerSpecs = {

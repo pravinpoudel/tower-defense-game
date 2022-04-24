@@ -29,6 +29,12 @@ loader = (function () {
     },
 
     {
+      scripts: ["utility/turretCreator"],
+      message: "tower creation system is intialized",
+      onComplete: null,
+    },
+
+    {
       scripts: ["screens/about"],
       message: "about is loaded",
       onComplete: null,
@@ -81,6 +87,13 @@ loader = (function () {
       message: "menumanager is loaded",
       onComplete: null,
     },
+
+    {
+      scripts: ["utility/text"],
+      message: "enemy is loaded",
+      onComplete: null,
+    },
+
     {
       scripts: ["tower"],
       message: "enemy is loaded",
@@ -108,6 +121,12 @@ loader = (function () {
     {
       scripts: ["input/input"],
       message: "input is loaded",
+      onComplete: null,
+    },
+
+    {
+      scripts: ["input/mouse"],
+      message: "Mouse inputHandler is loaded",
       onComplete: null,
     },
 

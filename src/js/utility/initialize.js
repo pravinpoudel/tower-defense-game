@@ -5,6 +5,11 @@ let activeButton = null;
 var href = window.location.href;
 var dir = href.substring(0, href.lastIndexOf("/")) + "/";
 
+renderCircle = true;
+firstTime = true;
+
+mouseCapture = false;
+
 const mouse = {
   x: undefined,
   y: undefined,
@@ -24,18 +29,18 @@ const canvasPosition = canvas.getBoundingClientRect();
 //   mouse.y = e.y - canvasPosition.top;
 // });
 
-canvas.addEventListener("click", handleClick);
+// canvas.addEventListener("click", handleClick);
 
-function handleClick(event) {
-  mouse.x = event.offsetX;
-  mouse.y = event.offsetY;
-  console.log(mouse.x, mouse.y);
-}
+// function handleClick(event) {
+//   mouse.x = event.offsetX;
+//   mouse.y = event.offsetY;
+//   console.log(mouse.x, mouse.y);
+// }
 
-canvas.addEventListener("mouseleave", function () {
-  mouse.x = undefined;
-  mouse.y = undefined;
-});
+// canvas.addEventListener("mouseleave", function () {
+//   mouse.x = undefined;
+//   mouse.y = undefined;
+// });
 
 if (!localStorage.getItem("upgrade")) {
   localStorage.setItem("upgrade", "u");
@@ -84,7 +89,6 @@ GameState.screens = screens;
 // r2.specs.center.y > r1.specs.y + r1.specs.size.y ||
 // r2.specs.center.y + r2.specs.size.y < r1.specs.center.y
 
-
 function isColliding2(x1, y1, width1, x2, y2, width2) {
   return !(
     x1 + width1 <= x2 ||
@@ -118,6 +122,19 @@ function drawRectangle(spec) {
 
   context.strokeStyle = spec.stroke;
   context.strokeRect(spec.x, spec.y, spec.width, spec.height);
+}
+
+function drawTower(image, radius) {
+  context.drawImage(
+    image,
+    mouse.x - image.width / 2, // Where to draw the sub-texture
+    mouse.y - image.height / 2,
+    image.width,
+    image.height
+  );
+  context.beginPath();
+  context.arc(mouse.x, mouse.y, radius, 0, 2 * Math.PI, false);
+  context.stroke();
 }
 
 function crossProduct2d(v1, v2) {
@@ -165,3 +182,4 @@ function computeAngle(rotation, ptCenter, ptTarget) {
     crossProduct: cp,
   };
 }
+
