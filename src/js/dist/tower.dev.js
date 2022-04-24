@@ -27,6 +27,9 @@ function () {
     this.update = this.update.bind(this);
     this.render = this.render.bind(this);
     this.setTarget = this.setTarget.bind(this);
+    this.canShoot = false;
+    this.animationTime = 0;
+    this.delay = this.specs.delay;
   }
 
   _createClass(Tower, [{
@@ -50,6 +53,15 @@ function () {
           this.weaponSprite.rotateLeft(this.specs.rotateRate);
           this.specs.rotation -= this.specs.rotateRate;
         }
+      }
+
+      this.animationTime += elapsedTime;
+
+      if (this.animationTime > this.specs.delay) {
+        this.animationTime -= this.specs.delay;
+        this.canShoot = true;
+      } else {
+        this.canShoot = false;
       }
     }
   }, {

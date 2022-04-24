@@ -27,6 +27,10 @@ class gameModel {
     // this.image.src = this.specs.spriteSheet;
     this.continousMotion = continousMotion;
     this.collided = false;
+    this.health = specs.health;
+    this.maxHealth = specs.health;
+    this.meterWidth = 40;
+    this.yoffsetBar = 20;
   }
 
   update(elapsedTime) {
@@ -39,6 +43,17 @@ class gameModel {
     if (this.continousMotion) {
       this.player.update(elapsedTime);
     }
+  }
+
+  drawBar(center, width, height, currentHealth, maxHealth) {
+    let barHeight = 5;
+    context.fillStyle = "red";
+    let left = center.x - this.meterWidth / 2;
+    let top = center.y - height / 2 - this.yoffsetBar - barHeight;
+    context.fillRect(left, top, this.meterWidth, barHeight);
+    context.fillStyle = "green";
+    let lifeWidth = Math.floor((currentHealth / maxHealth) * this.meterWidth);
+    context.fillRect(left, top, lifeWidth, barHeight);
   }
 
   drawSubTexture(image, index, subTextureWidth, center, rotation, size) {
@@ -67,6 +82,13 @@ class gameModel {
         this.player.specs.center,
         this.player.specs.rotation,
         this.player.specs.size
+      );
+      this.drawBar(
+        this.player.specs.center,
+        image.width,
+        image.height,
+        this.health,
+        this.maxHealth
       );
       this.secondTime = true;
     }

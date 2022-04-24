@@ -39,6 +39,10 @@ function () {
 
     this.continousMotion = continousMotion;
     this.collided = false;
+    this.health = specs.health;
+    this.maxHealth = specs.health;
+    this.meterWidth = 40;
+    this.yoffsetBar = 20;
   }
 
   _createClass(gameModel, [{
@@ -55,6 +59,18 @@ function () {
       if (this.continousMotion) {
         this.player.update(elapsedTime);
       }
+    }
+  }, {
+    key: "drawBar",
+    value: function drawBar(center, width, height, currentHealth, maxHealth) {
+      var barHeight = 5;
+      context.fillStyle = "red";
+      var left = center.x - this.meterWidth / 2;
+      var top = center.y - height / 2 - this.yoffsetBar - barHeight;
+      context.fillRect(left, top, this.meterWidth, barHeight);
+      context.fillStyle = "green";
+      var lifeWidth = Math.floor(currentHealth / maxHealth * this.meterWidth);
+      context.fillRect(left, top, lifeWidth, barHeight);
     }
   }, {
     key: "drawSubTexture",
@@ -74,6 +90,7 @@ function () {
       if (this.isReady) {
         var image = this.images[this.subImageIndex];
         this.drawSubTexture(image, this.subImageIndex, this.subTextureWidth, this.player.specs.center, this.player.specs.rotation, this.player.specs.size);
+        this.drawBar(this.player.specs.center, image.width, image.height, this.health, this.maxHealth);
         this.secondTime = true;
       }
     }

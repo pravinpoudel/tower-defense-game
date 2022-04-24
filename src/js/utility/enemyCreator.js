@@ -7,7 +7,7 @@ function makeCreateCreep1(x, y) {
     "assets/creeps1/5.png",
     "assets/creeps1/6.png",
   ];
-  return this.createEnemy(x, y, spriteSheet);
+  return this.createEnemy(x, y, spriteSheet, 6);
 }
 
 function makeCreateCreep2(x, y) {
@@ -17,7 +17,7 @@ function makeCreateCreep2(x, y) {
     "assets/creeps2/3.png",
     "assets/creeps2/4.png",
   ];
-  return this.createEnemy(x, y, spriteSheet);
+  return this.createEnemy(x, y, spriteSheet, 6);
 }
 
 function makeCreateCreep3(x, y) {
@@ -27,10 +27,10 @@ function makeCreateCreep3(x, y) {
     "assets/creeps3/3.png",
     "assets/creeps3/4.png",
   ];
-  return this.createEnemy(x, y, spriteSheet);
+  return this.createEnemy(x, y, spriteSheet, 6);
 }
 
-function createEnemy(x, y, spriteSheet) {
+function createEnemy(x, y, spriteSheet, health) {
   //all the event to handle movement
   let playerEvent = new MovingEvents({
     size: { x: 50, y: 50 }, // Size in pixels
@@ -46,6 +46,7 @@ function createEnemy(x, y, spriteSheet) {
     spriteSheet: spriteSheet,
     spriteCount: spriteSheet.length,
     spriteTime: timeArray,
+    health: health,
   };
   //make a playerModel
   let playerModel = new gameModel(playerSpecs, playerEvent, true);

@@ -72,17 +72,8 @@ GameState.screens = screens; // function resizeCanvas() {
 // r2.specs.center.y > r1.specs.y + r1.specs.size.y ||
 // r2.specs.center.y + r2.specs.size.y < r1.specs.center.y
 
-function isColliding2(r1, r2, radius) {
-  var r1X = r1.player.specs.center.x - Math.floor(r1.player.specs.size.x / 2);
-  var r1Y = r1.player.specs.center.y - Math.floor(r1.player.specs.size.y / 2);
-  var r1Width = r1.player.specs.size.x; // let r2X = r2.player.specs.center.x - Math.floor(r2.player.specs.size.x / 2);
-  // let r2Y = r2.player.specs.center.y - Math.floor(r2.player.specs.size.y / 2);
-  // let r2Width = r2.player.specs.size.x;
-
-  var r2Width = r2.baseSprite.image.width;
-  var r2X = r2.specs.center.x - r2Width;
-  var r2Y = r2.specs.center.y - r2Width;
-  return !(r1X + r1Width <= r2X - radius || r1X >= r2X + r2Width + radius || r1Y + r1Width <= r2Y - radius || r1Y >= r2Width + r2Y + radius);
+function isColliding2(x1, y1, width1, x2, y2, width2) {
+  return !(x1 + width1 <= x2 || x1 >= x2 + width2 || y1 + width1 <= y2 || y1 >= width2 + y2);
 }
 
 function isColliding(r1, r2, radius) {
@@ -107,6 +98,13 @@ function drawRectangle(spec) {
 
 function crossProduct2d(v1, v2) {
   return v1.x * v2.y - v1.y * v2.x;
+}
+
+function normalize(direction) {
+  var distance = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
+  direction.x = direction.x / distance;
+  direction.y = direction.y / distance;
+  return direction;
 }
 
 function testTolerance(value, test, tolerance) {

@@ -35,6 +35,7 @@ function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
       });
+      this.bulletController = new BulletController();
       this.tower = new Tower({
         baseSprite: "assets/tile-1-center.gif",
         weaponSprite: "assets/turret/turret-5-3.png",
@@ -46,14 +47,11 @@ function () {
           x: 300,
           y: 100
         },
-        rotateRate: 6 * 3.14159 / 1000 // radians per second
-
-      }); // this.playerModel = this.createEnemy(
-      //   100,
-      //   100,
-      //   "assets/spritesheet-bird.png"
-      // );
-      // self.enemycontroller = new EnemyController(self.playerModel);
+        rotateRate: 6 * 3.14159 / 1000,
+        // radians per second
+        delay: 2000,
+        power: 2
+      });
     }
   }, {
     key: "processInput",
@@ -72,24 +70,44 @@ function () {
   }, {
     key: "update",
     value: function update(elapsedTime) {
-      var _this = this;
-
       if (GameState.life <= 0) {
         GameState.cancelNextRequest = true;
         this.particlesSmoke.update(elapsedTime);
         return;
       }
 
-      this.creeps.forEach(function (creep) {
-        creep.update(elapsedTime);
+      var creepsLength = this.creeps.length;
 
-        if (isColliding(creep, _this.tower, 200)) {
-          _this.tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
+      for (var i = 0; i < creepsLength; i++) {
+        var creep = this.creeps[i];
+
+        if (creep) {
+          if (creep.health == 0) {
+            this.creeps.splice(i, 1);
+            continue;
+          }
+
+          creep.update(elapsedTime);
+
+          if (isColliding(creep, this.tower, 200)) {
+            this.tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
+
+            if (this.tower.canShoot) {
+              var direction = {
+                x: this.tower.specs.target.x - this.tower.specs.center.x,
+                y: this.tower.specs.target.y - this.tower.specs.center.y
+              };
+              direction = normalize(direction);
+              var bulletStartX = this.tower.specs.center.x;
+              var bulletStartY = this.tower.specs.center.y;
+              this.bulletController.addBullet(bulletStartX, bulletStartY, creep, this.tower.specs.power);
+            }
+          }
         }
-      }); // this.playerModel.update(elapsedTime);
+      }
 
-      this.tower.update(elapsedTime); // this.enemycontroller.update(elapsedTime);
-      // model.update(elapsedTime);
+      this.tower.update(elapsedTime);
+      this.bulletController.update(elapsedTime); // model.update(elapsedTime);
     }
   }, {
     key: "renderScore",
@@ -101,12 +119,12 @@ function () {
     key: "render",
     value: function render() {
       context.clearRect(0, 0, canvas.width, canvas.height);
-      this.renderScore(); // this.playerModel.render();
-
+      this.renderScore();
       this.creeps.forEach(function (creep) {
         creep.render();
       });
       this.tower.render();
+      this.bulletController.render();
     }
   }, {
     key: "run",

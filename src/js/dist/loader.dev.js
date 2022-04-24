@@ -27,6 +27,14 @@ loader = function () {
     message: "about is loaded",
     onComplete: null
   }, {
+    scripts: ["bullet"],
+    message: "bullet is loaded",
+    onComplete: null
+  }, {
+    scripts: ["bulletcontroller"],
+    message: "bulletcontroller is loaded",
+    onComplete: null
+  }, {
     scripts: ["screens/game-play"],
     message: " game-play is loaded",
     onComplete: null
