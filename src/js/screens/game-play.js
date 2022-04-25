@@ -12,8 +12,7 @@ class GamePlay {
     this.renderCircle = false;
     this.sound = null;
     this.particlesSmoke = null;
-    this.creeps = [
-      ];
+    this.creeps = [];
     this.towers = [];
     this.registerKey = this.registerKey.bind(this);
     this.flyingScores = [];
@@ -24,14 +23,53 @@ class GamePlay {
     this.downHandler = this.downHandler.bind(this);
     this.enemyCreator = new EnemyCreator(10);
     this.canPlace = false;
+    this.upgrade = this.upgrade.bind(this);
+    this.sell = this.sell.bind(this);
   }
+
+  upgrade(elapsedTime) {
+    let moneyRequired = Math.floor(0.5*towerClicked.specs.cost);
+    if(moneyRequired<=money){
+      if(towerClicked){
+        if(towerClicked.lotalElapsedTime == undefined){
+          towerClicked.lotalElapsedTime = 0;
+        }
+        else{
+          towerClicked.lotalElapsedTime += elapsedTime;
+          if(towerClicked.lotalElapsedTime >=500){    
+            console.log("upgraded")
+            towerClicked.lotalElapsedTime -= 500;
+            towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
+            towerClicked.specs.power = towerClicked.specs.power + 1;  
+            money -= moneyRequired;  
+          }
+        }
+      }  
+    }
+  }
+
+   sell() {
+     if(towerClicked){
+      let towerLength = this.towers.length;
+      for(let i=0; i<towerLength; i++){
+        if(isColliding2(this.towers[i].specs.center.x - cellWidth/2,this.towers[i].specs.center.y- cellWidth/2, cellWidth,towerClicked.specs.center.x - cellWidth/2, towerClicked.specs.center.y- cellWidth/2, cellWidth)){
+         money += Math.floor(0.7*towerClicked.specs.cost);
+         this.towers.splice(i, 1);
+         towerClicked = null;
+        }
+      }
+     }
+
+    }
 
   createElement() {
     let myTower = this.getAttribute("data-myName");
+    moneyRequired = parseInt(this.getAttribute("data-cost"));
     selectedTower = "assets/turret/" + myTower;
-    console.log(selectedTower);
-    renderCircle = true;
-    mouse.isActive = true;
+    if(moneyRequired<=money){
+      renderCircle = true;
+      mouse.isActive = true;  
+    }
   }
 
   downHandler(e, elapsedTime) {
@@ -39,19 +77,27 @@ class GamePlay {
       firstTime = true;
       mouse.isActive = false;
       renderCircle = false;
-      console.log(selectedTower);
-      let decision= canCreated(this.towers)&& this.canPlace;
-      if(decision){
-      this.towers.push(createTower(selectedTower, Math.floor(mouse.x/cellWidth)*cellWidth, Math.floor((mouse.y-200)/cellWidth)*cellWidth +200, 1000, 1));
+      let decision = canCreated(this.towers) && this.canPlace;
+      if (decision) {
+        this.towers.push(
+          createTower(
+            selectedTower,
+            Math.floor(mouse.x / cellWidth) * cellWidth,
+            Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
+            1000,
+            1,
+            moneyRequired
+          )
+        );
+        money = money- moneyRequired;
+        console.log(moneyRequired)
       }
       const canvasPosition = canvas.getBoundingClientRect();
-      
-    }
-    else{
+    } else {
       const canvasPosition = canvas.getBoundingClientRect();
       mouse.x = e.clientX - canvasPosition.left;
       mouse.y = e.clientY - canvasPosition.top;
-      findSelectedTower(this.towers)
+      findSelectedTower(this.towers);
     }
   }
 
@@ -72,16 +118,22 @@ class GamePlay {
       self.manager.showScreen("mainmenu");
     });
 
+    self.myKeyboard.register("s", function(elapsedTime){
+      self.sell(elapsedTime);
+    });
+
+    self.myKeyboard.register("u", function(elapsedTime){
+      self.upgrade(elapsedTime);
+    });
+
 
     for (let i = 0; i < rows; i++) {
       let row = [];
       for (let j = 0; j < cols; j++) {
-        row.push(
-          {
-            x: i,
-            y: j ,
-          },
-        );
+        row.push({
+          x: i,
+          y: j,
+        });
       }
       cellSet.push(row);
     }
@@ -111,8 +163,6 @@ class GamePlay {
     //   mouse.isActive = false;
     // });
 
-
-
     this.myMouse.register("mousemove", function (e, elapsedTime) {
       if (mouse.isActive) {
         const canvasPosition = canvas.getBoundingClientRect();
@@ -136,7 +186,7 @@ class GamePlay {
     let upgrade = localStorage["upgrade"];
     let sell = localStorage["sell"];
     let start = localStorage["start"];
-    self.myKeyboard.cleanAll();
+    // self.myKeyboard.cleanAll();
   }
 
   update(elapsedTime) {
@@ -230,10 +280,11 @@ class GamePlay {
     let wave = wavesDeno + "/" + wavesNeno;
     document.getElementById("wave").innerHTML = wave;
   }
+
   render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "green";
-    context.fillRect(0, 0+200, 600, 800);
+    context.fillRect(0, 0 + 200, 600, 800);
     context.clearRect(50, 250, 500, 500);
     context.clearRect(0, 400, 50, 200);
     context.clearRect(550, 400, 50, 200);
@@ -245,7 +296,7 @@ class GamePlay {
           let x1 = cellSet[i][j].x;
           let y1 = cellSet[i][j].y;
           if (
-            Math.floor((mouse.x -leftOffset) / cellWidth) == x1 &&
+            Math.floor((mouse.x - leftOffset) / cellWidth) == x1 &&
             Math.floor((mouse.y - topOffset) / cellWidth) == y1
           ) {
             this.canPlace = true;
@@ -261,7 +312,7 @@ class GamePlay {
           }
         }
       }
-      if(!placementFlag){
+      if (!placementFlag) {
         this.canPlace = false;
       }
     }
@@ -284,6 +335,17 @@ class GamePlay {
       let tower = this.towers[i];
       tower.render();
     }
+    if (towerClicked) {
+      drawRectangle({
+        x: towerClicked.specs.center.x - cellWidth / 2,
+        y: towerClicked.specs.center.y - cellWidth / 2,
+        width: 50,
+        height: 50,
+        fill: "#ffd63f9e",
+        stroke: "red",
+      });
+    }
+
     this.bulletController.render();
     let scorelength = this.flyingScores.length;
     for (let i = 0; i < scorelength; i++) {

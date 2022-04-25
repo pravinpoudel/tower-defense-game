@@ -35,16 +35,59 @@ function () {
     this.downHandler = this.downHandler.bind(this);
     this.enemyCreator = new EnemyCreator(10);
     this.canPlace = false;
+    this.upgrade = this.upgrade.bind(this);
+    this.sell = this.sell.bind(this);
   }
 
   _createClass(GamePlay, [{
+    key: "upgrade",
+    value: function upgrade(elapsedTime) {
+      var moneyRequired = Math.floor(0.5 * towerClicked.specs.cost);
+
+      if (moneyRequired <= money) {
+        if (towerClicked) {
+          if (towerClicked.lotalElapsedTime == undefined) {
+            towerClicked.lotalElapsedTime = 0;
+          } else {
+            towerClicked.lotalElapsedTime += elapsedTime;
+
+            if (towerClicked.lotalElapsedTime >= 500) {
+              console.log("upgraded");
+              towerClicked.lotalElapsedTime -= 500;
+              towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
+              towerClicked.specs.power = towerClicked.specs.power + 1;
+              money -= moneyRequired;
+            }
+          }
+        }
+      }
+    }
+  }, {
+    key: "sell",
+    value: function sell() {
+      if (towerClicked) {
+        var towerLength = this.towers.length;
+
+        for (var i = 0; i < towerLength; i++) {
+          if (isColliding2(this.towers[i].specs.center.x - cellWidth / 2, this.towers[i].specs.center.y - cellWidth / 2, cellWidth, towerClicked.specs.center.x - cellWidth / 2, towerClicked.specs.center.y - cellWidth / 2, cellWidth)) {
+            money += Math.floor(0.7 * towerClicked.specs.cost);
+            this.towers.splice(i, 1);
+            towerClicked = null;
+          }
+        }
+      }
+    }
+  }, {
     key: "createElement",
     value: function createElement() {
       var myTower = this.getAttribute("data-myName");
+      moneyRequired = parseInt(this.getAttribute("data-cost"));
       selectedTower = "assets/turret/" + myTower;
-      console.log(selectedTower);
-      renderCircle = true;
-      mouse.isActive = true;
+
+      if (moneyRequired <= money) {
+        renderCircle = true;
+        mouse.isActive = true;
+      }
     }
   }, {
     key: "downHandler",
@@ -53,11 +96,12 @@ function () {
         firstTime = true;
         mouse.isActive = false;
         renderCircle = false;
-        console.log(selectedTower);
         var decision = canCreated(this.towers) && this.canPlace;
 
         if (decision) {
-          this.towers.push(createTower(selectedTower, Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 1000, 1));
+          this.towers.push(createTower(selectedTower, Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 1000, 1, moneyRequired));
+          money = money - moneyRequired;
+          console.log(moneyRequired);
         }
 
         var canvasPosition = canvas.getBoundingClientRect();
@@ -89,6 +133,12 @@ function () {
       self.myKeyboard.register("Escape", function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
+      });
+      self.myKeyboard.register("s", function (elapsedTime) {
+        self.sell(elapsedTime);
+      });
+      self.myKeyboard.register("u", function (elapsedTime) {
+        self.upgrade(elapsedTime);
       });
 
       for (var _i = 0; _i < rows; _i++) {
@@ -153,8 +203,7 @@ function () {
       var self = this;
       var upgrade = localStorage["upgrade"];
       var sell = localStorage["sell"];
-      var start = localStorage["start"];
-      self.myKeyboard.cleanAll();
+      var start = localStorage["start"]; // self.myKeyboard.cleanAll();
     }
   }, {
     key: "update",
@@ -312,6 +361,17 @@ function () {
       for (var _i4 = 0; _i4 < towersLength; _i4++) {
         var tower = this.towers[_i4];
         tower.render();
+      }
+
+      if (towerClicked) {
+        drawRectangle({
+          x: towerClicked.specs.center.x - cellWidth / 2,
+          y: towerClicked.specs.center.y - cellWidth / 2,
+          width: 50,
+          height: 50,
+          fill: "#ffd63f9e",
+          stroke: "red"
+        });
       }
 
       this.bulletController.render();

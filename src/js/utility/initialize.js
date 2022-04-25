@@ -9,6 +9,8 @@ renderCircle = false;
 firstTime = true;
 selectedTower = null;
 mouseCapture = false;
+towerClicked = null;
+moneyRequired = 0;
 
 const cellWidth = 50;
 const rows = 10;
@@ -223,7 +225,7 @@ function canCreated(towers) {
 function findSelectedTower(towers) {
   if (!mouse.isActive) {
     if (!canCreated(towers)) {
-      console.log(mouseOverTower);
+      towerClicked = mouseOverTower;
     }
   }
 }
