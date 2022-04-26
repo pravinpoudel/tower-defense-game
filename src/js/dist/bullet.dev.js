@@ -34,6 +34,11 @@ function () {
         y: self.targetCreep.player.specs.center.y - self.y
       };
       self.direction = normalize(direction);
+
+      if (this.type == 2 || this.type == 3) {
+        console.log(self.x, self.y, self.direction.x, self.direction.y);
+        trailFollow(self.x, self.y, self.direction.x, self.direction.y);
+      }
     }
   }, {
     key: "update",

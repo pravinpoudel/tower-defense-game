@@ -27,5 +27,9 @@ function () {
   return Level;
 }();
 
-var levels = [new Level([new EnemyCreator(3, "left", 1), new EnemyCreator(5, "left", 2), new EnemyCreator(10, "left", 2)]), new Level([new EnemyCreator(3, "top", 1), new EnemyCreator(5, "top", 2), new EnemyCreator(10, "top", 2)]), new Level([new EnemyCreator(3, "left", 2), new EnemyCreator(5, "top", 3), new EnemyCreator(10, "left", 3)])];
+var levels = null;
+
+function createLevels() {
+  levels = [new Level([new EnemyCreator(3, "left", 1), new EnemyCreator(5, "left", 2), new EnemyCreator(10, "left", 2)]), new Level([new EnemyCreator(3, "top", 1), new EnemyCreator(5, "top", 2), new EnemyCreator(10, "top", 2)]), new Level([new EnemyCreator(3, "left", 2), new EnemyCreator(5, "top", 3), new EnemyCreator(10, "left", 3)])];
+}
 //# sourceMappingURL=level.dev.js.map

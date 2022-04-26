@@ -5,7 +5,7 @@ if (!previousScores) {
   scores = JSON.parse(previousScores);
 }
 
-var money = 100;
+var money = 20;
 var wavesDeno = 0;
 var wavesNeno = 100;
 

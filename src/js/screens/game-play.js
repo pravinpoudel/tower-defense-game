@@ -76,6 +76,7 @@ class GamePlay {
           )
         ) {
           money += Math.floor(0.7 * towerClicked.specs.cost);
+          towerSold(this.towers[i].specs.center.x - cellWidth / 2, this.towers[i].specs.center.y - cellWidth / 2);
           this.towers.splice(i, 1);
           gameSound.playSound("die");
           towerClicked = null;
@@ -145,15 +146,16 @@ class GamePlay {
     }
   }
 
-  startNewWave = (e) => {
-    // e.preventDefault();
+  startNewWave(e) {
+    e.preventDefault();
+    console.log("start button clicked");
     this.enemyCreator = levels[this.level].sendNextWave();
     if (levels[this.level].wave >= levels[this.level].enemyCreators.length) {
       this.level++;
     }
     nextWave = false;
     GameState.cancelNextRequest = false;
-  };
+  }
 
   checkCanProceed() {
     if (this.level > 2 || GameState.life <= 0) {
@@ -164,8 +166,11 @@ class GamePlay {
 
   initialize() {
     let self = this;
+    createLevels();
+    makeParticle2();
     this.myMouse = new Mouse();
-
+    GameState.cancelNextRequest = false;
+    GameState.life = 10;
     self.myKeyboard.register("Escape", function () {
       GameState.cancelNextRequest = true;
       self.manager.showScreen("mainmenu");
@@ -182,16 +187,16 @@ class GamePlay {
       cellSet.push(row);
     }
 
-    var towerElements = document.getElementsByClassName("tower");
+    towerElements = document.getElementsByClassName("tower");
     for (var i = 0; i < towerElements.length; i++) {
       towerElements[i].addEventListener("click", this.createElement, false);
     }
 
-    var towerElements2 = document.getElementsByClassName("volumeButton");
+    towerElements2 = document.getElementsByClassName("volumeButton");
     for (var i = 0; i < towerElements2.length; i++) {
       towerElements2[i].addEventListener("click", this.muteVolume, false);
     }
-    var startButton = document.getElementById("startButton");
+    startButton = document.getElementById("startButton");
     startButton.addEventListener("click", this.startNewWave);
 
     this.bulletController = new BulletController(this.creeps);
@@ -254,6 +259,8 @@ class GamePlay {
       // this.particlesSmoke.update(elapsedTime);
       return;
     }
+
+    particleSystem.update(elapsedTime);
     let creepsLength = this.creeps.length;
     for (let i = 0; i < creepsLength; i++) {
       let creep = this.creeps[i];
@@ -268,6 +275,7 @@ class GamePlay {
           let y = creep.player.specs.center.y;
           score += creep.maxHealth;
           this.creeps.splice(i, 1);
+          creepDied(x, y);
           totalCreepKilled++;
           money += creep.maxHealth;
           gameSound.playSound("die");
@@ -450,6 +458,7 @@ class GamePlay {
     for (let i = 0; i < scorelength; i++) {
       this.flyingScores[i].render();
     }
+    particleSystem.render();
   }
 
   run() {
@@ -473,7 +482,6 @@ class GamePlay {
       } else {
         self.processInput(time - lastTimeStamp);
         self.update(time - lastTimeStamp);
-        lastTimeStamp = time;
       }
       self.checkCanProceed();
       if (!GameState.cancelNextRequest) {
@@ -486,10 +494,27 @@ class GamePlay {
         context.font = "70px roboto";
         context.textAlign = "center";
         context.fillText("Game Over", canvas.width / 2, canvas.height * 0.8);
+        // for (var i = 0; i < towerElements.length; i++) {
+        //   towerElements[i].removeEventListener(
+        //     "click",
+        //     this.createElement,
+        //     false
+        //   );
+        // }
+
+        // for (var i = 0; i < towerElements2.length; i++) {
+        //   towerElements2[i].removeEventListener(
+        //     "click",
+        //     this.muteVolume,
+        //     false
+        //   );
+        // }
+        startButton.removeEventListener("click", this.startNewWave);
         setTimeout(() => {
           self.manager.showScreen("mainmenu");
         }, 2000);
       }
+      lastTimeStamp = time;
     }
     requestAnimationFrame(gameLoop);
   }

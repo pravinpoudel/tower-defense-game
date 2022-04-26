@@ -34,7 +34,10 @@ var mouse = {
   isActive: false
 };
 var cellSet = [];
-var canvasPosition = canvas.getBoundingClientRect(); // canvas.addEventListener("mousedown", function (e) {
+var canvasPosition = canvas.getBoundingClientRect();
+var towerElements2;
+var towerElements;
+var startButton; // canvas.addEventListener("mousedown", function (e) {
 //   mouse.isActive = true;
 // });
 // canvas.addEventListener("mousemove", function (e) {

@@ -45,10 +45,16 @@ function () {
                   this.enemies[m].health = this.enemies[m].health < 0 ? 0 : this.enemies[m].health;
                 }
               }
+
+              bombHit(this.bullets[i].x, this.bullets[i].y, bombAffectRadius);
             } else {
               this.bullets[i].targetCreep.health -= this.bullets[i].power;
 
               if (this.bullets[i].targetCreep.health < 0) {
+                if (this.bullets[i].type == 3) {
+                  bombHit(this.bullets[i].x, this.bullets[i].y, 10);
+                }
+
                 this.bullets[i].targetCreep.health = 0;
               }
             } // if (this.bullets[i].type == 3) {

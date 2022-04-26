@@ -38,6 +38,10 @@ const mouse = {
 const cellSet = [];
 const canvasPosition = canvas.getBoundingClientRect();
 
+var towerElements2;
+var towerElements;
+var startButton;
+
 // canvas.addEventListener("mousedown", function (e) {
 //   mouse.isActive = true;
 // });

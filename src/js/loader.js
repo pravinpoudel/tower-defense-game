@@ -9,6 +9,11 @@ loader = (function () {
       message: "Random number generator loaded",
       onComplete: null,
     },
+    {
+      scripts: ["particle-system"],
+      message: "Random number generator loaded",
+      onComplete: null,
+    },
 
     {
       scripts: ["highscore"],
@@ -16,11 +21,11 @@ loader = (function () {
       onComplete: null,
     },
 
-    {
-      scripts: ["particleSystem"],
-      message: "particle system is intialized",
-      onComplete: null,
-    },
+    // {
+    //   scripts: ["particleSystem"],
+    //   message: "particle system is intialized",
+    //   onComplete: null,
+    // },
 
     {
       scripts: ["utility/enemyCreator"],

@@ -37,6 +37,10 @@ function () {
     this.canPlace = false;
     this.upgrade = this.upgrade.bind(this);
     this.sell = this.sell.bind(this);
+    this.renderScore = this.renderScore.bind(this);
+    this.startNewWave = this.startNewWave.bind(this);
+    this.level = 0;
+    this.towerType = ["Gun", "Missile", "Air", "Mix (Air + Ground)"];
   }
 
   _createClass(GamePlay, [{
@@ -82,9 +86,11 @@ function () {
         for (var i = 0; i < towerLength; i++) {
           if (isColliding2(this.towers[i].specs.center.x - cellWidth / 2, this.towers[i].specs.center.y - cellWidth / 2, cellWidth, towerClicked.specs.center.x - cellWidth / 2, towerClicked.specs.center.y - cellWidth / 2, cellWidth)) {
             money += Math.floor(0.7 * towerClicked.specs.cost);
+            towerSold(this.towers[i].specs.center.x - cellWidth / 2, this.towers[i].specs.center.y - cellWidth / 2);
             this.towers.splice(i, 1);
             gameSound.playSound("die");
             towerClicked = null;
+            return;
           }
         }
       }
@@ -93,6 +99,7 @@ function () {
     key: "createElement",
     value: function createElement() {
       selectedTower = this.getAttribute("data-myName");
+      towerRadius = this.getAttribute("data-radius");
       moneyRequired = parseInt(this.getAttribute("data-cost"));
       towerTypeSelected = parseInt(this.getAttribute("data-type"));
 
@@ -111,8 +118,7 @@ function () {
         var decision = canCreated(this.towers) && this.canPlace;
 
         if (decision) {
-          this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, moneyRequired, towerTypeSelected));
-          console.log(this.towers);
+          this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, towerRadius, moneyRequired, towerTypeSelected));
           money = money - moneyRequired;
           moneyRequired = 0;
           towerTypeSelected = 0;
@@ -153,16 +159,33 @@ function () {
     key: "startNewWave",
     value: function startNewWave(e) {
       e.preventDefault();
-      this.initialize();
+      console.log("start button clicked");
+      this.enemyCreator = levels[this.level].sendNextWave();
+
+      if (levels[this.level].wave >= levels[this.level].enemyCreators.length) {
+        this.level++;
+      }
+
       nextWave = false;
-      GameState.cancelNextRequest = true;
+      GameState.cancelNextRequest = false;
+    }
+  }, {
+    key: "checkCanProceed",
+    value: function checkCanProceed() {
+      if (this.level > 2 || GameState.life <= 0) {
+        GameState.cancelNextRequest = true;
+        add(score);
+      }
     }
   }, {
     key: "initialize",
     value: function initialize() {
       var self = this;
+      createLevels();
+      makeParticle2();
       this.myMouse = new Mouse();
-      this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
+      GameState.cancelNextRequest = false;
+      GameState.life = 10;
       self.myKeyboard.register("Escape", function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
@@ -181,19 +204,19 @@ function () {
         cellSet.push(row);
       }
 
-      var towerElements = document.getElementsByClassName("tower");
+      towerElements = document.getElementsByClassName("tower");
 
       for (var i = 0; i < towerElements.length; i++) {
         towerElements[i].addEventListener("click", this.createElement, false);
       }
 
-      var towerElements2 = document.getElementsByClassName("volumeButton");
+      towerElements2 = document.getElementsByClassName("volumeButton");
 
       for (var i = 0; i < towerElements2.length; i++) {
         towerElements2[i].addEventListener("click", this.muteVolume, false);
       }
 
-      var startButton = document.getElementById("startButton");
+      startButton = document.getElementById("startButton");
       startButton.addEventListener("click", this.startNewWave);
       this.bulletController = new BulletController(this.creeps); // this.towers.push(
       //   createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
@@ -231,7 +254,6 @@ function () {
     value: function registerKey() {
       var self = this;
       var upgrade = localStorage["upgrade"];
-      console.log(upgrade);
       var sell = localStorage["sell"];
       var start = localStorage["start"];
       self.myKeyboard.register(upgrade, function (elapsedTime) {
@@ -239,6 +261,9 @@ function () {
       });
       self.myKeyboard.register(sell, function (elapsedTime) {
         self.sell(elapsedTime);
+      });
+      self.myKeyboard.register(start, function (elapsedTime) {
+        self.startNewWave(elapsedTime);
       }); // self.myKeyboard.cleanAll();
     }
   }, {
@@ -250,6 +275,7 @@ function () {
         return;
       }
 
+      particleSystem.update(elapsedTime);
       var creepsLength = this.creeps.length;
 
       for (var i = 0; i < creepsLength; i++) {
@@ -259,7 +285,6 @@ function () {
           if (creep.player.reachRight() || creep.player.reachBottom()) {
             this.creeps.splice(i, 1);
             GameState.life--;
-            console.log(GameState.life);
             continue;
           }
 
@@ -268,6 +293,9 @@ function () {
             var y = creep.player.specs.center.y;
             score += creep.maxHealth;
             this.creeps.splice(i, 1);
+            creepDied(x, y);
+            totalCreepKilled++;
+            money += creep.maxHealth;
             gameSound.playSound("die");
             var textEvent = new MovingEvents({
               size: {
@@ -303,7 +331,7 @@ function () {
             } else if (typeof creep.flying != "undefined" && tower.specs.type < 3) {
               console.log("flying" + " " + _i2);
             } else {
-              if (isColliding(creep, tower, 100)) {
+              if (isColliding(creep, tower, tower.specs.radius)) {
                 tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
 
                 if (tower.canShoot) {
@@ -338,10 +366,12 @@ function () {
         }
       }
 
-      var newEnemy = this.enemyCreator.createEnemy(elapsedTime);
+      if (this.enemyCreator) {
+        var newEnemy = this.enemyCreator.createEnemy(elapsedTime);
 
-      if (newEnemy) {
-        this.creeps.push(newEnemy);
+        if (newEnemy) {
+          this.creeps.push(newEnemy);
+        }
       }
     }
   }, {
@@ -350,20 +380,26 @@ function () {
       document.getElementById("currentScore").innerHTML = score;
       document.getElementById("lives").innerHTML = GameState.life;
       document.getElementById("money").innerHTML = money;
-      var waveString = wave + "/" + maxWave;
+      var waveString = levels[this.level].wave + 1 + "/" + maxWave;
       document.getElementById("wave").innerHTML = waveString;
       var startButton = document.getElementById("startButton");
-      startButton.style.display = "none";
-      console.log(nextWave);
+      document.getElementById("level").innerHTML = this.level + 1;
+      document.getElementById("killed").innerHTML = totalCreepKilled; // startButton.style.display = "none";
 
       if (nextWave) {
         startButton.style.display = "block";
       }
 
+      var totalTowerValues = 0;
+      this.towers.forEach(function (tower) {
+        totalTowerValues += tower.specs.cost;
+      });
+      document.getElementById("towerValue").innerHTML = totalTowerValues;
+
       if (moneyRequired > 0) {
         document.getElementById("selectedInfo").style.display = "block";
         document.getElementById("moneyRequired").innerHTML = moneyRequired;
-        document.getElementById("power").innerHTML = towerTypeSelected;
+        document.getElementById("power").innerHTML = this.towerType[parseInt(towerTypeSelected) - 1];
       } else {
         document.getElementById("selectedInfo").style.display = "none";
         document.getElementById("moneyRequired").innerHTML = "";
@@ -412,7 +448,7 @@ function () {
       context.stroke();
 
       if (renderCircle) {
-        drawTower(100);
+        drawTower(towerRadius);
       }
 
       this.renderScore();
@@ -443,6 +479,8 @@ function () {
       for (var _i5 = 0; _i5 < scorelength; _i5++) {
         this.flyingScores[_i5].render();
       }
+
+      particleSystem.render();
     }
   }, {
     key: "run",
@@ -456,25 +494,47 @@ function () {
       GameState.cancelNextRequest = false;
 
       function gameLoop(time) {
-        console.log(self.creeps.length);
-        console.log("wave is " + wave);
-        console.log("life is " + self.enemyCreator.totalEnemy);
-
-        if (self.enemyCreator.totalEnemy <= 0 && self.creeps.length == 0 && wave > 0) {
-          console.log("is true");
+        if (self.enemyCreator && self.enemyCreator.totalEnemy <= 0 && self.creeps.length == 0 && wave > 0) {
           nextWave = true;
           wave--;
-          self.render();
         } else {
+          self.processInput(time - lastTimeStamp);
+          self.update(time - lastTimeStamp);
+        }
+
+        self.checkCanProceed();
+
+        if (!GameState.cancelNextRequest) {
+          requestAnimationFrame(gameLoop);
           self.processInput(time - lastTimeStamp);
           self.update(time - lastTimeStamp);
           lastTimeStamp = time;
           self.render();
+        } else {
+          context.font = "70px roboto";
+          context.textAlign = "center";
+          context.fillText("Game Over", canvas.width / 2, canvas.height * 0.8); // for (var i = 0; i < towerElements.length; i++) {
+          //   towerElements[i].removeEventListener(
+          //     "click",
+          //     this.createElement,
+          //     false
+          //   );
+          // }
+          // for (var i = 0; i < towerElements2.length; i++) {
+          //   towerElements2[i].removeEventListener(
+          //     "click",
+          //     this.muteVolume,
+          //     false
+          //   );
+          // }
 
-          if (!GameState.cancelNextRequest) {
-            requestAnimationFrame(gameLoop);
-          }
+          startButton.removeEventListener("click", this.startNewWave);
+          setTimeout(function () {
+            self.manager.showScreen("mainmenu");
+          }, 2000);
         }
+
+        lastTimeStamp = time;
       }
 
       requestAnimationFrame(gameLoop);
