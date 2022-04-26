@@ -347,7 +347,7 @@ function () {
         document.getElementById("power").innerHTML = towerTypeSelected;
       } else {
         document.getElementById("selectedInfo").style.display = "none";
-        document.getElementById("money").innerHTML = "";
+        document.getElementById("moneyRequired").innerHTML = "";
         document.getElementById("power").innerHTML = "";
       }
     }
