@@ -158,14 +158,99 @@ loader = (function () {
   var dir = href.substring(0, href.lastIndexOf("/")) + "/";
 
   let assetOrder = [
+    {
+      key: "fire",
+      source: dir + "assets/fire.png",
+    },
+    {
+      key: "smoke",
+      source: dir + "assets/smoke.png",
+    },
+
+    {
+      key: "tower1",
+      source: dir + "assets/turret/turret-1-1.png",
+    },
+
+    {
+      key: "tower2",
+      source: dir + "assets/turret/turret-4-1.png",
+    },
+
+    {
+      key: "tower3",
+      source: dir + "assets/turret/turret-6-1.png",
+    },
+
     // {
-    //   key: "fire",
-    //   source: dir + "assets/fire.png",
+    //   key: "base",
+    //   source: dir + "assets/turret/turret-base.gif",
     // },
-    // {
-    //   key: "smoke",
-    //   source: dir + "assets/smoke.png",
-    // },
+
+    {
+      key: "creep10",
+      source: dir + "assets/creeps1/1.png",
+    },
+
+    {
+      key: "creep12",
+      source: dir + "assets/creeps1/2.png",
+    },
+
+    {
+      key: "creep13",
+      source: dir + "assets/creeps1/3.png",
+    },
+
+    {
+      key: "creep14",
+      source: dir + "assets/creeps1/4.png",
+    },
+
+    {
+      key: "creep15",
+      source: dir + "assets/creeps1/5.png",
+    },
+
+    {
+      key: "creep20",
+      source: dir + "assets/creeps2/1.png",
+    },
+
+    {
+      key: "creep21",
+      source: dir + "assets/creeps2/2.png",
+    },
+
+    {
+      key: "creep22",
+      source: dir + "assets/creeps2/3.png",
+    },
+
+    {
+      key: "creep23",
+      source: dir + "assets/creeps2/4.png",
+    },
+
+    {
+      key: "creep30",
+      source: dir + "assets/creeps3/1.png",
+    },
+
+    {
+      key: "creep31",
+      source: dir + "assets/creeps3/2.png",
+    },
+
+    {
+      key: "creep32",
+      source: dir + "assets/creeps3/3.png",
+    },
+
+    {
+      key: "creep33",
+      source: dir + "assets/creeps3/4.png",
+    },
     // {
     //   key: "end audio",
     //   source: dir + "assets/sounds/game_end.mp3",
@@ -258,6 +343,7 @@ loader = (function () {
   function mainComplete() {
     canvas = document.getElementById("canvas-main");
     context = canvas.getContext("2d");
+    console.log(GameState);
     // const game1 = new Game();
     GameState.menu.initialize();
   }
