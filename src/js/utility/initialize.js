@@ -15,6 +15,9 @@ towerTypeSelected = 1;
 bombAffectRadius = 150;
 gameSound = null;
 creepGoing = "top";
+wave = 10;
+maxWave = 10;
+nextWave = false;
 
 const cellWidth = 50;
 const rows = 10;

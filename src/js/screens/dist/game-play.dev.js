@@ -33,7 +33,7 @@ function () {
     this.render = this.render.bind(this);
     this.firstTime = true;
     this.downHandler = this.downHandler.bind(this);
-    this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
+    this.enemyCreator = null;
     this.canPlace = false;
     this.upgrade = this.upgrade.bind(this);
     this.sell = this.sell.bind(this);
@@ -131,6 +131,7 @@ function () {
   }, {
     key: "muteVolume",
     value: function muteVolume(e) {
+      e.preventDefault();
       var towerElements = document.getElementsByClassName("volumeButton");
 
       for (var i = 0; i < towerElements.length; i++) {
@@ -149,10 +150,19 @@ function () {
       }
     }
   }, {
+    key: "startNewWave",
+    value: function startNewWave(e) {
+      e.preventDefault();
+      this.initialize();
+      nextWave = false;
+      GameState.cancelNextRequest = true;
+    }
+  }, {
     key: "initialize",
     value: function initialize() {
       var self = this;
       this.myMouse = new Mouse();
+      this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
       self.myKeyboard.register("Escape", function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
@@ -183,6 +193,8 @@ function () {
         towerElements2[i].addEventListener("click", this.muteVolume, false);
       }
 
+      var startButton = document.getElementById("startButton");
+      startButton.addEventListener("click", this.startNewWave);
       this.bulletController = new BulletController(this.creeps); // this.towers.push(
       //   createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
       // );
@@ -338,8 +350,15 @@ function () {
       document.getElementById("currentScore").innerHTML = score;
       document.getElementById("lives").innerHTML = GameState.life;
       document.getElementById("money").innerHTML = money;
-      var wave = wavesDeno + "/" + wavesNeno;
-      document.getElementById("wave").innerHTML = wave;
+      var waveString = wave + "/" + maxWave;
+      document.getElementById("wave").innerHTML = waveString;
+      var startButton = document.getElementById("startButton");
+      startButton.style.display = "none";
+      console.log(nextWave);
+
+      if (nextWave) {
+        startButton.style.display = "block";
+      }
 
       if (moneyRequired > 0) {
         document.getElementById("selectedInfo").style.display = "block";
@@ -437,13 +456,24 @@ function () {
       GameState.cancelNextRequest = false;
 
       function gameLoop(time) {
-        self.processInput(time - lastTimeStamp);
-        self.update(time - lastTimeStamp);
-        lastTimeStamp = time;
-        self.render();
+        console.log(self.creeps.length);
+        console.log("wave is " + wave);
+        console.log("life is " + self.enemyCreator.totalEnemy);
 
-        if (!GameState.cancelNextRequest) {
-          requestAnimationFrame(gameLoop);
+        if (self.enemyCreator.totalEnemy <= 0 && self.creeps.length == 0 && wave > 0) {
+          console.log("is true");
+          nextWave = true;
+          wave--;
+          self.render();
+        } else {
+          self.processInput(time - lastTimeStamp);
+          self.update(time - lastTimeStamp);
+          lastTimeStamp = time;
+          self.render();
+
+          if (!GameState.cancelNextRequest) {
+            requestAnimationFrame(gameLoop);
+          }
         }
       }
 

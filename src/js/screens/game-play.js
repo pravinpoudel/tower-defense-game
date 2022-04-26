@@ -21,7 +21,7 @@ class GamePlay {
     this.render = this.render.bind(this);
     this.firstTime = true;
     this.downHandler = this.downHandler.bind(this);
-    this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
+    this.enemyCreator = null;
     this.canPlace = false;
     this.upgrade = this.upgrade.bind(this);
     this.sell = this.sell.bind(this);
@@ -108,7 +108,7 @@ class GamePlay {
             towerTypeSelected
           )
         );
-        console.log(this.towers)
+        console.log(this.towers);
         money = money - moneyRequired;
         moneyRequired = 0;
         towerTypeSelected = 0;
@@ -124,23 +124,32 @@ class GamePlay {
   }
 
   muteVolume(e) {
+    e.preventDefault();
     var towerElements = document.getElementsByClassName("volumeButton");
     for (var i = 0; i < towerElements.length; i++) {
       towerElements[i].style.display = "block";
     }
     let myId = this.getAttribute("data-myId");
     document.getElementById(myId).style.display = "none";
-    if(myId == "muteButton"){
+    if (myId == "muteButton") {
       gameSound.stopAllSound();
     }
-    if(myId == "unmuteButton"){
+    if (myId == "unmuteButton") {
       gameSound.unMuteSound();
     }
+  }
+
+  startNewWave= (e)=> {
+    e.preventDefault();
+    this.initialize();
+    nextWave = false;
+    GameState.cancelNextRequest = true;
   }
 
   initialize() {
     let self = this;
     this.myMouse = new Mouse();
+    this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
     self.myKeyboard.register("Escape", function () {
       GameState.cancelNextRequest = true;
       self.manager.showScreen("mainmenu");
@@ -166,6 +175,8 @@ class GamePlay {
     for (var i = 0; i < towerElements2.length; i++) {
       towerElements2[i].addEventListener("click", this.muteVolume, false);
     }
+    var startButton = document.getElementById("startButton");
+    startButton.addEventListener("click", this.startNewWave);
 
     this.bulletController = new BulletController(this.creeps);
 
@@ -259,15 +270,14 @@ class GamePlay {
         let towersLength = this.towers.length;
         for (let i = 0; i < towersLength; i++) {
           let tower = this.towers[i];
-          if((typeof creep.flying ==  "undefined") && tower.specs.type == 3){
+          if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
             console.log("flying" + " " + i);
-          }
-
-          else if((typeof creep.flying !=  "undefined") && tower.specs.type < 3){
+          } else if (
+            typeof creep.flying != "undefined" &&
+            tower.specs.type < 3
+          ) {
             console.log("flying" + " " + i);
-          }
-
-          else{
+          } else {
             if (isColliding(creep, tower, 100)) {
               tower.setTarget(
                 creep.player.specs.center.x,
@@ -293,7 +303,6 @@ class GamePlay {
               }
             }
           }
-         
 
           tower.update(elapsedTime);
         }
@@ -320,19 +329,24 @@ class GamePlay {
     document.getElementById("currentScore").innerHTML = score;
     document.getElementById("lives").innerHTML = GameState.life;
     document.getElementById("money").innerHTML = money;
-    let wave = wavesDeno + "/" + wavesNeno;
-    document.getElementById("wave").innerHTML = wave;
+    let waveString = wave + "/" + maxWave;
+    document.getElementById("wave").innerHTML = waveString;
+    var startButton = document.getElementById("startButton");
+    startButton.style.display = "none";
+    console.log(nextWave);
+    if (nextWave) {
+      startButton.style.display = "block";
+    }
+
     if (moneyRequired > 0) {
       document.getElementById("selectedInfo").style.display = "block";
       document.getElementById("moneyRequired").innerHTML = moneyRequired;
       document.getElementById("power").innerHTML = towerTypeSelected;
-    }
-    else{
+    } else {
       document.getElementById("selectedInfo").style.display = "none";
       document.getElementById("moneyRequired").innerHTML = "";
-      document.getElementById("power").innerHTML = "";   
+      document.getElementById("power").innerHTML = "";
     }
-
   }
 
   render() {
@@ -415,17 +429,30 @@ class GamePlay {
     gameSound.loadAudio();
     // this.sound.playSound("end");
     this.registerKey();
-
     let lastTimeStamp = performance.now();
     GameState.cancelNextRequest = false;
 
     function gameLoop(time) {
-      self.processInput(time - lastTimeStamp);
-      self.update(time - lastTimeStamp);
-      lastTimeStamp = time;
-      self.render();
-      if (!GameState.cancelNextRequest) {
-        requestAnimationFrame(gameLoop);
+      console.log(self.creeps.length);
+      console.log("wave is " + wave);
+      console.log("life is " + self.enemyCreator.totalEnemy);
+      if (
+        self.enemyCreator.totalEnemy <= 0 &&
+        self.creeps.length == 0 &&
+        wave > 0
+      ) {
+        console.log("is true");
+        nextWave = true;
+        wave--;
+        self.render();
+      } else {
+        self.processInput(time - lastTimeStamp);
+        self.update(time - lastTimeStamp);
+        lastTimeStamp = time;
+        self.render();
+        if (!GameState.cancelNextRequest) {
+          requestAnimationFrame(gameLoop);
+        }
       }
     }
     requestAnimationFrame(gameLoop);

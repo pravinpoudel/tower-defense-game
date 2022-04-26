@@ -178,3 +178,7 @@ background-image: url("../assets/turret/turret-1-1.png");
     font-weight: 700;
     text-align: left;
 }
+
+#startButton{
+    right: 40% !important;
+}
