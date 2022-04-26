@@ -29,6 +29,7 @@ class gameModel {
     this.collided = false;
     this.health = specs.health;
     this.maxHealth = specs.health;
+    this.flying = specs.flying;
     this.meterWidth = 40;
     this.yoffsetBar = 20;
   }

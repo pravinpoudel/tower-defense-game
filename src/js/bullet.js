@@ -1,5 +1,5 @@
 class Bullet {
-  constructor(x, y, creep, power) {
+  constructor(x, y, creep, power, type) {
     this.x = x;
     this.y = y;
     this.direction = null;
@@ -7,6 +7,7 @@ class Bullet {
     this.height = 2;
     this.radius = 5;
     this.power = power;
+    this.type = type;
     this.speed = 200;
     this.targetCreep = creep;
     this.findDirection = this.findDirection.bind(this);

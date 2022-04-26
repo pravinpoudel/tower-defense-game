@@ -51,9 +51,9 @@ function () {
           } else {
             towerClicked.lotalElapsedTime += elapsedTime;
 
-            if (towerClicked.lotalElapsedTime >= 500) {
+            if (towerClicked.lotalElapsedTime >= 200) {
               console.log("upgraded");
-              towerClicked.lotalElapsedTime -= 500;
+              towerClicked.lotalElapsedTime -= 200;
               towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
               towerClicked.specs.power = towerClicked.specs.power + 1;
               money -= moneyRequired;
@@ -82,6 +82,7 @@ function () {
     value: function createElement() {
       var myTower = this.getAttribute("data-myName");
       moneyRequired = parseInt(this.getAttribute("data-cost"));
+      towerTypeSelected = parseInt(this.getAttribute("data-type"));
       selectedTower = "assets/turret/" + myTower;
 
       if (moneyRequired <= money) {
@@ -99,8 +100,9 @@ function () {
         var decision = canCreated(this.towers) && this.canPlace;
 
         if (decision) {
-          this.towers.push(createTower(selectedTower, Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 1000, 1, moneyRequired));
+          this.towers.push(createTower(selectedTower, Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, moneyRequired, towerTypeSelected));
           money = money - moneyRequired;
+          towerTypeSelected = 0;
           console.log(moneyRequired);
         }
 
@@ -134,12 +136,6 @@ function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
       });
-      self.myKeyboard.register("s", function (elapsedTime) {
-        self.sell(elapsedTime);
-      });
-      self.myKeyboard.register("u", function (elapsedTime) {
-        self.upgrade(elapsedTime);
-      });
 
       for (var _i = 0; _i < rows; _i++) {
         var row = [];
@@ -166,7 +162,7 @@ function () {
         towerElements2[i].addEventListener("click", this.muteVolume, false);
       }
 
-      this.bulletController = new BulletController(); // this.towers.push(
+      this.bulletController = new BulletController(this.creeps); // this.towers.push(
       //   createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
       // );
       // this.towers.push(
@@ -202,8 +198,15 @@ function () {
     value: function registerKey() {
       var self = this;
       var upgrade = localStorage["upgrade"];
+      console.log(upgrade);
       var sell = localStorage["sell"];
-      var start = localStorage["start"]; // self.myKeyboard.cleanAll();
+      var start = localStorage["start"];
+      self.myKeyboard.register(upgrade, function (elapsedTime) {
+        self.upgrade(elapsedTime);
+      });
+      self.myKeyboard.register(sell, function (elapsedTime) {
+        self.sell(elapsedTime);
+      }); // self.myKeyboard.cleanAll();
     }
   }, {
     key: "update",
@@ -272,7 +275,7 @@ function () {
                 direction = normalize(direction);
                 var bulletStartX = tower.specs.center.x;
                 var bulletStartY = tower.specs.center.y;
-                this.bulletController.addBullet(bulletStartX, bulletStartY, creep, tower.specs.power);
+                this.bulletController.addBullet(bulletStartX, bulletStartY, creep, tower.specs.power, tower.specs.type);
               }
             }
 

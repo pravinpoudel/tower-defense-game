@@ -11,6 +11,8 @@ selectedTower = null;
 mouseCapture = false;
 towerClicked = null;
 moneyRequired = 0;
+towerTypeSelected = 1;
+bombAffectRadius = 150;
 
 const cellWidth = 50;
 const rows = 10;
@@ -51,14 +53,14 @@ const canvasPosition = canvas.getBoundingClientRect();
 //   mouse.y = undefined;
 // });
 
-if (!localStorage.getItem("upgrade")) {
+if (localStorage["upgrade"] == "null") {
   localStorage.setItem("upgrade", "u");
 }
 if (!localStorage.getItem("sell")) {
   localStorage.setItem("sell", "s");
 }
 if (!localStorage.getItem("start")) {
-  localStorage.setItem("start", "g");
+  localStorage.setItem("start", "s");
 }
 
 console.log(

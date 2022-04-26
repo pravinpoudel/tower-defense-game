@@ -12,6 +12,8 @@ selectedTower = null;
 mouseCapture = false;
 towerClicked = null;
 moneyRequired = 0;
+towerTypeSelected = 1;
+bombAffectRadius = 150;
 var cellWidth = 50;
 var rows = 10;
 var cols = 10;
@@ -43,7 +45,7 @@ var canvasPosition = canvas.getBoundingClientRect(); // canvas.addEventListener(
 //   mouse.y = undefined;
 // });
 
-if (!localStorage.getItem("upgrade")) {
+if (localStorage["upgrade"] == "null") {
   localStorage.setItem("upgrade", "u");
 }
 
@@ -52,7 +54,7 @@ if (!localStorage.getItem("sell")) {
 }
 
 if (!localStorage.getItem("start")) {
-  localStorage.setItem("start", "g");
+  localStorage.setItem("start", "s");
 }
 
 console.log(localStorage["upgrade"], localStorage["shell"], localStorage["start"]); // window.addEventListener("resize", resizeCanvas, false);

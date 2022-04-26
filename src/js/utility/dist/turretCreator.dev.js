@@ -1,6 +1,6 @@
 "use strict";
 
-function createTower(url, x, y, delay, power, cost) {
+function createTower(url, x, y, delay, power, cost, type) {
   var tower = new Tower({
     baseSprite: "assets/tile-1-center.gif",
     weaponSprite: url,
@@ -16,7 +16,8 @@ function createTower(url, x, y, delay, power, cost) {
     // radians per second
     delay: delay,
     power: power,
-    cost: cost
+    cost: cost,
+    type: type
   });
   return tower;
 }

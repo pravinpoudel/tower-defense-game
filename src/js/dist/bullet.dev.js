@@ -9,7 +9,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Bullet =
 /*#__PURE__*/
 function () {
-  function Bullet(x, y, creep, power) {
+  function Bullet(x, y, creep, power, type) {
     _classCallCheck(this, Bullet);
 
     this.x = x;
@@ -19,6 +19,7 @@ function () {
     this.height = 2;
     this.radius = 5;
     this.power = power;
+    this.type = type;
     this.speed = 200;
     this.targetCreep = creep;
     this.findDirection = this.findDirection.bind(this);

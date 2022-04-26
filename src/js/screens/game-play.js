@@ -36,9 +36,9 @@ class GamePlay {
         }
         else{
           towerClicked.lotalElapsedTime += elapsedTime;
-          if(towerClicked.lotalElapsedTime >=500){    
+          if(towerClicked.lotalElapsedTime >=200){    
             console.log("upgraded")
-            towerClicked.lotalElapsedTime -= 500;
+            towerClicked.lotalElapsedTime -= 200;
             towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
             towerClicked.specs.power = towerClicked.specs.power + 1;  
             money -= moneyRequired;  
@@ -65,6 +65,7 @@ class GamePlay {
   createElement() {
     let myTower = this.getAttribute("data-myName");
     moneyRequired = parseInt(this.getAttribute("data-cost"));
+    towerTypeSelected = parseInt(this.getAttribute("data-type"));
     selectedTower = "assets/turret/" + myTower;
     if(moneyRequired<=money){
       renderCircle = true;
@@ -84,13 +85,15 @@ class GamePlay {
             selectedTower,
             Math.floor(mouse.x / cellWidth) * cellWidth,
             Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
-            1000,
+            2500,
             1,
-            moneyRequired
+            moneyRequired,
+            towerTypeSelected
           )
         );
-        money = money- moneyRequired;
-        console.log(moneyRequired)
+        money = money - moneyRequired;
+        towerTypeSelected = 0;
+        console.log(moneyRequired);
       }
       const canvasPosition = canvas.getBoundingClientRect();
     } else {
@@ -118,15 +121,6 @@ class GamePlay {
       self.manager.showScreen("mainmenu");
     });
 
-    self.myKeyboard.register("s", function(elapsedTime){
-      self.sell(elapsedTime);
-    });
-
-    self.myKeyboard.register("u", function(elapsedTime){
-      self.upgrade(elapsedTime);
-    });
-
-
     for (let i = 0; i < rows; i++) {
       let row = [];
       for (let j = 0; j < cols; j++) {
@@ -148,7 +142,7 @@ class GamePlay {
       towerElements2[i].addEventListener("click", this.muteVolume, false);
     }
 
-    this.bulletController = new BulletController();
+    this.bulletController = new BulletController(this.creeps);
 
     // this.towers.push(
     //   createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
@@ -184,8 +178,18 @@ class GamePlay {
   registerKey() {
     let self = this;
     let upgrade = localStorage["upgrade"];
+    console.log(upgrade);
     let sell = localStorage["sell"];
     let start = localStorage["start"];
+
+    self.myKeyboard.register(upgrade, function (elapsedTime) {
+      self.upgrade(elapsedTime);
+    });
+
+    self.myKeyboard.register(sell, function (elapsedTime) {
+      self.sell(elapsedTime);
+    });
+
     // self.myKeyboard.cleanAll();
   }
 
@@ -247,7 +251,8 @@ class GamePlay {
                 bulletStartX,
                 bulletStartY,
                 creep,
-                tower.specs.power
+                tower.specs.power,
+                tower.specs.type
               );
             }
           }

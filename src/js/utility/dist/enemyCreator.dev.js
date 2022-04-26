@@ -18,10 +18,10 @@ function makeCreateCreep2(x, y) {
 
 function makeCreateCreep3(x, y) {
   var spriteSheet = ["assets/creeps3/1.png", "assets/creeps3/2.png", "assets/creeps3/3.png", "assets/creeps3/4.png"];
-  return this.createEnemy(x, y, spriteSheet, 6);
+  return this.createEnemy(x, y, spriteSheet, 6, true);
 }
 
-function createEnemy(x, y, spriteSheet, health) {
+function createEnemy(x, y, spriteSheet, health, flying) {
   //all the event to handle movement
   var playerEvent = new MovingEvents({
     size: {
@@ -47,7 +47,8 @@ function createEnemy(x, y, spriteSheet, health) {
     spriteSheet: spriteSheet,
     spriteCount: spriteSheet.length,
     spriteTime: timeArray,
-    health: health
+    health: health,
+    flying: flying
   }; //make a playerModel
 
   var playerModel = new gameModel(playerSpecs, playerEvent, true);
@@ -73,7 +74,19 @@ function () {
         if (this.totalEnemy-- > 0) {
           this.animationTime -= 500;
           var yPosition = generateRandom();
-          return makeCreateCreep2(0, yPosition * 50 + 225);
+          var kind = Math.floor(Math.random() * 2);
+
+          if (kind == 0) {
+            return makeCreateCreep1(0, yPosition * 50 + 225);
+          }
+
+          if (kind == 1) {
+            return makeCreateCreep2(0, yPosition * 50 + 225);
+          }
+
+          if (kind == 2) {
+            return makeCreateCreep3(0, yPosition * 50 + 225);
+          }
         }
       }
     }
