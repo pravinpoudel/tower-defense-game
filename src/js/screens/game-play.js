@@ -340,16 +340,10 @@ class GamePlay {
     context.fillStyle = "green";
     context.fillRect(0, 0 + 200, 600, 800);
     context.clearRect(50, 250, 500, 500);
-
-    if (creepGoing == "left") {
-      context.clearRect(0, 400, 50, 200);
-      context.clearRect(550, 400, 50, 200);
-    }
-
-    if(creepGoing == "top"){
-      context.clearRect(175, 200, 225, 50);
-      context.clearRect(175, 750, 225, 50);
-    }
+    context.clearRect(0, 400, 50, 200);
+    context.clearRect(550, 400, 50, 200);
+    context.clearRect(175, 200, 225, 50);
+    context.clearRect(175, 750, 225, 50);
 
     if (mouse.isActive) {
       let placementFlag = false;
