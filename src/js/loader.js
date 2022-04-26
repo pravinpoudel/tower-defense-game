@@ -183,6 +183,11 @@ loader = (function () {
     },
 
     {
+      key: "tower4",
+      source: dir + "assets/turret/turret-5-1.png",
+    },
+
+    {
       key: "base",
       source: dir + "assets/turret/turret-base.png",
     },

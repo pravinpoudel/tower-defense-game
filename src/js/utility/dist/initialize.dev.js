@@ -14,6 +14,8 @@ towerClicked = null;
 moneyRequired = 0;
 towerTypeSelected = 1;
 bombAffectRadius = 150;
+gameSound = null;
+creepGoing = "top";
 var cellWidth = 50;
 var rows = 10;
 var cols = 10;
@@ -118,7 +120,7 @@ function drawTower(radius) {
 
 function generateRandom() {
   var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 4;
-  var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 7;
+  var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 8;
   var difference = max - min;
   var random = Math.random();
   random = Math.floor(random * difference) + min;

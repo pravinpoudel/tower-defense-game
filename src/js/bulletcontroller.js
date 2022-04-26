@@ -34,13 +34,7 @@ class BulletController {
           )
         ) {
           //it is not bomb
-          if (this.bullets[i].type == 1) {
-            this.bullets[i].targetCreep.health -= this.bullets[i].power;
-            if (this.bullets[i].targetCreep.health < 0) {
-              this.bullets[i].targetCreep.health = 0;
-            }
-          }
-
+        
           //if guided missile; affect in radius of "bombAffectRadius"
           if (this.bullets[i].type == 2) {
             let enemiesLength = this.enemies.length;
@@ -60,31 +54,36 @@ class BulletController {
                   this.enemies[m].health < 0 ? 0 : this.enemies[m].health;
               }
             }
-          }
-
-          if (this.bullets[i].type == 3) {
-            let enemiesLength = this.enemies.length;
-            for (let m = 0; m < enemiesLength; m++) {
-              // if(enemy is flyover)
-              if (this.enemies[m].flying) {
-                isColliding2(
-                  this.bullets[i].x,
-                  this.bullets[i].y,
-                  5,
-                  this.enemies[m].player.specs.center.x,
-                  this.enemies[m].player.specs.center.y,
-                  Math.floor(this.enemies[m].player.specs.size.x / 2)
-                );
-                {
-                  console.log("i am collided with", m);
-                  this.enemies[m].health -= this.bullets[i].power;
-                  this.enemies[m].health =
-                    this.enemies[m].health < 0 ? 0 : this.enemies[m].health;
-                }
-              }
+          } else {
+            this.bullets[i].targetCreep.health -= this.bullets[i].power;
+            if (this.bullets[i].targetCreep.health < 0) {
+              this.bullets[i].targetCreep.health = 0;
             }
           }
 
+          // if (this.bullets[i].type == 3) {
+          //   let enemiesLength = this.enemies.length;
+          //   for (let m = 0; m < enemiesLength; m++) {
+          //     // if(enemy is flyover)
+          //     if (this.enemies[m].flying) {
+          //       isColliding2(
+          //         this.bullets[i].x,
+          //         this.bullets[i].y,
+          //         5,
+          //         this.enemies[m].player.specs.center.x,
+          //         this.enemies[m].player.specs.center.y,
+          //         Math.floor(this.enemies[m].player.specs.size.x / 2)
+          //       );
+          //       {
+          //         console.log("i am collided with", m);
+          //         this.enemies[m].health -= this.bullets[i].power;
+          //         this.enemies[m].health =
+          //           this.enemies[m].health < 0 ? 0 : this.enemies[m].health;
+          //       }
+          //     }
+          //   }
+          // }
+          gameSound.playSound("explosion");
           this.bullets.splice(i, 1);
           i--;
           bulletLength--;

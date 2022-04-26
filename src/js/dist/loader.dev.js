@@ -125,6 +125,9 @@ loader = function () {
     key: "tower3",
     source: dir + "assets/turret/turret-4-1.png"
   }, {
+    key: "tower4",
+    source: dir + "assets/turret/turret-5-1.png"
+  }, {
     key: "base",
     source: dir + "assets/turret/turret-base.png"
   }, {

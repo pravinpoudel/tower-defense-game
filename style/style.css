@@ -144,6 +144,9 @@ background-image: url("../assets/turret/turret-1-1.png");
 #tower3{
     background-image: url("../assets/turret/turret-4-1.png");
 }
+#tower4{
+    background-image: url("../assets/turret/turret-5-1.png");
+}
 
 #unmuteButton{
     display: none;

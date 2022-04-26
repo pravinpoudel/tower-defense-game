@@ -21,7 +21,7 @@ class GamePlay {
     this.render = this.render.bind(this);
     this.firstTime = true;
     this.downHandler = this.downHandler.bind(this);
-    this.enemyCreator = new EnemyCreator(10);
+    this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
     this.canPlace = false;
     this.upgrade = this.upgrade.bind(this);
     this.sell = this.sell.bind(this);
@@ -48,6 +48,7 @@ class GamePlay {
                 towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
                 towerClicked.specs.power = towerClicked.specs.power + 1;
                 money -= moneyRequired;
+                gameSound.playSound("add");
               }
             }
           }
@@ -72,6 +73,7 @@ class GamePlay {
         ) {
           money += Math.floor(0.7 * towerClicked.specs.cost);
           this.towers.splice(i, 1);
+          gameSound.playSound("die");
           towerClicked = null;
         }
       }
@@ -106,8 +108,10 @@ class GamePlay {
             towerTypeSelected
           )
         );
+        console.log(this.towers)
         money = money - moneyRequired;
         towerTypeSelected = 0;
+        gameSound.playSound("add");
       }
       const canvasPosition = canvas.getBoundingClientRect();
     } else {
@@ -125,6 +129,12 @@ class GamePlay {
     }
     let myId = this.getAttribute("data-myId");
     document.getElementById(myId).style.display = "none";
+    if(myId == "muteButton"){
+      gameSound.stopAllSound();
+    }
+    if(myId == "unmuteButton"){
+      gameSound.unMuteSound();
+    }
   }
 
   initialize() {
@@ -217,7 +227,7 @@ class GamePlay {
     for (let i = 0; i < creepsLength; i++) {
       let creep = this.creeps[i];
       if (creep) {
-        if (creep.reachRight()) {
+        if (creep.player.reachRight() || creep.player.reachBottom()) {
           this.creeps.splice(i, 1);
           GameState.life--;
           console.log(GameState.life);
@@ -228,6 +238,7 @@ class GamePlay {
           let y = creep.player.specs.center.y;
           score += creep.maxHealth;
           this.creeps.splice(i, 1);
+          gameSound.playSound("die");
           let textEvent = new MovingEvents({
             size: { x: 50, y: 50 }, // Size in pixels
             center: { x: x, y: y },
@@ -247,29 +258,41 @@ class GamePlay {
         let towersLength = this.towers.length;
         for (let i = 0; i < towersLength; i++) {
           let tower = this.towers[i];
-          if (isColliding(creep, tower, 100)) {
-            tower.setTarget(
-              creep.player.specs.center.x,
-              creep.player.specs.center.y
-            );
-            if (tower.canShoot) {
-              let direction = {
-                x: tower.specs.target.x - tower.specs.center.x,
-                y: tower.specs.target.y - tower.specs.center.y,
-              };
-              direction = normalize(direction);
-              let bulletStartX = tower.specs.center.x;
-              let bulletStartY = tower.specs.center.y;
+          if((typeof creep.flying ==  "undefined") && tower.specs.type == 3){
+            console.log("flying" + " " + i);
+          }
 
-              this.bulletController.addBullet(
-                bulletStartX,
-                bulletStartY,
-                creep,
-                tower.specs.power,
-                tower.specs.type
+          else if((typeof creep.flying !=  "undefined") && tower.specs.type < 3){
+            console.log("flying" + " " + i);
+          }
+
+          else{
+            if (isColliding(creep, tower, 100)) {
+              tower.setTarget(
+                creep.player.specs.center.x,
+                creep.player.specs.center.y
               );
+              if (tower.canShoot) {
+                let direction = {
+                  x: tower.specs.target.x - tower.specs.center.x,
+                  y: tower.specs.target.y - tower.specs.center.y,
+                };
+                direction = normalize(direction);
+                let bulletStartX = tower.specs.center.x;
+                let bulletStartY = tower.specs.center.y;
+
+                this.bulletController.addBullet(
+                  bulletStartX,
+                  bulletStartY,
+                  creep,
+                  tower.specs.power,
+                  tower.specs.type
+                );
+                gameSound.playSound("shoot");
+              }
             }
           }
+         
 
           tower.update(elapsedTime);
         }
@@ -305,8 +328,16 @@ class GamePlay {
     context.fillStyle = "green";
     context.fillRect(0, 0 + 200, 600, 800);
     context.clearRect(50, 250, 500, 500);
-    context.clearRect(0, 400, 50, 200);
-    context.clearRect(550, 400, 50, 200);
+
+    if (creepGoing == "left") {
+      context.clearRect(0, 400, 50, 200);
+      context.clearRect(550, 400, 50, 200);
+    }
+
+    if(creepGoing == "top"){
+      context.clearRect(175, 200, 225, 50);
+      context.clearRect(175, 750, 225, 50);
+    }
 
     if (mouse.isActive) {
       let placementFlag = false;
@@ -374,8 +405,8 @@ class GamePlay {
 
   run() {
     let self = this;
-    this.sound = new Sound();
-    this.sound.loadAudio();
+    gameSound = new Sound();
+    gameSound.loadAudio();
     // this.sound.playSound("end");
     this.registerKey();
 

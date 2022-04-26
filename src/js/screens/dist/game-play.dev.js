@@ -33,7 +33,7 @@ function () {
     this.render = this.render.bind(this);
     this.firstTime = true;
     this.downHandler = this.downHandler.bind(this);
-    this.enemyCreator = new EnemyCreator(10);
+    this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
     this.canPlace = false;
     this.upgrade = this.upgrade.bind(this);
     this.sell = this.sell.bind(this);
@@ -65,6 +65,7 @@ function () {
                   towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
                   towerClicked.specs.power = towerClicked.specs.power + 1;
                   money -= moneyRequired;
+                  gameSound.playSound("add");
                 }
               }
             }
@@ -82,6 +83,7 @@ function () {
           if (isColliding2(this.towers[i].specs.center.x - cellWidth / 2, this.towers[i].specs.center.y - cellWidth / 2, cellWidth, towerClicked.specs.center.x - cellWidth / 2, towerClicked.specs.center.y - cellWidth / 2, cellWidth)) {
             money += Math.floor(0.7 * towerClicked.specs.cost);
             this.towers.splice(i, 1);
+            gameSound.playSound("die");
             towerClicked = null;
           }
         }
@@ -110,8 +112,10 @@ function () {
 
         if (decision) {
           this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, moneyRequired, towerTypeSelected));
+          console.log(this.towers);
           money = money - moneyRequired;
           towerTypeSelected = 0;
+          gameSound.playSound("add");
         }
 
         var canvasPosition = canvas.getBoundingClientRect();
@@ -134,6 +138,14 @@ function () {
 
       var myId = this.getAttribute("data-myId");
       document.getElementById(myId).style.display = "none";
+
+      if (myId == "muteButton") {
+        gameSound.stopAllSound();
+      }
+
+      if (myId == "unmuteButton") {
+        gameSound.unMuteSound();
+      }
     }
   }, {
     key: "initialize",
@@ -231,7 +243,7 @@ function () {
         var creep = this.creeps[i];
 
         if (creep) {
-          if (creep.reachRight()) {
+          if (creep.player.reachRight() || creep.player.reachBottom()) {
             this.creeps.splice(i, 1);
             GameState.life--;
             console.log(GameState.life);
@@ -243,6 +255,7 @@ function () {
             var y = creep.player.specs.center.y;
             score += creep.maxHealth;
             this.creeps.splice(i, 1);
+            gameSound.playSound("die");
             var textEvent = new MovingEvents({
               size: {
                 x: 50,
@@ -272,18 +285,25 @@ function () {
           for (var _i2 = 0; _i2 < towersLength; _i2++) {
             var tower = this.towers[_i2];
 
-            if (isColliding(creep, tower, 100)) {
-              tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
+            if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
+              console.log("flying" + " " + _i2);
+            } else if (typeof creep.flying != "undefined" && tower.specs.type < 3) {
+              console.log("flying" + " " + _i2);
+            } else {
+              if (isColliding(creep, tower, 100)) {
+                tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
 
-              if (tower.canShoot) {
-                var direction = {
-                  x: tower.specs.target.x - tower.specs.center.x,
-                  y: tower.specs.target.y - tower.specs.center.y
-                };
-                direction = normalize(direction);
-                var bulletStartX = tower.specs.center.x;
-                var bulletStartY = tower.specs.center.y;
-                this.bulletController.addBullet(bulletStartX, bulletStartY, creep, tower.specs.power, tower.specs.type);
+                if (tower.canShoot) {
+                  var direction = {
+                    x: tower.specs.target.x - tower.specs.center.x,
+                    y: tower.specs.target.y - tower.specs.center.y
+                  };
+                  direction = normalize(direction);
+                  var bulletStartX = tower.specs.center.x;
+                  var bulletStartY = tower.specs.center.y;
+                  this.bulletController.addBullet(bulletStartX, bulletStartY, creep, tower.specs.power, tower.specs.type);
+                  gameSound.playSound("shoot");
+                }
               }
             }
 
@@ -327,8 +347,16 @@ function () {
       context.fillStyle = "green";
       context.fillRect(0, 0 + 200, 600, 800);
       context.clearRect(50, 250, 500, 500);
-      context.clearRect(0, 400, 50, 200);
-      context.clearRect(550, 400, 50, 200);
+
+      if (creepGoing == "left") {
+        context.clearRect(0, 400, 50, 200);
+        context.clearRect(550, 400, 50, 200);
+      }
+
+      if (creepGoing == "top") {
+        context.clearRect(175, 200, 225, 50);
+        context.clearRect(175, 750, 225, 50);
+      }
 
       if (mouse.isActive) {
         var placementFlag = false;
@@ -396,8 +424,8 @@ function () {
     key: "run",
     value: function run() {
       var self = this;
-      this.sound = new Sound();
-      this.sound.loadAudio(); // this.sound.playSound("end");
+      gameSound = new Sound();
+      gameSound.loadAudio(); // this.sound.playSound("end");
 
       this.registerKey();
       var lastTimeStamp = performance.now();

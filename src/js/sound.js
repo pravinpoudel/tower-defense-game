@@ -35,16 +35,24 @@ class Sound {
 
   loadAudio() {
     this.sounds["end"] = this.loadSound(dir + "assets/sounds/game_end.mp3");
-    this.sounds["shoot"] = this.loadSound(dir + "assets/sounds/gun_shoot.wav");
-    this.sounds["collision"] = this.loadSound(
-      dir + "assets/sounds/collision.flac"
+    this.sounds["shoot"] = this.loadSound(dir + "assets/sounds/shoot.wav");
+    this.sounds["add"] = this.loadSound(dir + "assets/sounds/add.wav");
+
+    this.sounds["die"] = this.loadSound(dir + "assets/sounds/collision.flac");
+    this.sounds["explosion"] = this.loadSound(
+      dir + "assets/sounds/explosion.wav"
     );
   }
 
   stopAllSound() {
     for (const sound in this.sounds) {
-      this.sounds[sound].pause();
-      this.sounds[sound].currentTime = 0;
+      this.sounds[sound].volume = 0;
+    }
+  }
+
+  unMuteSound() {
+    for (const sound in this.sounds) {
+      this.sounds[sound].volume = 0.5;
     }
   }
 

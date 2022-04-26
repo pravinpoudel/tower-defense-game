@@ -112,6 +112,13 @@ function () {
       }
     }
   }, {
+    key: "reachBottom",
+    value: function reachBottom() {
+      if (this.specs.center.y > canvas.height - this.specs.size.y / 2) {
+        return true;
+      }
+    }
+  }, {
     key: "update",
     value: function update(elapsedTime) {
       if (this.specs.continousSpeed > 0) {
@@ -124,11 +131,10 @@ function () {
       } // if (this.specs.center.x > canvas.width - this.specs.size.x / 2) {
       //   this.specs.center.x = canvas.width - this.specs.size.x / 2;
       // }
+      // if (this.specs.center.y > canvas.height - this.specs.size.y / 2) {
+      //   this.specs.center.y = canvas.height - this.specs.size.y / 2;
+      // }
 
-
-      if (this.specs.center.y > canvas.height - this.specs.size.y / 2) {
-        this.specs.center.y = canvas.height - this.specs.size.y / 2;
-      }
 
       if (this.specs.center.y < this.specs.size.y / 2) {
         this.specs.center.y = this.specs.size.y / 2;
@@ -152,4 +158,4 @@ function () {
 
   return MovingEvents;
 }();
-//# sourceMappingURL=movingEvents.dev.js.map
+//# sourceMappingURL=movingevents.dev.js.map
