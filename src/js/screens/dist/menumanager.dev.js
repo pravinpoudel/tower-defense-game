@@ -24,7 +24,6 @@ function () {
       active = document.getElementsByClassName("active");
 
       for (screen = 0; screen < active.length; screen++) {
-        console.log(active[screen]);
         active[screen].classList.remove("active");
       }
 

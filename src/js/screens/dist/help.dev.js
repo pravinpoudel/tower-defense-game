@@ -21,7 +21,6 @@ function () {
     key: "initialize",
     value: function initialize() {
       var self = this;
-      console.log("help initialized");
       document.getElementById("id-help-back").addEventListener("click", function () {
         self.manager.showScreen("mainmenu");
       });

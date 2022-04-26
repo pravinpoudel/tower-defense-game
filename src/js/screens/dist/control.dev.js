@@ -28,7 +28,6 @@ function () {
       var _this = this;
 
       var self = this;
-      console.log("control initialized");
       document.getElementById("id-control-back").addEventListener("click", function () {
         self.manager.showScreen("mainmenu");
       });

@@ -53,6 +53,12 @@ loader = (function () {
     },
 
     {
+      scripts: ["level"],
+      message: "level is loaded",
+      onComplete: null,
+    },
+
+    {
       scripts: ["screens/game-play"],
       message: " game-play is loaded",
       onComplete: null,
@@ -353,14 +359,12 @@ loader = (function () {
   function mainComplete() {
     canvas = document.getElementById("canvas-main");
     context = canvas.getContext("2d");
-    console.log(GameState);
     // const game1 = new Game();
     GameState.menu.initialize();
   }
 
   function loaderInitiate() {
     let totalItems = assetOrder.length + scriptOrder.length;
-    console.log("hello");
     progressSlice = Math.floor(100 / totalItems);
     let loader = document.getElementById("loader");
     let timerId = setTimeout(loop, 1000);
@@ -371,7 +375,7 @@ loader = (function () {
       } else {
         loader.style.width = loaderWidth + "%";
       }
-      console.log(loaderWidth);
+      // console.log(loaderWidth);
     }
   }
 

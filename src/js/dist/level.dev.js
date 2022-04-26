@@ -6,30 +6,26 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var About =
+var Level =
 /*#__PURE__*/
 function () {
-  function About(manager) {
-    _classCallCheck(this, About);
+  function Level(enemyCreators) {
+    _classCallCheck(this, Level);
 
-    this.manager = manager;
-    this.initialize = this.initialize.bind(this);
-    this.run = this.run.bind(this);
+    this.wave = -1;
+    this.enemyCreators = enemyCreators;
   }
 
-  _createClass(About, [{
-    key: "initialize",
-    value: function initialize() {
-      var self = this;
-      document.getElementById("id-about-back").addEventListener("click", function () {
-        self.manager.showScreen("mainmenu");
-      });
+  _createClass(Level, [{
+    key: "sendNextWave",
+    value: function sendNextWave() {
+      this.wave++;
+      return this.enemyCreators[this.wave];
     }
-  }, {
-    key: "run",
-    value: function run() {}
   }]);
 
-  return About;
+  return Level;
 }();
-//# sourceMappingURL=about.dev.js.map
+
+var levels = [new Level([new EnemyCreator(3, "left", 1), new EnemyCreator(5, "left", 2), new EnemyCreator(10, "left", 2)]), new Level([new EnemyCreator(3, "top", 1), new EnemyCreator(5, "top", 2), new EnemyCreator(10, "top", 2)]), new Level([new EnemyCreator(3, "left", 2), new EnemyCreator(5, "top", 3), new EnemyCreator(10, "left", 3)])];
+//# sourceMappingURL=level.dev.js.map

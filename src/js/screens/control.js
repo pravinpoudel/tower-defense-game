@@ -12,7 +12,6 @@ class Control {
 
   initialize() {
     let self = this;
-    console.log("control initialized");
     document
       .getElementById("id-control-back")
       .addEventListener("click", function () {

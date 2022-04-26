@@ -15,9 +15,11 @@ towerTypeSelected = 1;
 bombAffectRadius = 150;
 gameSound = null;
 creepGoing = "top";
+totalCreepKilled = 0;
 wave = 10;
-maxWave = 10;
+maxWave = 3;
 nextWave = false;
+towerRadius = 100;
 
 const cellWidth = 50;
 const rows = 10;
@@ -68,11 +70,11 @@ if (!localStorage.getItem("start")) {
   localStorage.setItem("start", "s");
 }
 
-console.log(
-  localStorage["upgrade"],
-  localStorage["shell"],
-  localStorage["start"]
-);
+// console.log(
+//   localStorage["upgrade"],
+//   localStorage["shell"],
+//   localStorage["start"]
+// );
 
 // window.addEventListener("resize", resizeCanvas, false);
 
@@ -87,7 +89,6 @@ let screens = {
 };
 
 GameState.input = new Keyboard();
-console.log(GameState.input);
 screens.gameplay = new GamePlay(manager, GameState.input);
 GameState.screens = screens;
 

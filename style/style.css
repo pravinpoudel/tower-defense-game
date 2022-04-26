@@ -3,6 +3,8 @@
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
+    color: black;
+    background-color: wheat;
 
 }
 
@@ -162,7 +164,7 @@ background-image: url("../assets/turret/turret-1-1.png");
     right: 0%;
     font-size: 15px;
     border: 2px solid;
-    padding: 5px;
+    padding: 5px 10px;
     cursor: pointer;
     background-color:rgb(225 62 0);
     color: white;

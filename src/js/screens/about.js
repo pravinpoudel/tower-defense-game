@@ -7,7 +7,6 @@ class About {
 
   initialize() {
     let self = this;
-    console.log("about initialized");
     document
       .getElementById("id-about-back")
       .addEventListener("click", function () {

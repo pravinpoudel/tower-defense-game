@@ -31,3 +31,17 @@ canvas{
 #score_board p{
     /* font-size: 0.3em !important; */
 }
+
+#about{
+    /* display: flex !important;
+    vertical-align: middle;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    align-content: center; */
+}
+
+#credit_text{
+    padding: 23px;
+}
+

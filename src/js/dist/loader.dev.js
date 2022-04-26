@@ -39,6 +39,10 @@ loader = function () {
     message: "bulletcontroller is loaded",
     onComplete: null
   }, {
+    scripts: ["level"],
+    message: "level is loaded",
+    onComplete: null
+  }, {
     scripts: ["screens/game-play"],
     message: " game-play is loaded",
     onComplete: null
@@ -268,15 +272,13 @@ loader = function () {
 
   function mainComplete() {
     canvas = document.getElementById("canvas-main");
-    context = canvas.getContext("2d");
-    console.log(GameState); // const game1 = new Game();
+    context = canvas.getContext("2d"); // const game1 = new Game();
 
     GameState.menu.initialize();
   }
 
   function loaderInitiate() {
     var totalItems = assetOrder.length + scriptOrder.length;
-    console.log("hello");
     progressSlice = Math.floor(100 / totalItems);
     var loader = document.getElementById("loader");
     var timerId = setTimeout(loop, 1000);
@@ -286,9 +288,8 @@ loader = function () {
         clearInterval(timerId);
       } else {
         loader.style.width = loaderWidth + "%";
-      }
+      } // console.log(loaderWidth);
 
-      console.log(loaderWidth);
     }
   }
 

@@ -1,6 +1,5 @@
 class MainMenu {
   constructor(manager) {
-    console.log(manager);
     this.manager = manager;
     this.initialize = this.initialize.bind(this);
     this.run = this.run.bind(this);
@@ -19,7 +18,7 @@ class MainMenu {
       .addEventListener("click", function () {
         self.manager.showScreen("highscores");
       });
-    
+
     document
       .getElementById("id-control")
       .addEventListener("click", function () {

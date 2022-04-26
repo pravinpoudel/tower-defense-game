@@ -12,7 +12,6 @@ function () {
   function MainMenu(manager) {
     _classCallCheck(this, MainMenu);
 
-    console.log(manager);
     this.manager = manager;
     this.initialize = this.initialize.bind(this);
     this.run = this.run.bind(this);

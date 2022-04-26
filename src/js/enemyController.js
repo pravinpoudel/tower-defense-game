@@ -13,8 +13,8 @@ class EnemyController {
 
   update(elapsedTime) {
     if (this.enemies.length == 0) {
-      GameState.cancelNextRequest = true;
-      add(score);
+      // GameState.cancelNextRequest = true;
+      // add(score);
       return;
     }
 

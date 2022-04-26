@@ -25,6 +25,10 @@ class GamePlay {
     this.canPlace = false;
     this.upgrade = this.upgrade.bind(this);
     this.sell = this.sell.bind(this);
+    this.renderScore = this.renderScore.bind(this);
+    this.startNewWave = this.startNewWave.bind(this);
+    this.level = 0;
+    this.towerType = ["Gun", "Missile", "Air", "Mix (Air + Ground)"];
   }
 
   upgrade(elapsedTime) {
@@ -75,6 +79,7 @@ class GamePlay {
           this.towers.splice(i, 1);
           gameSound.playSound("die");
           towerClicked = null;
+          return;
         }
       }
     }
@@ -82,6 +87,7 @@ class GamePlay {
 
   createElement() {
     selectedTower = this.getAttribute("data-myName");
+    towerRadius = this.getAttribute("data-radius");
     moneyRequired = parseInt(this.getAttribute("data-cost"));
     towerTypeSelected = parseInt(this.getAttribute("data-type"));
     if (moneyRequired <= money) {
@@ -104,11 +110,11 @@ class GamePlay {
             Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
             2500,
             1,
+            towerRadius,
             moneyRequired,
             towerTypeSelected
           )
         );
-        console.log(this.towers);
         money = money - moneyRequired;
         moneyRequired = 0;
         towerTypeSelected = 0;
@@ -140,12 +146,21 @@ class GamePlay {
   }
 
   startNewWave = (e) => {
-    console.log("start");
-    e.preventDefault();
-    this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
+    // e.preventDefault();
+    this.enemyCreator = levels[this.level].sendNextWave();
+    if (levels[this.level].wave >= levels[this.level].enemyCreators.length) {
+      this.level++;
+    }
     nextWave = false;
-    GameState.cancelNextRequest = true;
+    GameState.cancelNextRequest = false;
   };
+
+  checkCanProceed() {
+    if (this.level > 2 || GameState.life <= 0) {
+      GameState.cancelNextRequest = true;
+      add(score);
+    }
+  }
 
   initialize() {
     let self = this;
@@ -215,7 +230,6 @@ class GamePlay {
   registerKey() {
     let self = this;
     let upgrade = localStorage["upgrade"];
-    console.log(upgrade);
     let sell = localStorage["sell"];
     let start = localStorage["start"];
 
@@ -225,6 +239,10 @@ class GamePlay {
 
     self.myKeyboard.register(sell, function (elapsedTime) {
       self.sell(elapsedTime);
+    });
+
+    self.myKeyboard.register(start, function (elapsedTime) {
+      self.startNewWave(elapsedTime);
     });
 
     // self.myKeyboard.cleanAll();
@@ -243,7 +261,6 @@ class GamePlay {
         if (creep.player.reachRight() || creep.player.reachBottom()) {
           this.creeps.splice(i, 1);
           GameState.life--;
-          console.log(GameState.life);
           continue;
         }
         if (creep.health == 0) {
@@ -251,6 +268,8 @@ class GamePlay {
           let y = creep.player.specs.center.y;
           score += creep.maxHealth;
           this.creeps.splice(i, 1);
+          totalCreepKilled++;
+          money += creep.maxHealth;
           gameSound.playSound("die");
           let textEvent = new MovingEvents({
             size: { x: 50, y: 50 }, // Size in pixels
@@ -279,7 +298,7 @@ class GamePlay {
           ) {
             console.log("flying" + " " + i);
           } else {
-            if (isColliding(creep, tower, 100)) {
+            if (isColliding(creep, tower, tower.specs.radius)) {
               tower.setTarget(
                 creep.player.specs.center.x,
                 creep.player.specs.center.y
@@ -332,19 +351,26 @@ class GamePlay {
     document.getElementById("currentScore").innerHTML = score;
     document.getElementById("lives").innerHTML = GameState.life;
     document.getElementById("money").innerHTML = money;
-    let waveString = wave + "/" + maxWave;
+    let waveString = levels[this.level].wave + 1 + "/" + maxWave;
     document.getElementById("wave").innerHTML = waveString;
     var startButton = document.getElementById("startButton");
+    document.getElementById("level").innerHTML = this.level + 1;
+    document.getElementById("killed").innerHTML = totalCreepKilled;
     // startButton.style.display = "none";
-    console.log(nextWave);
     if (nextWave) {
       startButton.style.display = "block";
     }
+    let totalTowerValues = 0;
+    this.towers.forEach((tower) => {
+      totalTowerValues += tower.specs.cost;
+    });
+    document.getElementById("towerValue").innerHTML = totalTowerValues;
 
     if (moneyRequired > 0) {
       document.getElementById("selectedInfo").style.display = "block";
       document.getElementById("moneyRequired").innerHTML = moneyRequired;
-      document.getElementById("power").innerHTML = towerTypeSelected;
+      document.getElementById("power").innerHTML =
+        this.towerType[parseInt(towerTypeSelected) - 1];
     } else {
       document.getElementById("selectedInfo").style.display = "none";
       document.getElementById("moneyRequired").innerHTML = "";
@@ -397,7 +423,7 @@ class GamePlay {
     context.lineTo(canvas.width, 200);
     context.stroke();
     if (renderCircle) {
-      drawTower(100);
+      drawTower(towerRadius);
     }
     this.renderScore();
     this.creeps.forEach((creep) => {
@@ -436,29 +462,34 @@ class GamePlay {
     GameState.cancelNextRequest = false;
 
     function gameLoop(time) {
-      console.log(self.creeps.length);
-      console.log("wave is " + wave);
-      // console.log("life is " + self.enemyCreator.totalEnemy);
       if (
         self.enemyCreator &&
         self.enemyCreator.totalEnemy <= 0 &&
         self.creeps.length == 0 &&
         wave > 0
       ) {
-        console.log("is true");
         nextWave = true;
         wave--;
-        self.render();
       } else {
         self.processInput(time - lastTimeStamp);
         self.update(time - lastTimeStamp);
         lastTimeStamp = time;
-        self.render();
-        // if (!GameState.cancelNextRequest) {
-        //
-        // }
       }
-      requestAnimationFrame(gameLoop);
+      self.checkCanProceed();
+      if (!GameState.cancelNextRequest) {
+        requestAnimationFrame(gameLoop);
+        self.processInput(time - lastTimeStamp);
+        self.update(time - lastTimeStamp);
+        lastTimeStamp = time;
+        self.render();
+      } else {
+        context.font = "70px roboto";
+        context.textAlign = "center";
+        context.fillText("Game Over", canvas.width / 2, canvas.height * 0.8);
+        setTimeout(() => {
+          self.manager.showScreen("mainmenu");
+        }, 2000);
+      }
     }
     requestAnimationFrame(gameLoop);
   }

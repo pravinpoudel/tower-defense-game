@@ -16,9 +16,11 @@ towerTypeSelected = 1;
 bombAffectRadius = 150;
 gameSound = null;
 creepGoing = "top";
+totalCreepKilled = 0;
 wave = 10;
-maxWave = 10;
+maxWave = 3;
 nextWave = false;
+towerRadius = 100;
 var cellWidth = 50;
 var rows = 10;
 var cols = 10;
@@ -60,9 +62,13 @@ if (!localStorage.getItem("sell")) {
 
 if (!localStorage.getItem("start")) {
   localStorage.setItem("start", "s");
-}
+} // console.log(
+//   localStorage["upgrade"],
+//   localStorage["shell"],
+//   localStorage["start"]
+// );
+// window.addEventListener("resize", resizeCanvas, false);
 
-console.log(localStorage["upgrade"], localStorage["shell"], localStorage["start"]); // window.addEventListener("resize", resizeCanvas, false);
 
 GameState.menu = manager;
 var screens = {
@@ -73,7 +79,6 @@ var screens = {
   about: new About(manager)
 };
 GameState.input = new Keyboard();
-console.log(GameState.input);
 screens.gameplay = new GamePlay(manager, GameState.input);
 GameState.screens = screens; // function resizeCanvas() {
 //   if (canvas) {

@@ -7,7 +7,6 @@ class Help {
 
   initialize() {
     let self = this;
-    console.log("help initialized");
     document
       .getElementById("id-help-back")
       .addEventListener("click", function () {

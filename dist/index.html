@@ -19,7 +19,7 @@
                     <li><button id = "id-high-scores">High&nbsp;Scores</button></li>
                     <li><button id = "id-control">Control</button></li>
                     <li><button id = "id-help">Help</button></li>
-                    <li><button id = "id-about">About</button></li>
+                    <li><button id = "id-about">Credit</button></li>
                 </ul>
             </div>
             <div id = "gameplay" class = "screen">
@@ -28,13 +28,17 @@
                     <p>Score: </p> <p id="currentScore"></p></div>
                 <div> <p>Lives Rem: </p> <p id="lives"></p></div>
             <div><p>Money: </p> <p id="money"></p></div>
-        <div>  <p>Wave: </p> <p id="wave"></p></div>
+            <div><p>Creep Killed: </p> <p id="killed"></p></div>
+            <div><p>Total Tower Values : </p> <p id="towerValue">
+            </p></div>
+            <div><p>Level: </p> <p id="level"></p></div>
+        <div><p>Wave: </p> <p id="wave"></p></div>
                 </div>
                 <div id="selection-menu">
-                    <div class="tower" id="tower1" data-type="1" data-cost="5" data-myName="tower1"></div>
-                    <div class="tower" id="tower2" data-type="2" data-cost="10" data-myName="tower2"></div>
-                    <div class="tower" id="tower3"  data-type="3" data-cost="15" data-myName="tower3"></div>
-                    <div class="tower" id="tower4"  data-type="4" data-cost="20" data-myName="tower4"></div>
+                    <div class="tower" id="tower1" data-type="1" data-cost="5" data-radius = "100"  data-myName="tower1"></div>
+                    <div class="tower" id="tower2" data-type="2" data-cost="10" data-radius = "150" data-myName="tower2"></div>
+                    <div class="tower" id="tower3"  data-type="3" data-cost="15" data-radius = "200" data-myName="tower3"></div>
+                    <div class="tower" id="tower4"  data-type="4" data-cost="20" data-radius = "150" data-myName="tower4"></div>
                    <div id="selectedInfo">
                         Selected Type: <p id="power"></p>
                         Money Required: <p id="moneyRequired"></p>
@@ -86,8 +90,12 @@
                 </ul>
             </div>
             <div id = "about" class = "screen">
-                <h1>About</h1>
-                <p>Developer: Pravin Poudel</p>
+                <h1>Credit</h1>
+                <div id="credit_text">
+                <p>Tower Defense developed in JS by Pravin Poudel, MS student, USU as a part of course-work for
+                    CS-5410 under the guidance of Prof Dr Dean Mathias.
+                </p>
+            </div>
 
                 <ul class = "menu">
                     <li><button id = "id-about-back">Back</button></li>
