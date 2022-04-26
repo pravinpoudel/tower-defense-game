@@ -11,7 +11,6 @@ class BulletController {
   }
 
   update(timeStamp) {
-    console.log(this.enemies.length);
     let bulletLength = this.bullets.length;
     for (let i = 0; i < bulletLength; i++) {
       if (this.bullets[i]) {
@@ -56,7 +55,6 @@ class BulletController {
                   Math.floor(this.enemies[m].player.specs.size.x / 2)
                 )
               ) {
-                console.log("i am collided with", m);
                 this.enemies[m].health -= this.bullets[i].power;
                 this.enemies[m].health =
                   this.enemies[m].health < 0 ? 0 : this.enemies[m].health;
@@ -68,7 +66,6 @@ class BulletController {
             let enemiesLength = this.enemies.length;
             for (let m = 0; m < enemiesLength; m++) {
               // if(enemy is flyover)
-              console.log(this.enemies[m].flying);
               if (this.enemies[m].flying) {
                 isColliding2(
                   this.bullets[i].x,
@@ -96,8 +93,8 @@ class BulletController {
       }
       this.bullets[i].update(timeStamp);
     }
-      //if inside the boundary
-    } 
+    //if inside the boundary
+  }
 
   render() {
     this.bullets.forEach((bullet) => {

@@ -8,19 +8,13 @@ class gameModel {
     this.subTextureWidth = 0;
 
     this.image = new Image();
-    this.isReady = false;
     this.loadedImage = 0;
     this.secondTime = false;
 
     this.images = [];
     this.index = 0;
     specs.spriteSheet.forEach((src) => {
-      let image = new Image();
-      image.src = src;
-      image.onload = () => {
-        this.loadedImage++;
-        if (this.loadedImage == this.specs.spriteCount) this.isReady = true;
-      };
+      let image = GameState.assets[src];
       this.images.push(image);
     });
 
@@ -78,24 +72,22 @@ class gameModel {
   }
 
   render() {
-    if (this.isReady) {
-      let image = this.images[this.subImageIndex];
-      this.drawSubTexture(
-        image,
-        this.subImageIndex,
-        this.subTextureWidth,
-        this.player.specs.center,
-        this.player.specs.rotation,
-        this.player.specs.size
-      );
-      this.drawBar(
-        this.player.specs.center,
-        image.width,
-        image.height,
-        this.health,
-        this.maxHealth
-      );
-      this.secondTime = true;
-    }
+    let image = this.images[this.subImageIndex];
+    this.drawSubTexture(
+      image,
+      this.subImageIndex,
+      this.subTextureWidth,
+      this.player.specs.center,
+      this.player.specs.rotation,
+      this.player.specs.size
+    );
+    this.drawBar(
+      this.player.specs.center,
+      image.width,
+      image.height,
+      this.health,
+      this.maxHealth
+    );
+    this.secondTime = true;
   }
 }

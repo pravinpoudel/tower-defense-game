@@ -24,7 +24,6 @@ function () {
   }, {
     key: "update",
     value: function update(timeStamp) {
-      console.log(this.enemies.length);
       var bulletLength = this.bullets.length;
 
       for (var i = 0; i < bulletLength; i++) {
@@ -50,7 +49,6 @@ function () {
 
               for (var m = 0; m < enemiesLength; m++) {
                 if (isColliding2(this.bullets[i].x, this.bullets[i].y, bombAffectRadius, this.enemies[m].player.specs.center.x, this.enemies[m].player.specs.center.y, Math.floor(this.enemies[m].player.specs.size.x / 2))) {
-                  console.log("i am collided with", m);
                   this.enemies[m].health -= this.bullets[i].power;
                   this.enemies[m].health = this.enemies[m].health < 0 ? 0 : this.enemies[m].health;
                 }
@@ -62,8 +60,6 @@ function () {
 
               for (var _m = 0; _m < _enemiesLength; _m++) {
                 // if(enemy is flyover)
-                console.log(this.enemies[_m].flying);
-
                 if (this.enemies[_m].flying) {
                   isColliding2(this.bullets[i].x, this.bullets[i].y, 5, this.enemies[_m].player.specs.center.x, this.enemies[_m].player.specs.center.y, Math.floor(this.enemies[_m].player.specs.size.x / 2));
                   {

@@ -131,17 +131,20 @@ loader = function () {
     key: "creep10",
     source: dir + "assets/creeps1/1.png"
   }, {
-    key: "creep12",
+    key: "creep11",
     source: dir + "assets/creeps1/2.png"
   }, {
-    key: "creep13",
+    key: "creep12",
     source: dir + "assets/creeps1/3.png"
   }, {
-    key: "creep14",
+    key: "creep13",
     source: dir + "assets/creeps1/4.png"
   }, {
-    key: "creep15",
+    key: "creep14",
     source: dir + "assets/creeps1/5.png"
+  }, {
+    key: "creep15",
+    source: dir + "assets/creeps1/6.png"
   }, {
     key: "creep20",
     source: dir + "assets/creeps2/1.png"

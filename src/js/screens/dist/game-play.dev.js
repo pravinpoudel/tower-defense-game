@@ -112,7 +112,6 @@ function () {
           this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, moneyRequired, towerTypeSelected));
           money = money - moneyRequired;
           towerTypeSelected = 0;
-          console.log(moneyRequired);
         }
 
         var canvasPosition = canvas.getBoundingClientRect();

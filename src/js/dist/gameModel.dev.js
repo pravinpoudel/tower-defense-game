@@ -20,19 +20,12 @@ function () {
     this.subImageIndex = 0;
     this.subTextureWidth = 0;
     this.image = new Image();
-    this.isReady = false;
     this.loadedImage = 0;
     this.secondTime = false;
     this.images = [];
     this.index = 0;
     specs.spriteSheet.forEach(function (src) {
-      var image = new Image();
-      image.src = src;
-
-      image.onload = function () {
-        _this.loadedImage++;
-        if (_this.loadedImage == _this.specs.spriteCount) _this.isReady = true;
-      };
+      var image = GameState.assets[src];
 
       _this.images.push(image);
     }); // this.image.src = this.specs.spriteSheet;
@@ -93,12 +86,10 @@ function () {
   }, {
     key: "render",
     value: function render() {
-      if (this.isReady) {
-        var image = this.images[this.subImageIndex];
-        this.drawSubTexture(image, this.subImageIndex, this.subTextureWidth, this.player.specs.center, this.player.specs.rotation, this.player.specs.size);
-        this.drawBar(this.player.specs.center, image.width, image.height, this.health, this.maxHealth);
-        this.secondTime = true;
-      }
+      var image = this.images[this.subImageIndex];
+      this.drawSubTexture(image, this.subImageIndex, this.subTextureWidth, this.player.specs.center, this.player.specs.rotation, this.player.specs.size);
+      this.drawBar(this.player.specs.center, image.width, image.height, this.health, this.maxHealth);
+      this.secondTime = true;
     }
   }]);
 

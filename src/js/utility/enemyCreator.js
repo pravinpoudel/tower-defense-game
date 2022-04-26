@@ -1,32 +1,22 @@
 function makeCreateCreep1(x, y) {
   let spriteSheet = [
-    "assets/creeps1/1.png",
-    "assets/creeps1/2.png",
-    "assets/creeps1/3.png",
-    "assets/creeps1/4.png",
-    "assets/creeps1/5.png",
-    "assets/creeps1/6.png",
+    "creep10",
+    "creep11",
+    "creep12",
+    "creep13",
+    "creep14",
+    "creep15",
   ];
   return this.createEnemy(x, y, spriteSheet, 4);
 }
 
 function makeCreateCreep2(x, y) {
-  let spriteSheet = [
-    "assets/creeps2/1.png",
-    "assets/creeps2/2.png",
-    "assets/creeps2/3.png",
-    "assets/creeps2/4.png",
-  ];
+  let spriteSheet = ["creep20", "creep21", "creep22", "creep23"];
   return this.createEnemy(x, y, spriteSheet, 2);
 }
 
 function makeCreateCreep3(x, y) {
-  let spriteSheet = [
-    "assets/creeps3/1.png",
-    "assets/creeps3/2.png",
-    "assets/creeps3/3.png",
-    "assets/creeps3/4.png",
-  ];
+  let spriteSheet = ["creep30", "creep31", "creep32", "creep33"];
   return this.createEnemy(x, y, spriteSheet, 6, true);
 }
 

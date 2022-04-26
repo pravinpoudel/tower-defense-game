@@ -108,7 +108,6 @@ class GamePlay {
         );
         money = money - moneyRequired;
         towerTypeSelected = 0;
-        console.log(moneyRequired);
       }
       const canvasPosition = canvas.getBoundingClientRect();
     } else {
