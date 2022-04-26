@@ -139,17 +139,18 @@ class GamePlay {
     }
   }
 
-  startNewWave= (e)=> {
+  startNewWave = (e) => {
+    console.log("start");
     e.preventDefault();
-    this.initialize();
+    this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
     nextWave = false;
     GameState.cancelNextRequest = true;
-  }
+  };
 
   initialize() {
     let self = this;
     this.myMouse = new Mouse();
-    this.enemyCreator = new EnemyCreator(10, creepGoing, 3);
+
     self.myKeyboard.register("Escape", function () {
       GameState.cancelNextRequest = true;
       self.manager.showScreen("mainmenu");
@@ -319,9 +320,11 @@ class GamePlay {
         scorelength--;
       }
     }
-    let newEnemy = this.enemyCreator.createEnemy(elapsedTime);
-    if (newEnemy) {
-      this.creeps.push(newEnemy);
+    if (this.enemyCreator) {
+      let newEnemy = this.enemyCreator.createEnemy(elapsedTime);
+      if (newEnemy) {
+        this.creeps.push(newEnemy);
+      }
     }
   }
 
@@ -332,7 +335,7 @@ class GamePlay {
     let waveString = wave + "/" + maxWave;
     document.getElementById("wave").innerHTML = waveString;
     var startButton = document.getElementById("startButton");
-    startButton.style.display = "none";
+    // startButton.style.display = "none";
     console.log(nextWave);
     if (nextWave) {
       startButton.style.display = "block";
@@ -435,8 +438,9 @@ class GamePlay {
     function gameLoop(time) {
       console.log(self.creeps.length);
       console.log("wave is " + wave);
-      console.log("life is " + self.enemyCreator.totalEnemy);
+      // console.log("life is " + self.enemyCreator.totalEnemy);
       if (
+        self.enemyCreator &&
         self.enemyCreator.totalEnemy <= 0 &&
         self.creeps.length == 0 &&
         wave > 0
@@ -450,10 +454,11 @@ class GamePlay {
         self.update(time - lastTimeStamp);
         lastTimeStamp = time;
         self.render();
-        if (!GameState.cancelNextRequest) {
-          requestAnimationFrame(gameLoop);
-        }
+        // if (!GameState.cancelNextRequest) {
+        //
+        // }
       }
+      requestAnimationFrame(gameLoop);
     }
     requestAnimationFrame(gameLoop);
   }
