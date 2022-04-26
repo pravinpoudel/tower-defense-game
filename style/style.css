@@ -171,3 +171,10 @@ background-image: url("../assets/turret/turret-1-1.png");
 
 
 
+#selectedInfo{
+    display: none;
+    font-size: 13px;
+    color: #005656;
+    font-weight: 700;
+    text-align: left;
+}

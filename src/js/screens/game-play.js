@@ -110,6 +110,7 @@ class GamePlay {
         );
         console.log(this.towers)
         money = money - moneyRequired;
+        moneyRequired = 0;
         towerTypeSelected = 0;
         gameSound.playSound("add");
       }
@@ -321,6 +322,17 @@ class GamePlay {
     document.getElementById("money").innerHTML = money;
     let wave = wavesDeno + "/" + wavesNeno;
     document.getElementById("wave").innerHTML = wave;
+    if (moneyRequired > 0) {
+      document.getElementById("selectedInfo").style.display = "block";
+      document.getElementById("moneyRequired").innerHTML = moneyRequired;
+      document.getElementById("power").innerHTML = towerTypeSelected;
+    }
+    else{
+      document.getElementById("selectedInfo").style.display = "none";
+      document.getElementById("money").innerHTML = "";
+      document.getElementById("power").innerHTML = "";   
+    }
+
   }
 
   render() {

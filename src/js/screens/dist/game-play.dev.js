@@ -114,6 +114,7 @@ function () {
           this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, moneyRequired, towerTypeSelected));
           console.log(this.towers);
           money = money - moneyRequired;
+          moneyRequired = 0;
           towerTypeSelected = 0;
           gameSound.playSound("add");
         }
@@ -339,6 +340,16 @@ function () {
       document.getElementById("money").innerHTML = money;
       var wave = wavesDeno + "/" + wavesNeno;
       document.getElementById("wave").innerHTML = wave;
+
+      if (moneyRequired > 0) {
+        document.getElementById("selectedInfo").style.display = "block";
+        document.getElementById("moneyRequired").innerHTML = moneyRequired;
+        document.getElementById("power").innerHTML = towerTypeSelected;
+      } else {
+        document.getElementById("selectedInfo").style.display = "none";
+        document.getElementById("money").innerHTML = "";
+        document.getElementById("power").innerHTML = "";
+      }
     }
   }, {
     key: "render",
