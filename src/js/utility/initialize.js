@@ -110,6 +110,7 @@ function isColliding2(x1, y1, width1, x2, y2, width2) {
 }
 
 function isColliding(r1, r2, radius) {
+  console.log(r2);
   let r1X = r1.player.specs.center.x - Math.floor(r1.player.specs.size.x / 2);
   let r1Y = r1.player.specs.center.y - Math.floor(r1.player.specs.size.y / 2);
   let r1Width = r1.player.specs.size.x;
@@ -136,8 +137,7 @@ function drawRectangle(spec) {
 }
 
 function drawTower(radius) {
-  let image = new Image();
-  image.src = selectedTower;
+  let image = GameState.assets[selectedTower];
   context.drawImage(
     image,
     mouse.x - image.width / 2, // Where to draw the sub-texture

@@ -120,15 +120,14 @@ loader = function () {
     source: dir + "assets/turret/turret-1-1.png"
   }, {
     key: "tower2",
-    source: dir + "assets/turret/turret-4-1.png"
+    source: dir + "assets/turret/turret-6-1.png"
   }, {
     key: "tower3",
-    source: dir + "assets/turret/turret-6-1.png"
-  }, // {
-  //   key: "base",
-  //   source: dir + "assets/turret/turret-base.gif",
-  // },
-  {
+    source: dir + "assets/turret/turret-4-1.png"
+  }, {
+    key: "base",
+    source: dir + "assets/turret/turret-base.png"
+  }, {
     key: "creep10",
     source: dir + "assets/creeps1/1.png"
   }, {

@@ -1,12 +1,8 @@
 class Sprite {
   constructor(specs) {
     this.specs = specs;
-    this.image = new Image();
+    this.image = specs.sprite;
     this.imageLoaded = false;
-    this.image.onload = function () {
-      this.imageLoaded = true;
-    };
-    this.image.src = this.specs.sprite;
     this.rotateRight = this.rotateRight.bind(this);
     this.rotateLeft = this.rotateLeft.bind(this);
     this.draw = this.draw.bind(this);
@@ -23,7 +19,6 @@ class Sprite {
 
   draw() {
     let self = this;
-    if (this.image.imageLoaded) {
       self.specs.height = self.image.height;
       self.specs.width = self.image.width / this.specs.spriteCount;
       context.save();
@@ -38,7 +33,6 @@ class Sprite {
         self.image.height
       );
       context.restore();
-    }
   }
 
   drawArc(angle) {

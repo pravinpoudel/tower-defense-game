@@ -174,18 +174,18 @@ loader = (function () {
 
     {
       key: "tower2",
-      source: dir + "assets/turret/turret-4-1.png",
+      source: dir + "assets/turret/turret-6-1.png",
     },
 
     {
       key: "tower3",
-      source: dir + "assets/turret/turret-6-1.png",
+      source: dir + "assets/turret/turret-4-1.png",
     },
 
-    // {
-    //   key: "base",
-    //   source: dir + "assets/turret/turret-base.gif",
-    // },
+    {
+      key: "base",
+      source: dir + "assets/turret/turret-base.png",
+    },
 
     {
       key: "creep10",

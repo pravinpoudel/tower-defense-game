@@ -46,17 +46,27 @@ function () {
 
       if (moneyRequired <= money) {
         if (towerClicked) {
-          if (towerClicked.lotalElapsedTime == undefined) {
-            towerClicked.lotalElapsedTime = 0;
+          if (towerClicked.totalElapsedTime == undefined) {
+            towerClicked.totalElapsedTime = 0;
           } else {
-            towerClicked.lotalElapsedTime += elapsedTime;
+            towerClicked.totalElapsedTime += elapsedTime;
 
-            if (towerClicked.lotalElapsedTime >= 200) {
+            if (towerClicked.totalElapsedTime >= 200) {
               console.log("upgraded");
-              towerClicked.lotalElapsedTime -= 200;
-              towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
-              towerClicked.specs.power = towerClicked.specs.power + 1;
-              money -= moneyRequired;
+              towerClicked.totalElapsedTime -= 200;
+
+              if (!towerClicked.upgradeCount) {
+                towerClicked.upgradeCount = 1;
+              } else {
+                if (towerClicked.upgradeCount >= 3) {
+                  return;
+                } else {
+                  towerClicked.upgradeCount = towerClicked.upgradeCount + 1;
+                  towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
+                  towerClicked.specs.power = towerClicked.specs.power + 1;
+                  money -= moneyRequired;
+                }
+              }
             }
           }
         }
@@ -80,10 +90,9 @@ function () {
   }, {
     key: "createElement",
     value: function createElement() {
-      var myTower = this.getAttribute("data-myName");
+      selectedTower = this.getAttribute("data-myName");
       moneyRequired = parseInt(this.getAttribute("data-cost"));
       towerTypeSelected = parseInt(this.getAttribute("data-type"));
-      selectedTower = "assets/turret/" + myTower;
 
       if (moneyRequired <= money) {
         renderCircle = true;
@@ -100,7 +109,7 @@ function () {
         var decision = canCreated(this.towers) && this.canPlace;
 
         if (decision) {
-          this.towers.push(createTower(selectedTower, Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, moneyRequired, towerTypeSelected));
+          this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, moneyRequired, towerTypeSelected));
           money = money - moneyRequired;
           towerTypeSelected = 0;
           console.log(moneyRequired);

@@ -1,9 +1,9 @@
 "use strict";
 
-function createTower(url, x, y, delay, power, cost, type) {
+function createTower(image, x, y, delay, power, cost, type) {
   var tower = new Tower({
-    baseSprite: "assets/tile-1-center.gif",
-    weaponSprite: url,
+    baseSprite: GameState.assets["base"],
+    weaponSprite: image,
     center: {
       x: x + 25,
       y: y + 25

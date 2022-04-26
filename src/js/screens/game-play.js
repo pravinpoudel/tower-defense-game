@@ -28,48 +28,63 @@ class GamePlay {
   }
 
   upgrade(elapsedTime) {
-    let moneyRequired = Math.floor(0.5*towerClicked.specs.cost);
-    if(moneyRequired<=money){
-      if(towerClicked){
-        if(towerClicked.lotalElapsedTime == undefined){
-          towerClicked.lotalElapsedTime = 0;
-        }
-        else{
-          towerClicked.lotalElapsedTime += elapsedTime;
-          if(towerClicked.lotalElapsedTime >=200){    
-            console.log("upgraded")
-            towerClicked.lotalElapsedTime -= 200;
-            towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
-            towerClicked.specs.power = towerClicked.specs.power + 1;  
-            money -= moneyRequired;  
+    let moneyRequired = Math.floor(0.5 * towerClicked.specs.cost);
+    if (moneyRequired <= money) {
+      if (towerClicked) {
+        if (towerClicked.totalElapsedTime == undefined) {
+          towerClicked.totalElapsedTime = 0;
+        } else {
+          towerClicked.totalElapsedTime += elapsedTime;
+          if (towerClicked.totalElapsedTime >= 200) {
+            console.log("upgraded");
+            towerClicked.totalElapsedTime -= 200;
+            if (!towerClicked.upgradeCount) {
+              towerClicked.upgradeCount = 1;
+            } else {
+              if (towerClicked.upgradeCount >= 3) {
+                return;
+              } else {
+                towerClicked.upgradeCount = towerClicked.upgradeCount + 1;
+                towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
+                towerClicked.specs.power = towerClicked.specs.power + 1;
+                money -= moneyRequired;
+              }
+            }
           }
         }
-      }  
+      }
     }
   }
 
-   sell() {
-     if(towerClicked){
+  sell() {
+    if (towerClicked) {
       let towerLength = this.towers.length;
-      for(let i=0; i<towerLength; i++){
-        if(isColliding2(this.towers[i].specs.center.x - cellWidth/2,this.towers[i].specs.center.y- cellWidth/2, cellWidth,towerClicked.specs.center.x - cellWidth/2, towerClicked.specs.center.y- cellWidth/2, cellWidth)){
-         money += Math.floor(0.7*towerClicked.specs.cost);
-         this.towers.splice(i, 1);
-         towerClicked = null;
+      for (let i = 0; i < towerLength; i++) {
+        if (
+          isColliding2(
+            this.towers[i].specs.center.x - cellWidth / 2,
+            this.towers[i].specs.center.y - cellWidth / 2,
+            cellWidth,
+            towerClicked.specs.center.x - cellWidth / 2,
+            towerClicked.specs.center.y - cellWidth / 2,
+            cellWidth
+          )
+        ) {
+          money += Math.floor(0.7 * towerClicked.specs.cost);
+          this.towers.splice(i, 1);
+          towerClicked = null;
         }
       }
-     }
-
     }
+  }
 
   createElement() {
-    let myTower = this.getAttribute("data-myName");
+    selectedTower = this.getAttribute("data-myName");
     moneyRequired = parseInt(this.getAttribute("data-cost"));
     towerTypeSelected = parseInt(this.getAttribute("data-type"));
-    selectedTower = "assets/turret/" + myTower;
-    if(moneyRequired<=money){
+    if (moneyRequired <= money) {
       renderCircle = true;
-      mouse.isActive = true;  
+      mouse.isActive = true;
     }
   }
 
@@ -82,7 +97,7 @@ class GamePlay {
       if (decision) {
         this.towers.push(
           createTower(
-            selectedTower,
+            GameState.assets[selectedTower],
             Math.floor(mouse.x / cellWidth) * cellWidth,
             Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
             2500,
