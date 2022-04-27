@@ -33,6 +33,7 @@ class GamePlay {
 
   upgrade(elapsedTime) {
     let moneyRequired = Math.floor(0.5 * towerClicked.specs.cost);
+    console.log(towerClicked)
     if (moneyRequired <= money) {
       if (towerClicked) {
         if (towerClicked.totalElapsedTime == undefined) {
@@ -152,6 +153,7 @@ class GamePlay {
     this.enemyCreator = levels[this.level].sendNextWave();
     if (levels[this.level].wave >= levels[this.level].enemyCreators.length) {
       this.level++;
+      this.towers = [];
     }
     nextWave = false;
     GameState.cancelNextRequest = false;
@@ -298,6 +300,7 @@ class GamePlay {
         let towersLength = this.towers.length;
         for (let i = 0; i < towersLength; i++) {
           let tower = this.towers[i];
+          console.log(i+"th index count is" + tower.specs.delay)
           if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
             console.log("flying" + " " + i);
           } else if (
@@ -483,7 +486,7 @@ class GamePlay {
         self.processInput(time - lastTimeStamp);
         self.update(time - lastTimeStamp);
       }
-      self.checkCanProceed();
+      // self.checkCanProceed();
       if (!GameState.cancelNextRequest) {
         requestAnimationFrame(gameLoop);
         self.processInput(time - lastTimeStamp);
@@ -491,6 +494,9 @@ class GamePlay {
         lastTimeStamp = time;
         self.render();
       } else {
+        if (score > 0) {
+          add(score);
+        }
         context.font = "70px roboto";
         context.textAlign = "center";
         context.fillText("Game Over", canvas.width / 2, canvas.height * 0.8);
@@ -509,7 +515,7 @@ class GamePlay {
         //     false
         //   );
         // }
-        startButton.removeEventListener("click", this.startNewWave);
+        // startButton.removeEventListener("click", self.startNewWave);
         setTimeout(() => {
           self.manager.showScreen("mainmenu");
         }, 2000);

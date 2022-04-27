@@ -31,6 +31,7 @@ function () {
     value: function displayScore() {
       var highScoresHTML = document.getElementById("high-scores-list");
       highScoresHTML.innerHTML = "";
+      console.log(scores);
 
       if (scores.length > 0) {
         scores.forEach(function (score) {

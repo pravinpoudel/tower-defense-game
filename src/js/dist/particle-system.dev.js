@@ -180,7 +180,6 @@ function ParticleSystem(graphics) {
 
 
   function makeParticle(spec, x, y) {
-    console.log(spec);
     var p = {
       image: image,
       size: Math.abs(Random.nextGaussian(10, 4)),
@@ -200,7 +199,6 @@ function ParticleSystem(graphics) {
       alive: 0 // How long the particle has been alive, in milliseconds
 
     };
-    console.log(spec.gaussian);
 
     if (spec.guassian) {
       p.direction = {
@@ -298,8 +296,7 @@ function creepDied(x, y) {
 }
 
 function trailFollow(x, y, xDirection, yDirection) {
-  console.log(x, y, xDirection, yDirection);
-  makeParticle2(x, x + 5, y, y + 5, 1, xDirection, yDirection, 150, 50, false);
+  makeParticle2(x, x + 5, y, y + 5, 1, xDirection, yDirection, 1000, 250, false);
 }
 
 function bombHit(x, y, radius) {
@@ -307,6 +304,6 @@ function bombHit(x, y, radius) {
 }
 
 function towerSold(x, y) {
-  makeParticle2(x, x + 25, y - 25, y + 25, 5, 0, 0, 1000, 20, true);
+  makeParticle2(x, x + 50, y, y + 50, 5, 0, 0, 1000, 200, true);
 }
 //# sourceMappingURL=particle-system.dev.js.map

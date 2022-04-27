@@ -25,13 +25,12 @@ function () {
 
       for (screen = 0; screen < active.length; screen++) {
         active[screen].classList.remove("active");
-      }
+      } // if (id == "gameplay") {
+      //   GameState.input = new Keyboard();
+      //   GameState.screens["gameplay"] = new GamePlay(manager, GameState.input);
+      //   GameState.screens["gameplay"].initialize();
+      // }
 
-      if (id == "gameplay") {
-        GameState.input = new Keyboard();
-        GameState.screens["gameplay"] = new GamePlay(manager, GameState.input);
-        GameState.screens["gameplay"].initialize();
-      }
 
       GameState.screens[id].run();
       document.getElementById(id).classList.add("active");

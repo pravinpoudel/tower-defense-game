@@ -18,12 +18,12 @@ class HighScoreMenu {
   displayScore() {
     let highScoresHTML = document.getElementById("high-scores-list");
     highScoresHTML.innerHTML = "";
-    if(scores.length>0){
+    console.log(scores);
+    if (scores.length > 0) {
       scores.forEach(function (score) {
         highScoresHTML.innerHTML += score + "<br/>";
       });
     }
-
   }
 
   run() {

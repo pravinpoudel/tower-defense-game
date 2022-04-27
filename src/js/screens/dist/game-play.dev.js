@@ -47,6 +47,7 @@ function () {
     key: "upgrade",
     value: function upgrade(elapsedTime) {
       var moneyRequired = Math.floor(0.5 * towerClicked.specs.cost);
+      console.log(towerClicked);
 
       if (moneyRequired <= money) {
         if (towerClicked) {
@@ -164,6 +165,7 @@ function () {
 
       if (levels[this.level].wave >= levels[this.level].enemyCreators.length) {
         this.level++;
+        this.towers = [];
       }
 
       nextWave = false;
@@ -325,6 +327,7 @@ function () {
 
           for (var _i2 = 0; _i2 < towersLength; _i2++) {
             var tower = this.towers[_i2];
+            console.log(_i2 + "th index count is" + tower.specs.delay);
 
             if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
               console.log("flying" + " " + _i2);
@@ -500,9 +503,8 @@ function () {
         } else {
           self.processInput(time - lastTimeStamp);
           self.update(time - lastTimeStamp);
-        }
+        } // self.checkCanProceed();
 
-        self.checkCanProceed();
 
         if (!GameState.cancelNextRequest) {
           requestAnimationFrame(gameLoop);
@@ -511,6 +513,10 @@ function () {
           lastTimeStamp = time;
           self.render();
         } else {
+          if (score > 0) {
+            add(score);
+          }
+
           context.font = "70px roboto";
           context.textAlign = "center";
           context.fillText("Game Over", canvas.width / 2, canvas.height * 0.8); // for (var i = 0; i < towerElements.length; i++) {
@@ -527,8 +533,8 @@ function () {
           //     false
           //   );
           // }
+          // startButton.removeEventListener("click", self.startNewWave);
 
-          startButton.removeEventListener("click", this.startNewWave);
           setTimeout(function () {
             self.manager.showScreen("mainmenu");
           }, 2000);

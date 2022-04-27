@@ -4,7 +4,7 @@ var scores = [];
 var previousScores = localStorage.getItem("highScores");
 var score = 0;
 
-if (!previousScores) {
+if (previousScores) {
   scores = JSON.parse(previousScores);
 }
 
