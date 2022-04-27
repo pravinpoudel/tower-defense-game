@@ -119,6 +119,18 @@ function () {
         var decision = canCreated(this.towers) && this.canPlace;
 
         if (decision) {
+          if (levels[this.level].enemyCreators[0].position == "top") {
+            if (isColliding3(Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 10, 10, 175, 200, 225, 600)) {
+              console.log("it is blocking the path");
+              return;
+            }
+          } else if (levels[this.level].enemyCreators[0].position == "left") {
+            if (isColliding3(Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 10, 10, 0, 400, 600, 200)) {
+              console.log("it is blocking");
+              return;
+            }
+          }
+
           this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, towerRadius, moneyRequired, towerTypeSelected));
           money = money - moneyRequired;
           moneyRequired = 0;
@@ -326,8 +338,7 @@ function () {
           var towersLength = this.towers.length;
 
           for (var _i2 = 0; _i2 < towersLength; _i2++) {
-            var tower = this.towers[_i2];
-            console.log(_i2 + "th index count is" + tower.specs.delay);
+            var tower = this.towers[_i2]; // console.log(i+"th index count is" + tower.specs.delay)
 
             if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
               console.log("flying" + " " + _i2);

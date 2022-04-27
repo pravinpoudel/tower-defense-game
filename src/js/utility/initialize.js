@@ -110,6 +110,12 @@ GameState.screens = screens;
 // r2.specs.center.y > r1.specs.y + r1.specs.size.y ||
 // r2.specs.center.y + r2.specs.size.y < r1.specs.center.y
 
+function isColliding3(x1, y1, w1, h1, x2, y2, w2, h2) {
+  if (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2) {
+    return true;
+  }
+}
+
 function isColliding2(x1, y1, width1, x2, y2, width2) {
   return !(
     x1 + width1 <= x2 ||

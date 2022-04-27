@@ -105,6 +105,39 @@ class GamePlay {
       renderCircle = false;
       let decision = canCreated(this.towers) && this.canPlace;
       if (decision) {
+        if (levels[this.level].enemyCreators[0].position == "top") {
+          if (
+            isColliding3(
+              Math.floor(mouse.x / cellWidth) * cellWidth,
+              Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
+              10,
+              10,
+              175,
+              200,
+              225,
+              600
+            )
+          ) {
+            console.log("it is blocking the path");
+            return;
+          }
+        } else if (levels[this.level].enemyCreators[0].position == "left") {
+          if (
+            isColliding3(
+              Math.floor(mouse.x / cellWidth) * cellWidth,
+              Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
+              10,
+              10,
+              0,
+              400,
+              600,
+              200
+            )
+          ) {
+            console.log("it is blocking");
+            return;
+          }
+        }
         this.towers.push(
           createTower(
             GameState.assets[selectedTower],
@@ -300,7 +333,7 @@ class GamePlay {
         let towersLength = this.towers.length;
         for (let i = 0; i < towersLength; i++) {
           let tower = this.towers[i];
-          console.log(i+"th index count is" + tower.specs.delay)
+          // console.log(i+"th index count is" + tower.specs.delay)
           if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
             console.log("flying" + " " + i);
           } else if (
