@@ -442,6 +442,7 @@ function () {
   }, {
     key: "render",
     value: function render() {
+      var self = this;
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.fillStyle = "green";
       context.fillRect(0, 0 + 200, 600, 800);
@@ -450,6 +451,29 @@ function () {
       context.clearRect(550, 400, 50, 200);
       context.clearRect(175, 200, 225, 50);
       context.clearRect(175, 750, 225, 50);
+
+      if (self.creeps.length == 0 && levels[this.level].wave >= 0) {
+        if (levels[this.level].enemyCreators[levels[this.level].wave].position == "top") {
+          console.log("top");
+          context.fillStyle = "red";
+          context.fillRect(175, 0 + 200, 200, 50);
+        } else if (levels[self.level].enemyCreators[levels[this.level].wave].position == "left") {
+          console.log("left");
+          context.fillStyle = "red";
+          context.fillRect(0, 400, 50, 200);
+        } //  else {
+        //   console.log("nothing");
+        //   context.fillStyle = "red";
+        //   context.fillRect(0, 400, 50, 200);
+        // }
+
+      }
+
+      if (levels[this.level].wave == -1) {
+        console.log("start");
+        context.fillStyle = "red";
+        context.fillRect(0, 400, 50, 200);
+      }
 
       if (mouse.isActive) {
         var placementFlag = false;
@@ -526,6 +550,7 @@ function () {
       this.registerKey();
       var lastTimeStamp = performance.now();
       GameState.cancelNextRequest = false;
+      context.fillStyle = "black";
 
       function gameLoop(time) {
         if (self.enemyCreator && self.enemyCreator.totalEnemy <= 0 && self.creeps.length == 0 && wave > 0) {
