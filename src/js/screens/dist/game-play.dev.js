@@ -119,18 +119,49 @@ function () {
         var decision = canCreated(this.towers) && this.canPlace;
 
         if (decision) {
-          if (levels[this.level].enemyCreators[0].position == "top") {
-            if (isColliding3(Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 10, 10, 175, 200, 225, 600)) {
-              console.log("it is blocking the path");
-              return;
-            }
-          } else if (levels[this.level].enemyCreators[0].position == "left") {
-            if (isColliding3(Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 10, 10, 0, 400, 600, 200)) {
-              console.log("it is blocking");
-              return;
-            }
-          }
-
+          //blockage check code
+          // ----------------------------------------------------
+          // if(levels[this.level].wave >=0){
+          //   if (levels[this.level].enemyCreators[levels[this.level].wave].position == "top") {
+          //     //the new tower that was placed recently got into line of the creeps so wont be added to scene
+          //     if (
+          //       isColliding3(
+          //         Math.floor(mouse.x / cellWidth) * cellWidth,
+          //         Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
+          //         10,
+          //         10,
+          //         175,
+          //         200,
+          //         225,
+          //         600
+          //       )
+          //     ) {
+          //       block = true;
+          //       console.log("it is blocking the path");
+          //       return;
+          //     }
+          //   } 
+          //   //the new tower that was placed recently got into line of the creeps so wont be added to scene
+          //   else if (levels[this.level].enemyCreators[levels[this.level].wave].position == "left") {
+          //     if (
+          //       isColliding3(
+          //         Math.floor(mouse.x / cellWidth) * cellWidth,
+          //         Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
+          //         10,
+          //         10,
+          //         0,
+          //         400,
+          //         600,
+          //         200
+          //       )
+          //     ) {
+          //       block = true
+          //       console.log("it is blocking the path");
+          //       return;
+          //     }
+          //   }
+          // }
+          // ------------------------------------------------------------------
           this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, towerRadius, moneyRequired, towerTypeSelected));
           money = money - moneyRequired;
           moneyRequired = 0;
@@ -232,17 +263,8 @@ function () {
 
       startButton = document.getElementById("startButton");
       startButton.addEventListener("click", this.startNewWave);
-      this.bulletController = new BulletController(this.creeps); // this.towers.push(
-      //   createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
-      // );
-      // this.towers.push(
-      //   createTower("assets/turret/turret-3-3.png", 600, 500, 2000, 2)
-      // );
-
-      this.myMouse.register("mousedown", this.downHandler); // this.myMouse.register('mouseup', function(e, elapsedTime) {
-      //   mouse.isActive = false;
-      // });
-
+      this.bulletController = new BulletController(this.creeps);
+      this.myMouse.register("mousedown", this.downHandler);
       this.myMouse.register("mousemove", function (e, elapsedTime) {
         if (mouse.isActive) {
           var canvasPosition = canvas.getBoundingClientRect();
@@ -316,16 +338,13 @@ function () {
                 x: 50,
                 y: 50
               },
-              // Size in pixels
               center: {
                 x: x,
                 y: y
               },
               rotation: 0,
               moveRate: 125 / 1000,
-              // Pixels per second
               rotateRate: Math.PI / 1000,
-              // Radians per second
               continousSpeed: 50,
               yDirection: -1,
               xDirection: 0
@@ -338,7 +357,7 @@ function () {
           var towersLength = this.towers.length;
 
           for (var _i2 = 0; _i2 < towersLength; _i2++) {
-            var tower = this.towers[_i2]; // console.log(i+"th index count is" + tower.specs.delay)
+            var tower = this.towers[_i2];
 
             if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
               console.log("flying" + " " + _i2);
@@ -465,6 +484,7 @@ function () {
         drawTower(towerRadius);
       }
 
+      context.fillStyle = "black";
       this.renderScore();
       this.creeps.forEach(function (creep) {
         creep.render();
@@ -511,10 +531,9 @@ function () {
         if (self.enemyCreator && self.enemyCreator.totalEnemy <= 0 && self.creeps.length == 0 && wave > 0) {
           nextWave = true;
           wave--;
-        } else {
-          self.processInput(time - lastTimeStamp);
-          self.update(time - lastTimeStamp);
-        } // self.checkCanProceed();
+        } else {} // self.processInput(time - lastTimeStamp);
+        // self.update(time - lastTimeStamp);
+        // self.checkCanProceed();
 
 
         if (!GameState.cancelNextRequest) {
@@ -529,8 +548,10 @@ function () {
           }
 
           context.font = "70px roboto";
+          context.fillStyle = "black";
           context.textAlign = "center";
-          context.fillText("Game Over", canvas.width / 2, canvas.height * 0.8); // for (var i = 0; i < towerElements.length; i++) {
+          context.fillText("Game Over", canvas.width / 2, canvas.height * 0.6);
+          context.fillText(score, canvas.width / 2, canvas.height * 0.8); // for (var i = 0; i < towerElements.length; i++) {
           //   towerElements[i].removeEventListener(
           //     "click",
           //     this.createElement,
@@ -548,7 +569,7 @@ function () {
 
           setTimeout(function () {
             self.manager.showScreen("mainmenu");
-          }, 2000);
+          }, 4000);
         }
 
         lastTimeStamp = time;

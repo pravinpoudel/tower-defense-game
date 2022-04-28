@@ -20,6 +20,7 @@ wave = 10;
 maxWave = 3;
 nextWave = false;
 towerRadius = 100;
+block = false;
 
 const cellWidth = 50;
 const rows = 10;

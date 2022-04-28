@@ -21,6 +21,7 @@ wave = 10;
 maxWave = 3;
 nextWave = false;
 towerRadius = 100;
+block = false;
 var cellWidth = 50;
 var rows = 10;
 var cols = 10;

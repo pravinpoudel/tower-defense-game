@@ -5,6 +5,7 @@ body {
     font-family: 'Poppins', sans-serif;
     color: black;
     background-color: wheat;
+    display: flex;
 
 }
 
@@ -14,7 +15,7 @@ canvas {
 }
 
 #game {
-    position: absolute;
+    position: relative;
     margin: auto;
     top: 0;
     right: 0;

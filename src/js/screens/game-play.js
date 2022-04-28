@@ -105,39 +105,54 @@ class GamePlay {
       renderCircle = false;
       let decision = canCreated(this.towers) && this.canPlace;
       if (decision) {
-        if (levels[this.level].enemyCreators[0].position == "top") {
-          if (
-            isColliding3(
-              Math.floor(mouse.x / cellWidth) * cellWidth,
-              Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
-              10,
-              10,
-              175,
-              200,
-              225,
-              600
-            )
-          ) {
-            console.log("it is blocking the path");
-            return;
-          }
-        } else if (levels[this.level].enemyCreators[0].position == "left") {
-          if (
-            isColliding3(
-              Math.floor(mouse.x / cellWidth) * cellWidth,
-              Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
-              10,
-              10,
-              0,
-              400,
-              600,
-              200
-            )
-          ) {
-            console.log("it is blocking");
-            return;
-          }
-        }
+
+
+        //blockage check code
+        // ----------------------------------------------------
+        // if(levels[this.level].wave >=0){
+        //   if (levels[this.level].enemyCreators[levels[this.level].wave].position == "top") {
+
+        //     //the new tower that was placed recently got into line of the creeps so wont be added to scene
+        //     if (
+        //       isColliding3(
+        //         Math.floor(mouse.x / cellWidth) * cellWidth,
+        //         Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
+        //         10,
+        //         10,
+        //         175,
+        //         200,
+        //         225,
+        //         600
+        //       )
+        //     ) {
+        //       block = true;
+        //       console.log("it is blocking the path");
+        //       return;
+        //     }
+        //   } 
+        //   //the new tower that was placed recently got into line of the creeps so wont be added to scene
+        //   else if (levels[this.level].enemyCreators[levels[this.level].wave].position == "left") {
+        //     if (
+        //       isColliding3(
+        //         Math.floor(mouse.x / cellWidth) * cellWidth,
+        //         Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
+        //         10,
+        //         10,
+        //         0,
+        //         400,
+        //         600,
+        //         200
+        //       )
+        //     ) {
+        //       block = true
+        //       console.log("it is blocking the path");
+        //       return;
+        //     }
+        //   }
+        // }
+
+        // ------------------------------------------------------------------
+
         this.towers.push(
           createTower(
             GameState.assets[selectedTower],
@@ -236,18 +251,8 @@ class GamePlay {
 
     this.bulletController = new BulletController(this.creeps);
 
-    // this.towers.push(
-    //   createTower("assets/turret/turret-5-3.png", 300, 500, 1000, 1)
-    // );
-    // this.towers.push(
-    //   createTower("assets/turret/turret-3-3.png", 600, 500, 2000, 2)
-    // );
 
     this.myMouse.register("mousedown", this.downHandler);
-
-    // this.myMouse.register('mouseup', function(e, elapsedTime) {
-    //   mouse.isActive = false;
-    // });
 
     this.myMouse.register("mousemove", function (e, elapsedTime) {
       if (mouse.isActive) {
@@ -315,11 +320,11 @@ class GamePlay {
           money += creep.maxHealth;
           gameSound.playSound("die");
           let textEvent = new MovingEvents({
-            size: { x: 50, y: 50 }, // Size in pixels
+            size: { x: 50, y: 50 },
             center: { x: x, y: y },
             rotation: 0,
-            moveRate: 125 / 1000, // Pixels per second
-            rotateRate: Math.PI / 1000, // Radians per second
+            moveRate: 125 / 1000, 
+            rotateRate: Math.PI / 1000, 
             continousSpeed: 50,
             yDirection: -1,
             xDirection: 0,
@@ -333,7 +338,6 @@ class GamePlay {
         let towersLength = this.towers.length;
         for (let i = 0; i < towersLength; i++) {
           let tower = this.towers[i];
-          // console.log(i+"th index count is" + tower.specs.delay)
           if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
             console.log("flying" + " " + i);
           } else if (
@@ -469,6 +473,7 @@ class GamePlay {
     if (renderCircle) {
       drawTower(towerRadius);
     }
+    context.fillStyle = "black";
     this.renderScore();
     this.creeps.forEach((creep) => {
       creep.render();
@@ -516,8 +521,8 @@ class GamePlay {
         nextWave = true;
         wave--;
       } else {
-        self.processInput(time - lastTimeStamp);
-        self.update(time - lastTimeStamp);
+        // self.processInput(time - lastTimeStamp);
+        // self.update(time - lastTimeStamp);
       }
       // self.checkCanProceed();
       if (!GameState.cancelNextRequest) {
@@ -531,8 +536,10 @@ class GamePlay {
           add(score);
         }
         context.font = "70px roboto";
+        context.fillStyle = "black";
         context.textAlign = "center";
-        context.fillText("Game Over", canvas.width / 2, canvas.height * 0.8);
+        context.fillText("Game Over", canvas.width / 2, canvas.height * 0.6);
+        context.fillText(score, canvas.width / 2, canvas.height * 0.8);
         // for (var i = 0; i < towerElements.length; i++) {
         //   towerElements[i].removeEventListener(
         //     "click",
@@ -551,7 +558,7 @@ class GamePlay {
         // startButton.removeEventListener("click", self.startNewWave);
         setTimeout(() => {
           self.manager.showScreen("mainmenu");
-        }, 2000);
+        }, 4000);
       }
       lastTimeStamp = time;
     }

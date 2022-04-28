@@ -32,6 +32,7 @@ class BulletController {
             this.bullets[i].targetCreep.player.specs.center.y,
             Math.floor(this.bullets[i].targetCreep.player.specs.size.x / 2)
           )
+          
         ) {
           //it is not bomb
         
