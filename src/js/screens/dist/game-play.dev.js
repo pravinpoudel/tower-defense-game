@@ -359,10 +359,8 @@ function () {
           for (var _i2 = 0; _i2 < towersLength; _i2++) {
             var tower = this.towers[_i2];
 
-            if (typeof creep.flying == "undefined" && tower.specs.type == 3) {
-              console.log("flying" + " " + _i2);
-            } else if (typeof creep.flying != "undefined" && tower.specs.type < 3) {
-              console.log("flying" + " " + _i2);
+            if (typeof creep.flying == "undefined" && tower.specs.type == 3) {// console.log("flying" + " " + i);
+            } else if (typeof creep.flying != "undefined" && tower.specs.type < 3) {// console.log("flying" + " " + i);
             } else {
               if (isColliding(creep, tower, tower.specs.radius)) {
                 tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
@@ -452,27 +450,16 @@ function () {
       context.clearRect(175, 200, 225, 50);
       context.clearRect(175, 750, 225, 50);
 
-      if (self.creeps.length == 0 && levels[this.level].wave >= 0) {
-        if (levels[this.level].enemyCreators[levels[this.level].wave].position == "top") {
+      if (nextWave) {
+        if (levels[self.level].enemyCreators[levels[self.level + 1].wave + 1].position == "top") {
           console.log("top");
           context.fillStyle = "red";
           context.fillRect(175, 0 + 200, 200, 50);
-        } else if (levels[self.level].enemyCreators[levels[this.level].wave].position == "left") {
+        } else if (levels[self.level].enemyCreators[levels[self.level].wave + 1].position == "left") {
           console.log("left");
           context.fillStyle = "red";
           context.fillRect(0, 400, 50, 200);
-        } //  else {
-        //   console.log("nothing");
-        //   context.fillStyle = "red";
-        //   context.fillRect(0, 400, 50, 200);
-        // }
-
-      }
-
-      if (levels[this.level].wave == -1) {
-        console.log("start");
-        context.fillStyle = "red";
-        context.fillRect(0, 400, 50, 200);
+        }
       }
 
       if (mouse.isActive) {
@@ -545,8 +532,9 @@ function () {
     value: function run() {
       var self = this;
       gameSound = new Sound();
-      gameSound.loadAudio(); // this.sound.playSound("end");
-
+      gameSound.loadAudio();
+      gameSound.playSound("game_play");
+      gameSound.changeVolume(10);
       this.registerKey();
       var lastTimeStamp = performance.now();
       GameState.cancelNextRequest = false;
@@ -554,7 +542,12 @@ function () {
 
       function gameLoop(time) {
         if (self.enemyCreator && self.enemyCreator.totalEnemy <= 0 && self.creeps.length == 0 && wave > 0) {
-          nextWave = true;
+          nextWave = true; //  else {
+          //   console.log("nothing");
+          //   context.fillStyle = "red";
+          //   context.fillRect(0, 400, 50, 200);
+          // }
+
           wave--;
         } else {} // self.processInput(time - lastTimeStamp);
         // self.update(time - lastTimeStamp);
@@ -572,6 +565,9 @@ function () {
             add(score);
           }
 
+          gameSound.pauseSound("game_play");
+          gameSound.playSound("success_end");
+          gameSound.changeVolume(20);
           context.font = "70px roboto";
           context.fillStyle = "black";
           context.textAlign = "center";

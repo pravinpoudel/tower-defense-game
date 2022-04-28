@@ -46,6 +46,8 @@ function () {
       this.sounds["end"] = this.loadSound(dir + "assets/sounds/game_end.mp3");
       this.sounds["shoot"] = this.loadSound(dir + "assets/sounds/shoot.wav");
       this.sounds["add"] = this.loadSound(dir + "assets/sounds/add.wav");
+      this.sounds["game_play"] = this.loadSound(dir + "assets/sounds/game_Play.mp3");
+      this.sounds["success_end"] = this.loadSound(dir + "assets/sounds/success_end.mp3");
       this.sounds["die"] = this.loadSound(dir + "assets/sounds/collision.flac");
       this.sounds["explosion"] = this.loadSound(dir + "assets/sounds/explosion.wav");
     }
@@ -76,7 +78,9 @@ function () {
   }, {
     key: "changeVolume",
     value: function changeVolume(value) {
-      this.sounds["audio/end"].volume = value / 100;
+      for (var sound in this.sounds) {
+        this.sounds[sound].volume = value / 100;
+      }
     }
   }]);
 
