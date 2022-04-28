@@ -30,6 +30,6 @@ function () {
 var levels = null;
 
 function createLevels() {
-  levels = [new Level([new EnemyCreator(2, "left", 3), new EnemyCreator(2, "left", 3), new EnemyCreator(2, "left", 3)]), new Level([new EnemyCreator(2, "top", 2), new EnemyCreator(2, "top", 2), new EnemyCreator(2, "top", 2)]), new Level([new EnemyCreator(2, "left", 3), new EnemyCreator(2, "top", 3), new EnemyCreator(1, "left", 3)])];
+  levels = [new Level([new EnemyCreator(2, "left", 3, 50), new EnemyCreator(2, "left", 3, 50), new EnemyCreator(2, "left", 3, 50)]), new Level([new EnemyCreator(2, "top", 2, 70), new EnemyCreator(2, "top", 2, 70), new EnemyCreator(2, "top", 2, 70)]), new Level([new EnemyCreator(2, "left", 3, 100), new EnemyCreator(2, "top", 3, 100), new EnemyCreator(1, "left", 3, 100)])];
 }
 //# sourceMappingURL=level.dev.js.map

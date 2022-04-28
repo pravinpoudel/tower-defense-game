@@ -6,22 +6,22 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function makeCreateCreep1(x, y, xDirection, yDirection) {
+function makeCreateCreep1(x, y, xDirection, yDirection, speed) {
   var spriteSheet = ["creep10", "creep11", "creep12", "creep13", "creep14", "creep15"];
-  return this.createEnemy(x, y, xDirection, yDirection, spriteSheet, 4);
+  return this.createEnemy(x, y, xDirection, yDirection, spriteSheet, 4, speed);
 }
 
-function makeCreateCreep2(x, y, xDirection, yDirection) {
+function makeCreateCreep2(x, y, xDirection, yDirection, speed) {
   var spriteSheet = ["creep20", "creep21", "creep22", "creep23"];
-  return this.createEnemy(x, y, xDirection, yDirection, spriteSheet, 2);
+  return this.createEnemy(x, y, xDirection, yDirection, spriteSheet, 2, speed);
 }
 
-function makeCreateCreep3(x, y, xDirection, yDirection) {
+function makeCreateCreep3(x, y, xDirection, yDirection, speed) {
   var spriteSheet = ["creep30", "creep31", "creep32", "creep33"];
-  return this.createEnemy(x, y, xDirection, yDirection, spriteSheet, 6, true);
+  return this.createEnemy(x, y, xDirection, yDirection, spriteSheet, 6, speed, true);
 }
 
-function createEnemy(x, y, xDirection, yDirection, spriteSheet, health, flying) {
+function createEnemy(x, y, xDirection, yDirection, spriteSheet, health, speed, flying) {
   //all the event to handle movement
   var playerEvent = new MovingEvents({
     size: {
@@ -38,7 +38,7 @@ function createEnemy(x, y, xDirection, yDirection, spriteSheet, health, flying) 
     // Pixels per second
     rotateRate: Math.PI / 1000,
     // Radians per second
-    continousSpeed: 50,
+    continousSpeed: speed,
     yDirection: yDirection,
     xDirection: xDirection
   });
@@ -58,13 +58,14 @@ function createEnemy(x, y, xDirection, yDirection, spriteSheet, health, flying) 
 var EnemyCreator =
 /*#__PURE__*/
 function () {
-  function EnemyCreator(enemyCount, position, kind) {
+  function EnemyCreator(enemyCount, position, kind, speed) {
     _classCallCheck(this, EnemyCreator);
 
     this.animationTime = 0;
     this.totalEnemy = enemyCount;
     this.position = position;
     this.kind = kind;
+    this.speed = speed;
   }
 
   _createClass(EnemyCreator, [{
@@ -90,18 +91,18 @@ function () {
             yDirection = 1;
           }
 
-          var kind = Math.floor(Math.random() * (this.kind - 1)) + 1;
+          var kind = Math.floor(Math.random() * (this.kind - 1));
 
           if (kind == 0) {
-            return makeCreateCreep1(xPosition, yPosition, xDirection, yDirection);
+            return makeCreateCreep1(xPosition, yPosition, xDirection, yDirection, this.speed);
           }
 
           if (kind == 1) {
-            return makeCreateCreep2(xPosition, yPosition, xDirection, yDirection);
+            return makeCreateCreep2(xPosition, yPosition, xDirection, yDirection, this.speed);
           }
 
           if (kind == 2) {
-            return makeCreateCreep3(xPosition, yPosition, xDirection, yDirection);
+            return makeCreateCreep3(xPosition, yPosition, xDirection, yDirection, this.speed);
           }
         }
       }

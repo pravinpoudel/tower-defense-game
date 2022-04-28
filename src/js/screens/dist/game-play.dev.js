@@ -160,9 +160,13 @@ function () {
   }, {
     key: "startNewWave",
     value: function startNewWave(e) {
-      e.preventDefault();
+      if (e) {
+        e.preventDefault();
+      }
+
       console.log("start button clicked");
       this.enemyCreator = levels[this.level].sendNextWave();
+      startButton.style.display = "none";
       nextWave = false;
       GameState.cancelNextRequest = false;
     }
@@ -269,7 +273,8 @@ function () {
         return;
       }
 
-      particleSystem.update(elapsedTime);
+      particleSystem1.update(elapsedTime);
+      particleSystem2.update(elapsedTime);
       var creepsLength = this.creeps.length;
 
       for (var i = 0; i < creepsLength; i++) {
@@ -324,6 +329,7 @@ function () {
                 tower.setTarget(creep.player.specs.center.x, creep.player.specs.center.y);
 
                 if (tower.canShoot) {
+                  tower.isFirst = false;
                   var direction = {
                     x: tower.specs.target.x - tower.specs.center.x,
                     y: tower.specs.target.y - tower.specs.center.y
@@ -378,10 +384,9 @@ function () {
       var startButton = document.getElementById("startButton");
       document.getElementById("level").innerHTML = this.level + 1;
       document.getElementById("killed").innerHTML = totalCreepKilled; // startButton.style.display = "none";
-
-      if (nextWave) {
-        startButton.style.display = "block";
-      }
+      // if (nextWave) {
+      //   startButton.style.display = "block";
+      // }
 
       var totalTowerValues = 0;
       this.towers.forEach(function (tower) {
@@ -490,7 +495,8 @@ function () {
         this.flyingScores[_i5].render();
       }
 
-      particleSystem.render();
+      particleSystem1.render();
+      particleSystem2.render();
     }
   }, {
     key: "run",
@@ -512,18 +518,13 @@ function () {
           if (levels[self.level].wave >= levels[self.level].enemyCreators.length - 1) {
             self.level++;
             self.towers = [];
-          } // if (levels[self.level].wave == -1) {
-          // }
-          //  else {
-          //   console.log("nothing");
-          //   context.fillStyle = "red";
-          //   context.fillRect(0, 400, 50, 200);
-          // }
-          // wave--;
-
-        } else {// self.processInput(time - lastTimeStamp);
-            // self.update(time - lastTimeStamp);
+            startButton.style.display = "block";
+          } else {
+            setTimeout(function () {
+              self.startNewWave();
+            }, 1000);
           }
+        }
 
         self.checkCanProceed();
 
@@ -545,22 +546,7 @@ function () {
           context.fillStyle = "black";
           context.textAlign = "center";
           context.fillText(self.gameOverText, canvas.width / 2, canvas.height * 0.6);
-          context.fillText(score, canvas.width / 2, canvas.height * 0.8); // for (var i = 0; i < towerElements.length; i++) {
-          //   towerElements[i].removeEventListener(
-          //     "click",
-          //     this.createElement,
-          //     false
-          //   );
-          // }
-          // for (var i = 0; i < towerElements2.length; i++) {
-          //   towerElements2[i].removeEventListener(
-          //     "click",
-          //     this.muteVolume,
-          //     false
-          //   );
-          // }
-          // startButton.removeEventListener("click", self.startNewWave);
-
+          context.fillText(score, canvas.width / 2, canvas.height * 0.8);
           setTimeout(function () {
             self.manager.showScreen("mainmenu");
           }, 4000);

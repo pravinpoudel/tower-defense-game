@@ -18,12 +18,11 @@ loader = function () {
     scripts: ["highscore"],
     message: "highscore intialized",
     onComplete: null
-  }, // {
-  //   scripts: ["particleSystem"],
-  //   message: "particle system is intialized",
-  //   onComplete: null,
-  // },
-  {
+  }, {
+    scripts: ["shortestPath"],
+    message: "shortest path code is intialized",
+    onComplete: null
+  }, {
     scripts: ["utility/enemyCreator"],
     message: "enemy creator system is intialized",
     onComplete: null

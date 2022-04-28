@@ -27,9 +27,10 @@ function () {
     this.update = this.update.bind(this);
     this.render = this.render.bind(this);
     this.setTarget = this.setTarget.bind(this);
-    this.canShoot = false;
+    this.canShoot = true;
     this.animationTime = 0;
     this.delay = this.specs.delay;
+    this.isFirst = true;
   }
 
   _createClass(Tower, [{
@@ -53,6 +54,10 @@ function () {
           this.weaponSprite.rotateLeft(this.specs.rotateRate);
           this.specs.rotation -= this.specs.rotateRate;
         }
+      }
+
+      if (this.isFirst) {
+        return;
       }
 
       this.animationTime += elapsedTime;

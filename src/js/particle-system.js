@@ -142,10 +142,10 @@ Brickout.graphics = (function () {
   };
 })();
 
-function ParticleSystem(graphics) {
+function ParticleSystem(graphics, image1) {
   "use strict";
   var that = {},
-    image = new Image(),
+    image = image1,
     particles = {}, // Set of all active particles
     nextName = 1; // Unique identifier for the next particle
 
@@ -191,7 +191,7 @@ function ParticleSystem(graphics) {
   //------------------------------------------------------------------
   function makeParticle(spec, x, y) {
     var p = {
-      image: image,
+      image: image1,
       size: Math.abs(Random.nextGaussian(10, 4)),
       center: { x: x, y: y },
       direction: { x: spec.xDirection, y: spec.yDirection },
@@ -258,7 +258,7 @@ function ParticleSystem(graphics) {
   //------------------------------------------------------------------
   that.render = function () {};
 
-  image = GameState.assets["smoke"];
+  image = image1;
   that.render = function () {
     var value, particle;
 
@@ -273,13 +273,13 @@ function ParticleSystem(graphics) {
   return that;
 }
 
-let particleSystem = ParticleSystem(
+let particleSystem1 = ParticleSystem(
   Brickout.graphics,
-  GameState.assets["fire"]
+  GameState.assets["smoke"]
 );
 let particleSystem2 = ParticleSystem(
   Brickout.graphics,
-  GameState.assets["smoke"]
+  GameState.assets["fire"]
 );
 
 function makeParticle2(
@@ -320,7 +320,7 @@ function makeParticle1(
   stdev,
   gaussian
 ) {
-  particleSystem.createEffect({
+  particleSystem1.createEffect({
     left: left,
     right: right,
     top: top,

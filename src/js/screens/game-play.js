@@ -149,9 +149,12 @@ class GamePlay {
   }
 
   startNewWave(e) {
-    e.preventDefault();
+    if(e){
+      e.preventDefault();
+    }
     console.log("start button clicked");
     this.enemyCreator = levels[this.level].sendNextWave();
+    startButton.style.display = "none";
     nextWave = false;
     GameState.cancelNextRequest = false;
   }
@@ -255,7 +258,8 @@ class GamePlay {
       return;
     }
 
-    particleSystem.update(elapsedTime);
+    particleSystem1.update(elapsedTime);
+    particleSystem2.update(elapsedTime);
     let creepsLength = this.creeps.length;
     for (let i = 0; i < creepsLength; i++) {
       let creep = this.creeps[i];
@@ -307,6 +311,7 @@ class GamePlay {
                 creep.player.specs.center.y
               );
               if (tower.canShoot) {
+                tower.isFirst = false;
                 let direction = {
                   x: tower.specs.target.x - tower.specs.center.x,
                   y: tower.specs.target.y - tower.specs.center.y,
@@ -362,9 +367,9 @@ class GamePlay {
     document.getElementById("level").innerHTML = this.level + 1;
     document.getElementById("killed").innerHTML = totalCreepKilled;
     // startButton.style.display = "none";
-    if (nextWave) {
-      startButton.style.display = "block";
-    }
+    // if (nextWave) {
+    //   startButton.style.display = "block";
+    // }
     let totalTowerValues = 0;
     this.towers.forEach((tower) => {
       totalTowerValues += tower.specs.cost;
@@ -478,7 +483,8 @@ class GamePlay {
     for (let i = 0; i < scorelength; i++) {
       this.flyingScores[i].render();
     }
-    particleSystem.render();
+    particleSystem1.render();
+    particleSystem2.render();
   }
 
   run() {
@@ -509,20 +515,15 @@ class GamePlay {
         ) {
           self.level++;
           self.towers = [];
+          startButton.style.display = "block";
         }
-        // if (levels[self.level].wave == -1) {
-
-        // }
-        //  else {
-        //   console.log("nothing");
-        //   context.fillStyle = "red";
-        //   context.fillRect(0, 400, 50, 200);
-        // }
-        // wave--;
-      } else {
-        // self.processInput(time - lastTimeStamp);
-        // self.update(time - lastTimeStamp);
+        else{
+          setTimeout(() => {
+            self.startNewWave();
+          }, 1000);  
+        }
       }
+
       self.checkCanProceed();
       if (!GameState.cancelNextRequest) {
         requestAnimationFrame(gameLoop);
@@ -547,22 +548,6 @@ class GamePlay {
           canvas.height * 0.6
         );
         context.fillText(score, canvas.width / 2, canvas.height * 0.8);
-        // for (var i = 0; i < towerElements.length; i++) {
-        //   towerElements[i].removeEventListener(
-        //     "click",
-        //     this.createElement,
-        //     false
-        //   );
-        // }
-
-        // for (var i = 0; i < towerElements2.length; i++) {
-        //   towerElements2[i].removeEventListener(
-        //     "click",
-        //     this.muteVolume,
-        //     false
-        //   );
-        // }
-        // startButton.removeEventListener("click", self.startNewWave);
         setTimeout(() => {
           self.manager.showScreen("mainmenu");
         }, 4000);

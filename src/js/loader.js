@@ -21,11 +21,11 @@ loader = (function () {
       onComplete: null,
     },
 
-    // {
-    //   scripts: ["particleSystem"],
-    //   message: "particle system is intialized",
-    //   onComplete: null,
-    // },
+    {
+      scripts: ["shortestPath"],
+      message: "shortest path code is intialized",
+      onComplete: null,
+    },
 
     {
       scripts: ["utility/enemyCreator"],
