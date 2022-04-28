@@ -258,26 +258,57 @@ function ParticleSystem(graphics) {
   //------------------------------------------------------------------
   that.render = function () {};
 
-  image.src = "assets/fire.png";
-  image.onload = function () {
-    that.render = function () {
-      var value, particle;
+  image = GameState.assets["smoke"];
+  that.render = function () {
+    var value, particle;
 
-      for (value in particles) {
-        if (particles.hasOwnProperty(value)) {
-          particle = particles[value];
-          graphics.drawImage(particle);
-        }
+    for (value in particles) {
+      if (particles.hasOwnProperty(value)) {
+        particle = particles[value];
+        graphics.drawImage(particle);
       }
-    };
+    }
   };
 
   return that;
 }
 
-let particleSystem = ParticleSystem(Brickout.graphics);
+let particleSystem = ParticleSystem(
+  Brickout.graphics,
+  GameState.assets["fire"]
+);
+let particleSystem2 = ParticleSystem(
+  Brickout.graphics,
+  GameState.assets["smoke"]
+);
 
 function makeParticle2(
+  left,
+  right,
+  top,
+  bottom,
+  count,
+  xDirection,
+  yDirection,
+  mean,
+  stdev,
+  gaussian
+) {
+  particleSystem2.createEffect({
+    left: left,
+    right: right,
+    top: top,
+    bottom: bottom,
+    count: count,
+    xDirection: xDirection,
+    yDirection: yDirection,
+    mean: mean,
+    stdev: stdev,
+    gaussian: gaussian,
+  });
+}
+
+function makeParticle1(
   left,
   right,
   top,
@@ -308,7 +339,7 @@ function creepDied(x, y) {
 }
 
 function trailFollow(x, y, xDirection, yDirection) {
-  makeParticle2(
+  makeParticle1(
     x,
     x + 5,
     y,
@@ -331,8 +362,8 @@ function bombHit(x, y, radius) {
     5,
     0,
     0,
-    500,
-    100,
+    1000,
+    200,
     true
   );
 }

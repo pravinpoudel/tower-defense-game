@@ -274,9 +274,11 @@ loader = (function () {
     },
     // {
     //   key: "end audio",
-    //   source: dir + "assets/sounds/game_end.mp3",
+    //   source: dir + "assets/sounds/success_end.mp3",
     // },
   ];
+
+  console.log(assetOrder.length);
 
   function loadScripts(scripts, onComplete) {
     if (scripts.length > 0) {
@@ -340,12 +342,18 @@ loader = (function () {
             }
           }
           asset.onload = function () {
+            // if (fileExtension === "mp3") {
+            //   console.log(asset.src);
+            // }
             window.URL.revokeObjectURL(asset.src);
             if (onSuccess) {
               onSuccess(asset);
+            } else {
+              console.log("hello error");
             }
           };
           asset.src = window.URL.createObjectURL(xhr.response);
+          // console.log(xhr.response);
         } else {
           if (onError) {
             onError("Failed to retrieve: " + source);

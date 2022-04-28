@@ -58,6 +58,7 @@ class BulletController {
             bombHit(this.bullets[i].x, this.bullets[i].y, bombAffectRadius);
           } else {
             this.bullets[i].targetCreep.health -= this.bullets[i].power;
+            bombHit(this.bullets[i].x, this.bullets[i].y, 50);
             if (this.bullets[i].targetCreep.health < 0) {
               if(this.bullets[i].type ==3){
                 bombHit(this.bullets[i].x, this.bullets[i].y, 10);
