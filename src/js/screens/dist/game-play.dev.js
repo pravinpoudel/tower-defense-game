@@ -41,6 +41,7 @@ function () {
     this.startNewWave = this.startNewWave.bind(this);
     this.level = 0;
     this.towerType = ["Gun", "Missile", "Air", "Mix (Air + Ground)"];
+    this.gameOverText = "Game Over";
   }
 
   _createClass(GamePlay, [{
@@ -119,49 +120,6 @@ function () {
         var decision = canCreated(this.towers) && this.canPlace;
 
         if (decision) {
-          //blockage check code
-          // ----------------------------------------------------
-          // if(levels[this.level].wave >=0){
-          //   if (levels[this.level].enemyCreators[levels[this.level].wave].position == "top") {
-          //     //the new tower that was placed recently got into line of the creeps so wont be added to scene
-          //     if (
-          //       isColliding3(
-          //         Math.floor(mouse.x / cellWidth) * cellWidth,
-          //         Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
-          //         10,
-          //         10,
-          //         175,
-          //         200,
-          //         225,
-          //         600
-          //       )
-          //     ) {
-          //       block = true;
-          //       console.log("it is blocking the path");
-          //       return;
-          //     }
-          //   } 
-          //   //the new tower that was placed recently got into line of the creeps so wont be added to scene
-          //   else if (levels[this.level].enemyCreators[levels[this.level].wave].position == "left") {
-          //     if (
-          //       isColliding3(
-          //         Math.floor(mouse.x / cellWidth) * cellWidth,
-          //         Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200,
-          //         10,
-          //         10,
-          //         0,
-          //         400,
-          //         600,
-          //         200
-          //       )
-          //     ) {
-          //       block = true
-          //       console.log("it is blocking the path");
-          //       return;
-          //     }
-          //   }
-          // }
-          // ------------------------------------------------------------------
           this.towers.push(createTower(GameState.assets[selectedTower], Math.floor(mouse.x / cellWidth) * cellWidth, Math.floor((mouse.y - 200) / cellWidth) * cellWidth + 200, 2500, 1, towerRadius, moneyRequired, towerTypeSelected));
           money = money - moneyRequired;
           moneyRequired = 0;
@@ -205,19 +163,19 @@ function () {
       e.preventDefault();
       console.log("start button clicked");
       this.enemyCreator = levels[this.level].sendNextWave();
-
-      if (levels[this.level].wave >= levels[this.level].enemyCreators.length) {
-        this.level++;
-        this.towers = [];
-      }
-
       nextWave = false;
       GameState.cancelNextRequest = false;
     }
   }, {
     key: "checkCanProceed",
     value: function checkCanProceed() {
-      if (this.level > 2 || GameState.life <= 0) {
+      if (this.level > 2) {
+        this.gameOverText = "You Won !!!";
+        GameState.cancelNextRequest = true;
+        add(score);
+      }
+
+      if (GameState.life <= 0) {
         GameState.cancelNextRequest = true;
         add(score);
       }
@@ -411,8 +369,12 @@ function () {
       document.getElementById("currentScore").innerHTML = score;
       document.getElementById("lives").innerHTML = GameState.life;
       document.getElementById("money").innerHTML = money;
-      var waveString = levels[this.level].wave + 1 + "/" + maxWave;
-      document.getElementById("wave").innerHTML = waveString;
+
+      if (this.level < 3) {
+        var waveString = levels[this.level].wave + 1 + "/" + maxWave;
+        document.getElementById("wave").innerHTML = waveString;
+      }
+
       var startButton = document.getElementById("startButton");
       document.getElementById("level").innerHTML = this.level + 1;
       document.getElementById("killed").innerHTML = totalCreepKilled; // startButton.style.display = "none";
@@ -450,14 +412,17 @@ function () {
       context.clearRect(175, 200, 225, 50);
       context.clearRect(175, 750, 225, 50);
 
-      if (nextWave) {
-        if (levels[self.level].enemyCreators[levels[self.level + 1].wave + 1].position == "top") {
-          console.log("top");
-          context.fillStyle = "red";
-          context.fillRect(175, 0 + 200, 200, 50);
+      if (nextWave && self.level < 3) {
+        // console.log(
+        //   levels[self.level].enemyCreators[levels[self.level].wave + 1].position
+        // );
+        if (levels[self.level].enemyCreators[levels[self.level].wave + 1].position == "top") {
+          // console.log("top");
+          context.fillStyle = "#d7a20e";
+          context.fillRect(175, 0 + 200, 225, 50);
         } else if (levels[self.level].enemyCreators[levels[self.level].wave + 1].position == "left") {
-          console.log("left");
-          context.fillStyle = "red";
+          // console.log("left");
+          context.fillStyle = "#d7a20e";
           context.fillRect(0, 400, 50, 200);
         }
       }
@@ -541,18 +506,26 @@ function () {
       context.fillStyle = "black";
 
       function gameLoop(time) {
-        if (self.enemyCreator && self.enemyCreator.totalEnemy <= 0 && self.creeps.length == 0 && wave > 0) {
-          nextWave = true; //  else {
+        if (self.enemyCreator && self.enemyCreator.totalEnemy <= 0 && self.creeps.length == 0 && wave > 0 && self.level < 3 && !nextWave) {
+          nextWave = true;
+
+          if (levels[self.level].wave >= levels[self.level].enemyCreators.length - 1) {
+            self.level++;
+            self.towers = [];
+          } // if (levels[self.level].wave == -1) {
+          // }
+          //  else {
           //   console.log("nothing");
           //   context.fillStyle = "red";
           //   context.fillRect(0, 400, 50, 200);
           // }
+          // wave--;
 
-          wave--;
-        } else {} // self.processInput(time - lastTimeStamp);
-        // self.update(time - lastTimeStamp);
-        // self.checkCanProceed();
+        } else {// self.processInput(time - lastTimeStamp);
+            // self.update(time - lastTimeStamp);
+          }
 
+        self.checkCanProceed();
 
         if (!GameState.cancelNextRequest) {
           requestAnimationFrame(gameLoop);
@@ -571,7 +544,7 @@ function () {
           context.font = "70px roboto";
           context.fillStyle = "black";
           context.textAlign = "center";
-          context.fillText("Game Over", canvas.width / 2, canvas.height * 0.6);
+          context.fillText(self.gameOverText, canvas.width / 2, canvas.height * 0.6);
           context.fillText(score, canvas.width / 2, canvas.height * 0.8); // for (var i = 0; i < towerElements.length; i++) {
           //   towerElements[i].removeEventListener(
           //     "click",

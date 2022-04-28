@@ -18,7 +18,7 @@ creepGoing = "top";
 totalCreepKilled = 0;
 wave = 10;
 maxWave = 3;
-nextWave = false;
+nextWave = true;
 towerRadius = 100;
 block = false;
 
