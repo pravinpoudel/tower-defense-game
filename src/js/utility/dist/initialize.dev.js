@@ -56,7 +56,7 @@ var startButton; // canvas.addEventListener("mousedown", function (e) {
 //   mouse.y = undefined;
 // });
 
-if (localStorage["upgrade"] == "null") {
+if (!localStorage.getItem("upgrade")) {
   localStorage.setItem("upgrade", "u");
 }
 
@@ -65,7 +65,7 @@ if (!localStorage.getItem("sell")) {
 }
 
 if (!localStorage.getItem("start")) {
-  localStorage.setItem("start", "s");
+  localStorage.setItem("start", "r");
 } // console.log(
 //   localStorage["upgrade"],
 //   localStorage["shell"],
@@ -117,6 +117,7 @@ function isColliding(r1, r2, radius) {
   var r2Width = r2.baseSprite.image.width;
   var r2X = r2.specs.center.x - r2Width;
   var r2Y = r2.specs.center.y - r2Width;
+  console.log(r2X, r2Y, r2Width);
   return !(r1X + r1Width <= r2X - radius || r1X >= r2X + r2Width + radius || r1Y + r1Width <= r2Y - radius || r1Y >= r2Width + r2Y + radius);
 }
 
@@ -204,6 +205,9 @@ function findSelectedTower(towers) {
   if (!mouse.isActive) {
     if (!canCreated(towers)) {
       towerClicked = mouseOverTower;
+    } else {
+      towerClicked = false;
+      moneyRequired = 0;
     }
   }
 }

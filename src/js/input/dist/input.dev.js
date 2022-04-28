@@ -13,7 +13,9 @@ function () {
     _classCallCheck(this, Keyboard);
 
     this.keys = {};
+    this.deletedKeys = {};
     this.handlers = {};
+    this.releaser = {};
     this.keyPress = this.keyPress.bind(this);
     this.keyRelease = this.keyRelease.bind(this);
     this.register = this.register.bind(this);
@@ -29,6 +31,7 @@ function () {
   }, {
     key: "keyRelease",
     value: function keyRelease(e) {
+      this.deletedKeys[e.key] = true;
       delete this.keys[e.key];
     }
   }, {
@@ -39,8 +42,9 @@ function () {
     }
   }, {
     key: "register",
-    value: function register(key, handler) {
+    value: function register(key, handler, releaser) {
       this.handlers[key] = handler;
+      this.releaser[key] = releaser;
     }
   }, {
     key: "update",
@@ -51,6 +55,18 @@ function () {
             this.handlers[key](elapsedTime);
           } else {
             console.warn("".concat(key, " does not have handler registered for it"));
+          }
+        }
+      }
+
+      for (var _key in this.deletedKeys) {
+        if (this.deletedKeys.hasOwnProperty(_key)) {
+          if (this.releaser[_key]) {
+            this.releaser[_key](elapsedTime);
+
+            delete this.deletedKeys[_key];
+          } else {
+            console.warn("".concat(_key, " does not have handler registered for it"));
           }
         }
       }

@@ -28,6 +28,10 @@ class Tower {
     };
   }
 
+  removeTarget() {
+    this.canShoot = false;
+  }
+
   update(elapsedTime) {
     let result = computeAngle(
       this.specs.rotation,
@@ -43,15 +47,14 @@ class Tower {
         this.specs.rotation -= this.specs.rotateRate;
       }
     }
-    if(this.isFirst){
+    if (this.isFirst) {
       return;
     }
     this.animationTime += elapsedTime;
-    if(this.animationTime > this.specs.delay){
-      this.animationTime-= this.specs.delay;
+    if (this.animationTime > this.specs.delay) {
+      this.animationTime -= this.specs.delay;
       this.canShoot = true;
-    }
-    else{
+    } else {
       this.canShoot = false;
     }
   }

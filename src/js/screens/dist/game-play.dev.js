@@ -42,37 +42,31 @@ function () {
     this.level = 0;
     this.towerType = ["Gun", "Missile", "Air", "Mix (Air + Ground)"];
     this.gameOverText = "Game Over";
+    this.alreadyUpgraded = false;
+    this.alreadyStarted = false;
   }
 
   _createClass(GamePlay, [{
     key: "upgrade",
     value: function upgrade(elapsedTime) {
-      var moneyRequired = Math.floor(0.5 * towerClicked.specs.cost);
-      console.log(towerClicked);
+      if (!this.alreadyUpgraded) {
+        var _moneyRequired = Math.floor(1.2 * towerClicked.specs.cost);
 
-      if (moneyRequired <= money) {
-        if (towerClicked) {
-          if (towerClicked.totalElapsedTime == undefined) {
-            towerClicked.totalElapsedTime = 0;
-          } else {
-            towerClicked.totalElapsedTime += elapsedTime;
-
-            if (towerClicked.totalElapsedTime >= 200) {
-              console.log("upgraded");
-              towerClicked.totalElapsedTime -= 200;
-
-              if (!towerClicked.upgradeCount) {
-                towerClicked.upgradeCount = 1;
+        if (_moneyRequired <= money) {
+          if (towerClicked) {
+            if (!towerClicked.upgradeCount) {
+              towerClicked.upgradeCount = 1;
+            } else {
+              if (towerClicked.upgradeCount >= 3) {
+                return;
               } else {
-                if (towerClicked.upgradeCount >= 3) {
-                  return;
-                } else {
-                  towerClicked.upgradeCount = towerClicked.upgradeCount + 1;
-                  towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
-                  towerClicked.specs.power = towerClicked.specs.power + 1;
-                  money -= moneyRequired;
-                  gameSound.playSound("add");
-                }
+                towerClicked.upgradeCount = towerClicked.upgradeCount + 1;
+                towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
+                towerClicked.specs.power = towerClicked.specs.power + 1;
+                towerClicked.specs.cost = Math.floor(1.2 * towerClicked.specs.cost);
+                money -= _moneyRequired;
+                this.alreadyUpgraded = true;
+                gameSound.playSound("add");
               }
             }
           }
@@ -160,10 +154,9 @@ function () {
   }, {
     key: "startNewWave",
     value: function startNewWave(e) {
-      if (e) {
-        e.preventDefault();
-      }
-
+      // if(e){
+      //   e.preventDefault();
+      // }
       console.log("start button clicked");
       this.enemyCreator = levels[this.level].sendNextWave();
       startButton.style.display = "none";
@@ -196,7 +189,7 @@ function () {
       self.myKeyboard.register("Escape", function () {
         GameState.cancelNextRequest = true;
         self.manager.showScreen("mainmenu");
-      });
+      }, function () {});
 
       for (var _i = 0; _i < rows; _i++) {
         var row = [];
@@ -256,13 +249,19 @@ function () {
       var start = localStorage["start"];
       self.myKeyboard.register(upgrade, function (elapsedTime) {
         self.upgrade(elapsedTime);
+      }, function (elapsedTime) {
+        self.alreadyUpgraded = false;
       });
       self.myKeyboard.register(sell, function (elapsedTime) {
         self.sell(elapsedTime);
-      });
+      }, function () {});
+      console.log(start);
       self.myKeyboard.register(start, function (elapsedTime) {
-        self.startNewWave(elapsedTime);
-      }); // self.myKeyboard.cleanAll();
+        if (!self.alreadyStarted) {
+          self.startNewWave(elapsedTime);
+          self.alreadyStarted = true;
+        }
+      }, function (elapsedTime) {}); // self.myKeyboard.cleanAll();
     }
   }, {
     key: "update",
@@ -394,7 +393,12 @@ function () {
       });
       document.getElementById("towerValue").innerHTML = totalTowerValues;
 
-      if (moneyRequired > 0) {
+      if (moneyRequired > 0 || towerClicked) {
+        if (towerClicked) {
+          moneyRequired = Math.floor(1.2 * towerClicked.specs.cost);
+          towerTypeSelected = towerClicked.specs.type;
+        }
+
         document.getElementById("selectedInfo").style.display = "block";
         document.getElementById("moneyRequired").innerHTML = moneyRequired;
         document.getElementById("power").innerHTML = this.towerType[parseInt(towerTypeSelected) - 1];
@@ -519,6 +523,7 @@ function () {
             self.level++;
             self.towers = [];
             startButton.style.display = "block";
+            self.alreadyStarted = false;
           } else {
             setTimeout(function () {
               self.startNewWave();

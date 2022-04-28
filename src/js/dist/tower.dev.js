@@ -42,6 +42,11 @@ function () {
       };
     }
   }, {
+    key: "removeTarget",
+    value: function removeTarget() {
+      this.canShoot = false;
+    }
+  }, {
     key: "update",
     value: function update(elapsedTime) {
       var result = computeAngle(this.specs.rotation, this.specs.center, this.specs.target);

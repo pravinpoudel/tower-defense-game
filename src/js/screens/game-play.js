@@ -30,20 +30,15 @@ class GamePlay {
     this.level = 0;
     this.towerType = ["Gun", "Missile", "Air", "Mix (Air + Ground)"];
     this.gameOverText = "Game Over";
+    this.alreadyUpgraded = false;
+    this.alreadyStarted = false;
   }
 
   upgrade(elapsedTime) {
-    let moneyRequired = Math.floor(0.5 * towerClicked.specs.cost);
-    console.log(towerClicked)
+    if(!this.alreadyUpgraded){
+    let moneyRequired = Math.floor(1.2 * towerClicked.specs.cost);
     if (moneyRequired <= money) {
       if (towerClicked) {
-        if (towerClicked.totalElapsedTime == undefined) {
-          towerClicked.totalElapsedTime = 0;
-        } else {
-          towerClicked.totalElapsedTime += elapsedTime;
-          if (towerClicked.totalElapsedTime >= 200) {
-            console.log("upgraded");
-            towerClicked.totalElapsedTime -= 200;
             if (!towerClicked.upgradeCount) {
               towerClicked.upgradeCount = 1;
             } else {
@@ -53,7 +48,11 @@ class GamePlay {
                 towerClicked.upgradeCount = towerClicked.upgradeCount + 1;
                 towerClicked.delay = Math.floor(towerClicked.delay * 0.7);
                 towerClicked.specs.power = towerClicked.specs.power + 1;
+                towerClicked.specs.cost = Math.floor(
+                  1.2 * towerClicked.specs.cost
+                );
                 money -= moneyRequired;
+                this.alreadyUpgraded = true;
                 gameSound.playSound("add");
               }
             }
@@ -61,7 +60,7 @@ class GamePlay {
         }
       }
     }
-  }
+
 
   sell() {
     if (towerClicked) {
@@ -149,9 +148,9 @@ class GamePlay {
   }
 
   startNewWave(e) {
-    if(e){
-      e.preventDefault();
-    }
+    // if(e){
+    //   e.preventDefault();
+    // }
     console.log("start button clicked");
     this.enemyCreator = levels[this.level].sendNextWave();
     startButton.style.display = "none";
@@ -182,7 +181,7 @@ class GamePlay {
     self.myKeyboard.register("Escape", function () {
       GameState.cancelNextRequest = true;
       self.manager.showScreen("mainmenu");
-    });
+    }, ()=>{});
 
     for (let i = 0; i < rows; i++) {
       let row = [];
@@ -236,17 +235,35 @@ class GamePlay {
     let sell = localStorage["sell"];
     let start = localStorage["start"];
 
-    self.myKeyboard.register(upgrade, function (elapsedTime) {
-      self.upgrade(elapsedTime);
-    });
+    self.myKeyboard.register(
+      upgrade,
+      function (elapsedTime) {
+        self.upgrade(elapsedTime);
+      },
+      function (elapsedTime) {
+        self.alreadyUpgraded = false;
+      }
+    );
 
-    self.myKeyboard.register(sell, function (elapsedTime) {
-      self.sell(elapsedTime);
-    });
+    self.myKeyboard.register(
+      sell,
+      function (elapsedTime) {
+        self.sell(elapsedTime);
+      },
+      () => {}
+    );
 
-    self.myKeyboard.register(start, function (elapsedTime) {
-      self.startNewWave(elapsedTime);
-    });
+    console.log(start);
+    self.myKeyboard.register(
+      start,
+      function (elapsedTime) {
+        if (!self.alreadyStarted) {
+          self.startNewWave(elapsedTime);
+          self.alreadyStarted = true;
+        }
+      },
+      function (elapsedTime) {}
+    );
 
     // self.myKeyboard.cleanAll();
   }
@@ -376,7 +393,11 @@ class GamePlay {
     });
     document.getElementById("towerValue").innerHTML = totalTowerValues;
 
-    if (moneyRequired > 0) {
+    if (moneyRequired > 0 || towerClicked) {
+      if (towerClicked) {
+        moneyRequired = Math.floor(1.2 * towerClicked.specs.cost);
+        towerTypeSelected = towerClicked.specs.type;
+      }
       document.getElementById("selectedInfo").style.display = "block";
       document.getElementById("moneyRequired").innerHTML = moneyRequired;
       document.getElementById("power").innerHTML =
@@ -476,7 +497,7 @@ class GamePlay {
         fill: "#ffd63f9e",
         stroke: "red",
       });
-    }
+    } 
 
     this.bulletController.render();
     let scorelength = this.flyingScores.length;
@@ -516,6 +537,7 @@ class GamePlay {
           self.level++;
           self.towers = [];
           startButton.style.display = "block";
+          self.alreadyStarted = false;
         }
         else{
           setTimeout(() => {

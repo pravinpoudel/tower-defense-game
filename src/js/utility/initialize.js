@@ -65,14 +65,14 @@ var startButton;
 //   mouse.y = undefined;
 // });
 
-if (localStorage["upgrade"] == "null") {
+if (!localStorage.getItem("upgrade")) {
   localStorage.setItem("upgrade", "u");
 }
 if (!localStorage.getItem("sell")) {
   localStorage.setItem("sell", "s");
 }
 if (!localStorage.getItem("start")) {
-  localStorage.setItem("start", "s");
+  localStorage.setItem("start", "r");
 }
 
 // console.log(
@@ -137,6 +137,7 @@ function isColliding(r1, r2, radius) {
   let r2Width = r2.baseSprite.image.width;
   let r2X = r2.specs.center.x - r2Width;
   let r2Y = r2.specs.center.y - r2Width;
+  console.log(r2X, r2Y, r2Width);
   return !(
     r1X + r1Width <= r2X - radius ||
     r1X >= r2X + r2Width + radius ||
@@ -244,6 +245,10 @@ function findSelectedTower(towers) {
   if (!mouse.isActive) {
     if (!canCreated(towers)) {
       towerClicked = mouseOverTower;
+
+    } else {
+      towerClicked = false;
+      moneyRequired = 0;
     }
   }
 }
